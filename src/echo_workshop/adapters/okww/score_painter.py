@@ -87,6 +87,7 @@ class EchoStatBoxPainter:
         self.viewport = ()
         self.tier_labels = []
         self.tier_colors = []
+        self.row_scores = []
 
     def update(
         self,
@@ -94,6 +95,7 @@ class EchoStatBoxPainter:
         summary='',
         tier_labels=(),
         tier_colors=(),
+        row_scores=(),
         *,
         layout='',
         viewport=(),
@@ -104,6 +106,7 @@ class EchoStatBoxPainter:
         self.viewport = viewport
         self.tier_labels = list(tier_labels)
         self.tier_colors = list(tier_colors)
+        self.row_scores = list(row_scores)
 
     def paint(self, canvas, _overlay):
         for index, rectangle in enumerate(self.rectangles):
@@ -115,6 +118,9 @@ class EchoStatBoxPainter:
                 color=rectangle.color,
                 line_width=1,
             )
+            score = self.row_scores[index] if index < len(self.row_scores) else 0.0
+            if abs(score) >= 0.005:
+                _paint_row_score(canvas, rectangle, score)
             tier_label = self.tier_labels[index] if index < len(self.tier_labels) else ''
             if tier_label:
                 tier_color = (
@@ -132,6 +138,13 @@ class EchoStatBoxPainter:
             _paint_score_summary(
                 canvas, _overlay, self.summary, self.layout, self.viewport, self.rectangles
             )
+
+
+def _paint_row_score(canvas, rectangle, score):
+    """Draw the per-stat contribution next to its stat row, as the original did."""
+    x = rectangle.x + rectangle.width + 8
+    y = rectangle.y + max(0, (rectangle.height - 16) / 2)
+    canvas.text(x, y, f'+{score:.2f}', color=rectangle.color)
 
 
 def _paint_bold_text(canvas, x, y, text, color, font_size=24):

@@ -4,6 +4,7 @@
 from ok import TriggerTask, og
 from ok.feature.Box import Box
 from contextlib import nullcontext
+import threading
 import time
 
 from echo_workshop.application.templates import DEFAULT_TEMPLATE
@@ -39,12 +40,16 @@ class EchoWorkshopOverlayTask(TriggerTask):
         super().__init__(*args, **kwargs)
         self.name = '声骸评分后台识别'
         self.description = '识别单个声骸并按 XW-UID 模版评分'
-        self.trigger_interval = 0.5
+        self.trigger_interval = 0.25
         self.visible = False
         self.painter = EchoStatBoxPainter()
         self.current_comparisons = None
         self._echo_owned_cleanup = True
         self._destroyed = False
+        self._run_lock = threading.RLock()
+        self._score_thread = None
+        self._score_stop = None
+        self._loop_error_at = 0.0
         self.default_config['_enabled'] = True
 
     def ocr_fun(self, lib):
@@ -162,6 +167,44 @@ class EchoWorkshopOverlayTask(TriggerTask):
     def post_init(self):
         self._ensure_overlay()
         self._ensure_recovery()
+        self._start_score_loop()
+
+    def _start_score_loop(self):
+        if self._score_thread is not None:
+            return
+        self._score_stop = threading.Event()
+        self._score_thread = threading.Thread(
+            target=self._score_loop, name='EchoScoreLoop', daemon=True
+        )
+        self._score_thread.start()
+
+    def _stop_score_loop(self):
+        stop = self._score_stop
+        if stop is not None:
+            stop.set()
+        thread = self._score_thread
+        if thread is not None and thread is not threading.current_thread():
+            thread.join(timeout=1)
+        self._score_thread = None
+        self._score_stop = None
+
+    def _score_loop(self):
+        # Host pause (minimize, restart, task switching) stops its executor; this
+        # read-only loop keeps the overlay alive only when the host is paused.
+        while not self._score_stop.wait(0.15):
+            if self._destroyed or not self._score_active():
+                continue
+            executor = getattr(self, 'executor', None)
+            if executor is None or not executor.paused:
+                continue
+            try:
+                with self._run_lock:
+                    self._run_frame(direct_only=True)
+            except Exception as error:
+                now = time.monotonic()
+                if now - self._loop_error_at >= 30:
+                    self._loop_error_at = now
+                    self.log_warning(f'独立实时评分失败：{error}')
 
     def _ensure_recovery(self):
         if (
@@ -311,11 +354,12 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 )
             return False
         try:
-            if request is not None:
-                from .manual_capture import run_manual_capture
+            with self._run_lock:
+                if request is not None:
+                    from .manual_capture import run_manual_capture
 
-                return run_manual_capture(self, settings_task, runtime, request)
-            return self._run_frame()
+                    return run_manual_capture(self, settings_task, runtime, request)
+                return self._run_frame()
         except OperationCancelled:
             overlay = self.get_overlay_view()
             if overlay is not None:
@@ -370,7 +414,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
             return False
         return True
 
-    def _run_frame(self):
+    def _run_frame(self, direct_only=False):
         if self._destroyed:
             return False
         overlay = self._ensure_overlay()
@@ -418,6 +462,8 @@ class EchoWorkshopOverlayTask(TriggerTask):
             frame = self._direct_frame()
             token = captured_at if frame is not None else None
             if frame is None:
+                if direct_only:
+                    return False
                 frame = self.next_frame()
                 # Bind the host's acquisition token before OCR. A later host
                 # token does not establish freshness for this already-acquired
@@ -622,11 +668,13 @@ class EchoWorkshopOverlayTask(TriggerTask):
         tier_colors = (
             reference.tier_colors + analysis.tier_colors if paired else analysis.tier_colors
         )
+        row_scores = reference.row_scores + analysis.row_scores if paired else analysis.row_scores
         self.painter.update(
             rectangles,
             summary,
             tier_labels,
             tier_colors,
+            row_scores,
             layout='comparison' if analysis.comparison else analysis.layout,
             viewport=viewport,
         )
@@ -647,6 +695,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
         if self._destroyed:
             return
         self._destroyed = True
+        self._stop_score_loop()
         settings = self._settings_task()
         runtime = getattr(settings, 'runtime', None)
         if runtime is not None and not runtime._closed:
