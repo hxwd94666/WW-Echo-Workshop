@@ -13,6 +13,12 @@ from .capture_commands import CaptureCommands
 
 
 class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
+    def on_main_window(self, window):
+        """Host hook: attach the embedded page before the first window show."""
+        from .assistant_tab import attach_echo_assistant
+
+        return attach_echo_assistant(window)
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = '声骸工坊'
