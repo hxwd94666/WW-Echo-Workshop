@@ -1,0 +1,2 @@
+# 资源清单记录字节哈希，禁止换行归一化以保持跨平台一致。
+src/echo_workshop/resources/builtin/*.json -text
