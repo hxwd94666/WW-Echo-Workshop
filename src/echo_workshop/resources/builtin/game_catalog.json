@@ -1,0 +1,2978 @@
+{
+  "source": "https://static.nanoka.cc",
+  "release": "3.7",
+  "characters": {
+    "1102": {
+      "name": "散华",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_7_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_7_UI.webp"
+      ]
+    },
+    "1103": {
+      "name": "白芷",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_6_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_6_UI.webp"
+      ]
+    },
+    "1104": {
+      "name": "凌阳",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_14_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_14_UI.webp"
+      ]
+    },
+    "1105": {
+      "name": "折枝",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_27_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_27_UI.webp"
+      ]
+    },
+    "1106": {
+      "name": "釉瑚",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_31_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_31_UI.webp"
+      ]
+    },
+    "1107": {
+      "name": "珂莱塔",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_32_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_32_UI.webp"
+      ]
+    },
+    "1108": {
+      "name": "绯雪",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_67_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_67_UI.webp"
+      ]
+    },
+    "1109": {
+      "name": "洛瑟菈",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_66_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_66_UI.webp"
+      ]
+    },
+    "1110": {
+      "name": "穗穗",
+      "element": "冷凝",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_71_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_71_UI.webp"
+      ]
+    },
+    "1202": {
+      "name": "炽霞",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_2_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_2_UI.webp"
+      ]
+    },
+    "1203": {
+      "name": "安可",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_8_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_8_UI.webp"
+      ]
+    },
+    "1204": {
+      "name": "莫特斐",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_13_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_13_UI.webp"
+      ]
+    },
+    "1205": {
+      "name": "长离",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_26_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_26_UI.webp"
+      ]
+    },
+    "1206": {
+      "name": "布兰特",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_44_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_44_UI.webp"
+      ]
+    },
+    "1207": {
+      "name": "露帕",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_46_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_46_UI.webp"
+      ]
+    },
+    "1208": {
+      "name": "嘉贝莉娜",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_55_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_55_UI.webp"
+      ]
+    },
+    "1209": {
+      "name": "莫宁",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_61_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_61_UI.webp"
+      ]
+    },
+    "1210": {
+      "name": "爱弥斯",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_53_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_53_UI.webp"
+      ]
+    },
+    "1211": {
+      "name": "达妮娅",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_64_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_64_UI.webp"
+      ]
+    },
+    "1212": {
+      "name": "景燃",
+      "element": "热熔",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_74_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_74_UI.webp"
+      ]
+    },
+    "1301": {
+      "name": "卡卡罗",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_18_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_18_UI.webp"
+      ]
+    },
+    "1302": {
+      "name": "吟霖",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_17_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_17_UI.webp"
+      ]
+    },
+    "1303": {
+      "name": "渊武",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_15_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_15_UI.webp"
+      ]
+    },
+    "1304": {
+      "name": "今汐",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_24_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_24_UI.webp"
+      ]
+    },
+    "1305": {
+      "name": "相里要",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_25_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_25_UI.webp"
+      ]
+    },
+    "1306": {
+      "name": "奥古斯塔",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_51_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_51_UI.webp"
+      ]
+    },
+    "1307": {
+      "name": "卜灵",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_58_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_58_UI.webp"
+      ]
+    },
+    "1308": {
+      "name": "丽贝卡",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_69_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_69_UI.webp"
+      ]
+    },
+    "1309": {
+      "name": "漂泊者·导电",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp"
+      ]
+    },
+    "1310": {
+      "name": "漂泊者·导电",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp"
+      ]
+    },
+    "1311": {
+      "name": "心",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_75_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_75_UI.webp"
+      ]
+    },
+    "1312": {
+      "name": "锁暝",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_76_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_76_UI.webp"
+      ]
+    },
+    "1402": {
+      "name": "秧秧",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_1_UI.webp"
+      ]
+    },
+    "1403": {
+      "name": "秋水",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_12_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_12_UI.webp"
+      ]
+    },
+    "1404": {
+      "name": "忌炎",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_11_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_11_UI.webp"
+      ]
+    },
+    "1405": {
+      "name": "鉴心",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_23_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_23_UI.webp"
+      ]
+    },
+    "1406": {
+      "name": "漂泊者·气动",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp"
+      ]
+    },
+    "1407": {
+      "name": "夏空",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_37_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_37_UI.webp"
+      ]
+    },
+    "1408": {
+      "name": "漂泊者·气动",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp"
+      ]
+    },
+    "1409": {
+      "name": "卡提希娅",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_40_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_40_UI.webp"
+      ]
+    },
+    "1410": {
+      "name": "尤诺",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_48_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_48_UI.webp"
+      ]
+    },
+    "1411": {
+      "name": "仇远",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_56_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_56_UI.webp"
+      ]
+    },
+    "1412": {
+      "name": "西格莉卡",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_65_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_65_UI.webp"
+      ]
+    },
+    "1413": {
+      "name": "清宵",
+      "element": "气动",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_73_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_73_UI.webp"
+      ]
+    },
+    "1501": {
+      "name": "漂泊者·衍射",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp"
+      ]
+    },
+    "1502": {
+      "name": "漂泊者·衍射",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp"
+      ]
+    },
+    "1503": {
+      "name": "维里奈",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_3_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_3_UI.webp"
+      ]
+    },
+    "1504": {
+      "name": "灯灯",
+      "element": "导电",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_30_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_30_UI.webp"
+      ]
+    },
+    "1505": {
+      "name": "守岸人",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_28_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_28_UI.webp"
+      ]
+    },
+    "1506": {
+      "name": "菲比",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_45_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_45_UI.webp"
+      ]
+    },
+    "1507": {
+      "name": "赞妮",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_38_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_38_UI.webp"
+      ]
+    },
+    "1508": {
+      "name": "千咲",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_57_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_57_UI.webp"
+      ]
+    },
+    "1509": {
+      "name": "琳奈",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_60_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_60_UI.webp"
+      ]
+    },
+    "1510": {
+      "name": "陆·赫斯",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_54_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_54_UI.webp"
+      ]
+    },
+    "1511": {
+      "name": "露西",
+      "element": "衍射",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_68_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_68_UI.webp"
+      ]
+    },
+    "1601": {
+      "name": "桃祈",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_9_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_9_UI.webp"
+      ]
+    },
+    "1602": {
+      "name": "丹瑾",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_10_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_10_UI.webp"
+      ]
+    },
+    "1603": {
+      "name": "椿",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_29_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_29_UI.webp"
+      ]
+    },
+    "1604": {
+      "name": "漂泊者·湮灭",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_5_UI.webp"
+      ]
+    },
+    "1605": {
+      "name": "漂泊者·湮灭",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_4_UI.webp"
+      ]
+    },
+    "1606": {
+      "name": "洛可可",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_33_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_33_UI.webp"
+      ]
+    },
+    "1607": {
+      "name": "坎特蕾拉",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_34_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_34_UI.webp"
+      ]
+    },
+    "1608": {
+      "name": "弗洛洛",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_41_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_41_UI.webp"
+      ]
+    },
+    "1610": {
+      "name": "秧秧·玄翎",
+      "element": "湮灭",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_70_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRoleHead256/T_IconRoleHead256_70_UI.webp"
+      ]
+    }
+  },
+  "echoes": {
+    "nanoka:390070051": {
+      "name": "先锋幼岩",
+      "sets": [
+        "3",
+        "7",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_011_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_011_UI.webp"
+      ]
+    },
+    "nanoka:390070052": {
+      "name": "裂变幼岩",
+      "sets": [
+        "3",
+        "7",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_021_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_021_UI.webp"
+      ]
+    },
+    "nanoka:390070053": {
+      "name": "惊蛰猎手",
+      "sets": [
+        "2",
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_031_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_031_UI.webp"
+      ]
+    },
+    "nanoka:390070064": {
+      "name": "鸣泣战士",
+      "sets": [
+        "2",
+        "3",
+        "4"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_041_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_041_UI.webp"
+      ]
+    },
+    "nanoka:390070065": {
+      "name": "审判战士",
+      "sets": [
+        "5",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_051_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_051_UI.webp"
+      ]
+    },
+    "nanoka:390070066": {
+      "name": "咔嚓嚓",
+      "sets": [
+        "2",
+        "7",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_061_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_061_UI.webp"
+      ]
+    },
+    "nanoka:390070067": {
+      "name": "阿嗞嗞",
+      "sets": [
+        "5",
+        "8",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_071_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_071_UI.webp"
+      ]
+    },
+    "nanoka:390070068": {
+      "name": "呼咻咻",
+      "sets": [
+        "4",
+        "7",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_081_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_081_UI.webp"
+      ]
+    },
+    "nanoka:390070069": {
+      "name": "呜咔咔",
+      "sets": [
+        "6",
+        "7",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_091_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_091_UI.webp"
+      ]
+    },
+    "nanoka:390070070": {
+      "name": "破霜猎手",
+      "sets": [
+        "1",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_101_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_101_UI.webp"
+      ]
+    },
+    "nanoka:390070071": {
+      "name": "巡徊猎手",
+      "sets": [
+        "3",
+        "4"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_231_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_231_UI.webp"
+      ]
+    },
+    "nanoka:390070074": {
+      "name": "游弋蝶",
+      "sets": [
+        "5",
+        "7",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_251_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_251_UI.webp"
+      ]
+    },
+    "nanoka:390070075": {
+      "name": "碎獠猪",
+      "sets": [
+        "1",
+        "4",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_261_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_261_UI.webp"
+      ]
+    },
+    "nanoka:390070076": {
+      "name": "咕咕河豚",
+      "sets": [
+        "1",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_111_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_111_UI.webp"
+      ]
+    },
+    "nanoka:390070077": {
+      "name": "遁地鼠",
+      "sets": [
+        "1",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_271_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_271_UI.webp"
+      ]
+    },
+    "nanoka:390070078": {
+      "name": "绿熔蜥（稚形）",
+      "sets": [
+        "2",
+        "3",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_281_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_281_UI.webp"
+      ]
+    },
+    "nanoka:390070079": {
+      "name": "刺玫菇（稚形）",
+      "sets": [
+        "4",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_301_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_301_UI.webp"
+      ]
+    },
+    "nanoka:390070100": {
+      "name": "火鬃狼",
+      "sets": [
+        "2",
+        "7"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_980_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_980_UI.webp"
+      ]
+    },
+    "nanoka:390070105": {
+      "name": "寒霜陆龟",
+      "sets": [
+        "1",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_969_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_969_UI.webp"
+      ]
+    },
+    "nanoka:390077004": {
+      "name": "紫羽鹭",
+      "sets": [
+        "2",
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_121_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_121_UI.webp"
+      ]
+    },
+    "nanoka:390077005": {
+      "name": "青羽鹭",
+      "sets": [
+        "4",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_131_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_131_UI.webp"
+      ]
+    },
+    "nanoka:390077012": {
+      "name": "热熔棱镜",
+      "sets": [
+        "1",
+        "2",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_151_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_151_UI.webp"
+      ]
+    },
+    "nanoka:390077013": {
+      "name": "冷凝棱镜",
+      "sets": [
+        "1",
+        "6",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_141_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_141_UI.webp"
+      ]
+    },
+    "nanoka:390077016": {
+      "name": "衍射棱镜",
+      "sets": [
+        "2",
+        "3",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_161_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_161_UI.webp"
+      ]
+    },
+    "nanoka:390077017": {
+      "name": "湮灭棱镜",
+      "sets": [
+        "3",
+        "5",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_171_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_171_UI.webp"
+      ]
+    },
+    "nanoka:390077021": {
+      "name": "坚岩斗士",
+      "sets": [
+        "7",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_181_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_181_UI.webp"
+      ]
+    },
+    "nanoka:390077022": {
+      "name": "奏谕乐师",
+      "sets": [
+        "3",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_191_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_191_UI.webp"
+      ]
+    },
+    "nanoka:390077023": {
+      "name": "振铎乐师",
+      "sets": [
+        "1",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_201_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_201_UI.webp"
+      ]
+    },
+    "nanoka:390077024": {
+      "name": "磐石守卫",
+      "sets": [
+        "5",
+        "7"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_241_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_241_UI.webp"
+      ]
+    },
+    "nanoka:390077025": {
+      "name": "冥渊守卫",
+      "sets": [
+        "7",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_211_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_211_UI.webp"
+      ]
+    },
+    "nanoka:390077028": {
+      "name": "绿熔蜥",
+      "sets": [
+        "2",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_291_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_291_UI.webp"
+      ]
+    },
+    "nanoka:390077029": {
+      "name": "刺玫菇",
+      "sets": [
+        "1",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_311_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_311_UI.webp"
+      ]
+    },
+    "nanoka:390077033": {
+      "name": "暗鬃狼",
+      "sets": [
+        "2",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_984_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_984_UI.webp"
+      ]
+    },
+    "nanoka:390077038": {
+      "name": "箭簇熊",
+      "sets": [
+        "8",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_986_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_986_UI.webp"
+      ]
+    },
+    "nanoka:390080003": {
+      "name": "云闪之鳞",
+      "sets": [
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_222_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_222_UI.webp"
+      ]
+    },
+    "nanoka:390080005": {
+      "name": "鸣钟之龟",
+      "sets": [
+        "7",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_992_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_992_UI.webp"
+      ]
+    },
+    "nanoka:390080007": {
+      "name": "燎照之骑",
+      "sets": [
+        "2"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_321_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_321_UI.webp"
+      ]
+    },
+    "nanoka:6000038": {
+      "name": "幼猿",
+      "sets": [
+        "4",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_988_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_988_UI.webp"
+      ]
+    },
+    "nanoka:6000039": {
+      "name": "朔雷之鳞",
+      "sets": [
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_221_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_221_UI.webp"
+      ]
+    },
+    "nanoka:6000040": {
+      "name": "戏猿",
+      "sets": [
+        "4",
+        "7"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_989_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_989_UI.webp"
+      ]
+    },
+    "nanoka:6000041": {
+      "name": "晶螯蝎",
+      "sets": [
+        "8",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_987_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_987_UI.webp"
+      ]
+    },
+    "nanoka:6000042": {
+      "name": "无冠者",
+      "sets": [
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_9991_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_9991_UI.webp"
+      ]
+    },
+    "nanoka:6000043": {
+      "name": "飞廉之猩",
+      "sets": [
+        "4"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_996_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_996_UI.webp"
+      ]
+    },
+    "nanoka:6000044": {
+      "name": "辉萤军势",
+      "sets": [
+        "1"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_994_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_994_UI.webp"
+      ]
+    },
+    "nanoka:6000045": {
+      "name": "哀声鸷",
+      "sets": [
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_997_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_997_UI.webp"
+      ]
+    },
+    "nanoka:6000046": {
+      "name": "车刃镰",
+      "sets": [
+        "4",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_970_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_970_UI.webp"
+      ]
+    },
+    "nanoka:6000047": {
+      "name": "啾啾河豚",
+      "sets": [
+        "4",
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_971_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterGoods/T_IconMonsterGoods_971_UI.webp"
+      ]
+    },
+    "nanoka:6000048": {
+      "name": "聚械机偶",
+      "sets": [
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_993_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_993_UI.webp"
+      ]
+    },
+    "nanoka:6000049": {
+      "name": "巡哨机傀",
+      "sets": [
+        "1",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1003_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1003_UI.webp"
+      ]
+    },
+    "nanoka:6000050": {
+      "name": "通行灯偶",
+      "sets": [
+        "2",
+        "3",
+        "4"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1000_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1000_UI.webp"
+      ]
+    },
+    "nanoka:6000051": {
+      "name": "叮咚咚",
+      "sets": [
+        "1",
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1001_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1001_UI.webp"
+      ]
+    },
+    "nanoka:6000052": {
+      "name": "无常凶鹭",
+      "sets": [
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_995_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_995_UI.webp"
+      ]
+    },
+    "nanoka:6000053": {
+      "name": "无妄者",
+      "sets": [
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_UI.webp"
+      ]
+    },
+    "nanoka:6000054": {
+      "name": "融火虫",
+      "sets": [
+        "2",
+        "9"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_326_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_326_UI.webp"
+      ]
+    },
+    "nanoka:6000055": {
+      "name": "侏侏鸵",
+      "sets": [
+        "4",
+        "7"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_330_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_330_UI.webp"
+      ]
+    },
+    "nanoka:6000056": {
+      "name": "雪鬃狼",
+      "sets": [
+        "1",
+        "8"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_985_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_985_UI.webp"
+      ]
+    },
+    "nanoka:6000057": {
+      "name": "游鳞机枢",
+      "sets": [
+        "1",
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_UI.webp"
+      ]
+    },
+    "nanoka:6000058": {
+      "name": "踏光兽",
+      "sets": [
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_328_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_328_UI.webp"
+      ]
+    },
+    "nanoka:6000059": {
+      "name": "角",
+      "sets": [
+        "5"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_327_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_327_UI.webp"
+      ]
+    },
+    "nanoka:6000060": {
+      "name": "无归的谬误",
+      "sets": [
+        "7"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_350_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_350_UI.webp"
+      ]
+    },
+    "nanoka:6000061": {
+      "name": "风鬃狼",
+      "sets": [
+        "10",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31037_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31037_UI.webp"
+      ]
+    },
+    "nanoka:6000062": {
+      "name": "雷鬃狼",
+      "sets": [
+        "12",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31038_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31038_UI.webp"
+      ]
+    },
+    "nanoka:6000063": {
+      "name": "霜鬃狼",
+      "sets": [
+        "11",
+        "12"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31039_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31039_UI.webp"
+      ]
+    },
+    "nanoka:6000064": {
+      "name": "浮灵偶·海德",
+      "sets": [
+        "11",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31040_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31040_UI.webp"
+      ]
+    },
+    "nanoka:6000065": {
+      "name": "浮灵偶·蕾弗",
+      "sets": [
+        "10",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31041_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31041_UI.webp"
+      ]
+    },
+    "nanoka:6000066": {
+      "name": "浮灵偶·莱特",
+      "sets": [
+        "10",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31042_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31042_UI.webp"
+      ]
+    },
+    "nanoka:6000067": {
+      "name": "幽翎火",
+      "sets": [
+        "11",
+        "12",
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31043_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31043_UI.webp"
+      ]
+    },
+    "nanoka:6000068": {
+      "name": "云海妖精",
+      "sets": [
+        "12",
+        "13",
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31044_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31044_UI.webp"
+      ]
+    },
+    "nanoka:6000069": {
+      "name": "魔术先生",
+      "sets": [
+        "10",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31045_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31045_UI.webp"
+      ]
+    },
+    "nanoka:6000070": {
+      "name": "寂寞小姐",
+      "sets": [
+        "10",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31046_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31046_UI.webp"
+      ]
+    },
+    "nanoka:6000071": {
+      "name": "工头布偶",
+      "sets": [
+        "11",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31047_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31047_UI.webp"
+      ]
+    },
+    "nanoka:6000072": {
+      "name": "欺诈奇藏",
+      "sets": [
+        "10",
+        "12",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31048_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31048_UI.webp"
+      ]
+    },
+    "nanoka:6000073": {
+      "name": "巡游骑士",
+      "sets": [
+        "10",
+        "12"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32022_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32022_UI.webp"
+      ]
+    },
+    "nanoka:6000074": {
+      "name": "幻昼骑士",
+      "sets": [
+        "11",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32023_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32023_UI.webp"
+      ]
+    },
+    "nanoka:6000075": {
+      "name": "暗夜骑士",
+      "sets": [
+        "12",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32024_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32024_UI.webp"
+      ]
+    },
+    "nanoka:6000076": {
+      "name": "毒冠贵族",
+      "sets": [
+        "10",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32025_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32025_UI.webp"
+      ]
+    },
+    "nanoka:6000077": {
+      "name": "持刃贵族",
+      "sets": [
+        "12",
+        "14",
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32026_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32026_UI.webp"
+      ]
+    },
+    "nanoka:6000078": {
+      "name": "凝水贵族",
+      "sets": [
+        "10",
+        "11"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32027_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32027_UI.webp"
+      ]
+    },
+    "nanoka:6000079": {
+      "name": "浮灵偶",
+      "sets": [
+        "13",
+        "14",
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32028_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32028_UI.webp"
+      ]
+    },
+    "nanoka:6000080": {
+      "name": "琉璃刀伶",
+      "sets": [
+        "11",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32029_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32029_UI.webp"
+      ]
+    },
+    "nanoka:6000081": {
+      "name": "巨布偶",
+      "sets": [
+        "10",
+        "12"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32030_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32030_UI.webp"
+      ]
+    },
+    "nanoka:6000082": {
+      "name": "罗蕾莱",
+      "sets": [
+        "12"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33011_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33011_UI.webp"
+      ]
+    },
+    "nanoka:6000083": {
+      "name": "异构武装",
+      "sets": [
+        "10"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33012_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33012_UI.webp"
+      ]
+    },
+    "nanoka:6000084": {
+      "name": "叹息古龙",
+      "sets": [
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33013_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33013_UI.webp"
+      ]
+    },
+    "nanoka:6000085": {
+      "name": "赫卡忒",
+      "sets": [
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34010_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34010_1_UI.webp"
+      ]
+    },
+    "nanoka:6000086": {
+      "name": "梦魇·飞廉之猩",
+      "sets": [
+        "4"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33014_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33014_UI.webp"
+      ]
+    },
+    "nanoka:6000087": {
+      "name": "梦魇·无常凶鹭",
+      "sets": [
+        "12"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33015_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33015_UI.webp"
+      ]
+    },
+    "nanoka:6000088": {
+      "name": "梦魇·云闪之鳞",
+      "sets": [
+        "3"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33016_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33016_UI.webp"
+      ]
+    },
+    "nanoka:6000089": {
+      "name": "梦魇·朔雷之鳞",
+      "sets": [
+        "3",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33017_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33017_UI.webp"
+      ]
+    },
+    "nanoka:6000090": {
+      "name": "梦魇·无冠者",
+      "sets": [
+        "6"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33018_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33018_UI.webp"
+      ]
+    },
+    "nanoka:6000091": {
+      "name": "梦魇·燎照之骑",
+      "sets": [
+        "2"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33019_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33019_UI.webp"
+      ]
+    },
+    "nanoka:6000092": {
+      "name": "梦魇·哀声鸷",
+      "sets": [
+        "11"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33020_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_YZ_33020_UI.webp"
+      ]
+    },
+    "nanoka:6000093": {
+      "name": "愚金幼岩",
+      "sets": [
+        "10",
+        "11",
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31049_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31049_UI.webp"
+      ]
+    },
+    "nanoka:6000094": {
+      "name": "釉变幼岩",
+      "sets": [
+        "13",
+        "14",
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31050_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31050_UI.webp"
+      ]
+    },
+    "nanoka:6000095": {
+      "name": "气动棱镜",
+      "sets": [
+        "11",
+        "14"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31051_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31051_UI.webp"
+      ]
+    },
+    "nanoka:6000096": {
+      "name": "重塑雕像的拳砾",
+      "sets": [
+        "11",
+        "16",
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32031_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32031_UI.webp"
+      ]
+    },
+    "nanoka:6000097": {
+      "name": "飓力熊",
+      "sets": [
+        "14",
+        "16",
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32032_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32032_UI.webp"
+      ]
+    },
+    "nanoka:6000098": {
+      "name": "卫冕节使",
+      "sets": [
+        "12",
+        "16",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31052_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31052_UI.webp"
+      ]
+    },
+    "nanoka:6000099": {
+      "name": "赦罪节使",
+      "sets": [
+        "11",
+        "16",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31053_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31053_UI.webp"
+      ]
+    },
+    "nanoka:6000100": {
+      "name": "慈悲节使",
+      "sets": [
+        "16",
+        "17"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31054_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31054_UI.webp"
+      ]
+    },
+    "nanoka:6000101": {
+      "name": "小翼龙·气动",
+      "sets": [
+        "14",
+        "16",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31055_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31055_UI.webp"
+      ]
+    },
+    "nanoka:6000102": {
+      "name": "小翼龙·导电",
+      "sets": [
+        "12",
+        "16",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31056_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31056_UI.webp"
+      ]
+    },
+    "nanoka:6000103": {
+      "name": "小翼龙·冷凝",
+      "sets": [
+        "16",
+        "17"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31057_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31057_UI.webp"
+      ]
+    },
+    "nanoka:6000104": {
+      "name": "荣光节使",
+      "sets": [
+        "11",
+        "16",
+        "17"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32033_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32033_UI.webp"
+      ]
+    },
+    "nanoka:6000105": {
+      "name": "梦魇·辉萤军势",
+      "sets": [
+        "10",
+        "13"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34013_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34013_UI.webp"
+      ]
+    },
+    "nanoka:6000106": {
+      "name": "共鸣回响·芙露德莉斯",
+      "sets": [
+        "16",
+        "17"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_1_UI.webp"
+      ]
+    },
+    "nanoka:6000107": {
+      "name": "小翼龙·热熔",
+      "sets": [
+        "17",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31058_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31058_UI.webp"
+      ]
+    },
+    "nanoka:6000108": {
+      "name": "小翼龙·衍射",
+      "sets": [
+        "17",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31059_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31059_UI.webp"
+      ]
+    },
+    "nanoka:6000109": {
+      "name": "小翼龙·湮灭",
+      "sets": [
+        "17",
+        "18",
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31060_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31060_UI.webp"
+      ]
+    },
+    "nanoka:6000110": {
+      "name": "苦信者的作俑",
+      "sets": [
+        "16",
+        "17",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31061_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31061_UI.webp"
+      ]
+    },
+    "nanoka:6000111": {
+      "name": "传道者的遗形",
+      "sets": [
+        "17",
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32034_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32034_UI.webp"
+      ]
+    },
+    "nanoka:6000112": {
+      "name": "角鳄",
+      "sets": [
+        "17",
+        "18",
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31062_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31062_UI.webp"
+      ]
+    },
+    "nanoka:6000113": {
+      "name": "梦魇·凯尔匹",
+      "sets": [
+        "16",
+        "17"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.webp"
+      ]
+    },
+    "nanoka:6000114": {
+      "name": "荣耀狮像",
+      "sets": [
+        "18"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33022_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33022_UI.webp"
+      ]
+    },
+    "nanoka:6000115": {
+      "name": "梦魇·赫卡忒",
+      "sets": [
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34016_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34016_UI.webp"
+      ]
+    },
+    "nanoka:6000116": {
+      "name": "共鸣回响·芬莱克",
+      "sets": [
+        "19",
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34015_2_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34015_2_UI.webp"
+      ]
+    },
+    "nanoka:6000117": {
+      "name": "梦魇·审判战士",
+      "sets": [
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31063_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31063_UI.webp"
+      ]
+    },
+    "nanoka:6000118": {
+      "name": "梦魇·破霜猎手",
+      "sets": [
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31064_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31064_UI.webp"
+      ]
+    },
+    "nanoka:6000119": {
+      "name": "梦魇·振铎乐师",
+      "sets": [
+        "19"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32043_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32043_UI.webp"
+      ]
+    },
+    "nanoka:6000120": {
+      "name": "蚀脊龙",
+      "sets": [
+        "18",
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32044_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32044_UI.webp"
+      ]
+    },
+    "nanoka:6000121": {
+      "name": "伪作的神王",
+      "sets": [
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34017_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34017_UI.webp"
+      ]
+    },
+    "nanoka:6000160": {
+      "name": "海之女",
+      "sets": [
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34018_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34018_UI.webp"
+      ]
+    },
+    "nanoka:6000161": {
+      "name": "梦魇·紫羽鹭",
+      "sets": [
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32045_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32045_UI.webp"
+      ]
+    },
+    "nanoka:6000162": {
+      "name": "梦魇·青羽鹭",
+      "sets": [
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32046_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32046_UI.webp"
+      ]
+    },
+    "nanoka:6000163": {
+      "name": "梦魇·惊蛰猎手",
+      "sets": [
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31065_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31065_UI.webp"
+      ]
+    },
+    "nanoka:6000164": {
+      "name": "梦魇·巡徊猎手",
+      "sets": [
+        "20"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31066_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31066_UI.webp"
+      ]
+    },
+    "nanoka:6000165": {
+      "name": "梦魇·咕咕河豚",
+      "sets": [
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31067_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31067_UI.webp"
+      ]
+    },
+    "nanoka:6000166": {
+      "name": "梦魇·啾啾河豚",
+      "sets": [
+        "21"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31068_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31068_UI.webp"
+      ]
+    },
+    "nanoka:6000167": {
+      "name": "共鸣回响·鸣式·利维亚坦",
+      "sets": [
+        "22",
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34020_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34020_1_UI.webp"
+      ]
+    },
+    "nanoka:6000168": {
+      "name": "梦魇·绿熔蜥",
+      "sets": [
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32047_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32047_UI.webp"
+      ]
+    },
+    "nanoka:6000169": {
+      "name": "梦魇·绿熔蜥（稚形）",
+      "sets": [
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31072_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31072_UI.webp"
+      ]
+    },
+    "nanoka:6000170": {
+      "name": "梦魇·刺玫菇（稚形）",
+      "sets": [
+        "22"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31073_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31073_UI.webp"
+      ]
+    },
+    "nanoka:6000171": {
+      "name": "梦魇·呜咔咔",
+      "sets": [
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31075_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31075_UI.webp"
+      ]
+    },
+    "nanoka:6000172": {
+      "name": "梦魇·侏侏鸵",
+      "sets": [
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31076_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31076_UI.webp"
+      ]
+    },
+    "nanoka:6000173": {
+      "name": "梦魇·刺玫菇",
+      "sets": [
+        "23"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32048_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32048_UI.webp"
+      ]
+    },
+    "nanoka:6000174": {
+      "name": "颤栗战士",
+      "sets": [
+        "25",
+        "28",
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31074_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31074_UI.webp"
+      ]
+    },
+    "nanoka:6000175": {
+      "name": "莳植熊蜂",
+      "sets": [
+        "24",
+        "26",
+        "29",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31077_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31077_UI.webp"
+      ]
+    },
+    "nanoka:6000176": {
+      "name": "矿岩熊蜂",
+      "sets": [
+        "25",
+        "26",
+        "29",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31078_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31078_UI.webp"
+      ]
+    },
+    "nanoka:6000177": {
+      "name": "岩蛛S4型",
+      "sets": [
+        "24",
+        "25",
+        "27"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31079_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31079_UI.webp"
+      ]
+    },
+    "nanoka:6000178": {
+      "name": "噼啪啪",
+      "sets": [
+        "24",
+        "26",
+        "28",
+        "29"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31082_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31082_UI.webp"
+      ]
+    },
+    "nanoka:6000179": {
+      "name": "双极·星升辉铳",
+      "sets": [
+        "26",
+        "28"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32049_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32049_UI.webp"
+      ]
+    },
+    "nanoka:6000180": {
+      "name": "双极·渊陨重锋",
+      "sets": [
+        "26",
+        "27",
+        "29"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32050_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32050_UI.webp"
+      ]
+    },
+    "nanoka:6000181": {
+      "name": "莳植机麋",
+      "sets": [
+        "26",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32051_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32051_UI.webp"
+      ]
+    },
+    "nanoka:6000182": {
+      "name": "矿岩机麋",
+      "sets": [
+        "24",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32052_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32052_UI.webp"
+      ]
+    },
+    "nanoka:6000183": {
+      "name": "重工铁蹄",
+      "sets": [
+        "24",
+        "30",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32053_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32053_UI.webp"
+      ]
+    },
+    "nanoka:6000184": {
+      "name": "探隧重机",
+      "sets": [
+        "25",
+        "28",
+        "29"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32054_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32054_UI.webp"
+      ]
+    },
+    "nanoka:6000185": {
+      "name": "锯袭铁影",
+      "sets": [
+        "24",
+        "25",
+        "29"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32055_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32055_UI.webp"
+      ]
+    },
+    "nanoka:6000186": {
+      "name": "隐迹铁影",
+      "sets": [
+        "24",
+        "25",
+        "29"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32056_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32056_UI.webp"
+      ]
+    },
+    "nanoka:6000187": {
+      "name": "霜鳞蜃甲",
+      "sets": [
+        "25",
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32057_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32057_UI.webp"
+      ]
+    },
+    "nanoka:6000188": {
+      "name": "风鳞蜃甲",
+      "sets": [
+        "26",
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32058_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32058_UI.webp"
+      ]
+    },
+    "nanoka:6000189": {
+      "name": "海维夏",
+      "sets": [
+        "24",
+        "26"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.webp"
+      ]
+    },
+    "nanoka:6000190": {
+      "name": "炉芯机骸",
+      "sets": [
+        "25",
+        "28"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.webp"
+      ]
+    },
+    "nanoka:6000191": {
+      "name": "辛吉勒姆",
+      "sets": [
+        "27"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34025_0_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34025_0_UI.webp"
+      ]
+    },
+    "nanoka:6000192": {
+      "name": "无铭探索者",
+      "sets": [
+        "29",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34026_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34026_UI.webp"
+      ]
+    },
+    "nanoka:6000193": {
+      "name": "冠顶械隼",
+      "sets": [
+        "27",
+        "28"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32059_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32059_UI.webp"
+      ]
+    },
+    "nanoka:6000194": {
+      "name": "共鸣回响·冠顶苍隼",
+      "sets": [
+        "27",
+        "28"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.webp"
+      ]
+    },
+    "nanoka:6000195": {
+      "name": "格洛犸图",
+      "sets": [
+        "27",
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32061_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32061_UI.webp"
+      ]
+    },
+    "nanoka:6000196": {
+      "name": "冰盈舞者",
+      "sets": [
+        "27",
+        "30",
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31083_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31083_UI.webp"
+      ]
+    },
+    "nanoka:6000197": {
+      "name": "影烁者",
+      "sets": [
+        "27",
+        "28",
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31084_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31084_UI.webp"
+      ]
+    },
+    "nanoka:6000198": {
+      "name": "迷胧幻蛾",
+      "sets": [
+        "31"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32066_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32066_UI.webp"
+      ]
+    },
+    "nanoka:6000199": {
+      "name": "共鸣回响·鸣式·虚造神型",
+      "sets": [
+        "30"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.webp"
+      ]
+    },
+    "nanoka:6000200": {
+      "name": "共鸣回响·达妮娅",
+      "sets": [
+        "28"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34028_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34028_1_UI.webp"
+      ]
+    },
+    "nanoka:6000201": {
+      "name": "共鸣回响·梦魇亚当·重锤",
+      "sets": [
+        "32"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34029_1_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34029_1_UI.webp"
+      ]
+    },
+    "nanoka:6000202": {
+      "name": "融躯战士",
+      "sets": [
+        "33"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31090_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31090_UI.webp"
+      ]
+    },
+    "nanoka:6000203": {
+      "name": "瓷庭候",
+      "sets": [
+        "35",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31091_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31091_UI.webp"
+      ]
+    },
+    "nanoka:6000204": {
+      "name": "石庭候",
+      "sets": [
+        "35",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31092_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31092_UI.webp"
+      ]
+    },
+    "nanoka:6000205": {
+      "name": "金庭候",
+      "sets": [
+        "34",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31093_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31093_UI.webp"
+      ]
+    },
+    "nanoka:6000206": {
+      "name": "心傀·喜",
+      "sets": [
+        "33",
+        "36"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31094_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31094_UI.webp"
+      ]
+    },
+    "nanoka:6000207": {
+      "name": "心傀·怒",
+      "sets": [
+        "34",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31095_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31095_UI.webp"
+      ]
+    },
+    "nanoka:6000208": {
+      "name": "心傀·忧",
+      "sets": [
+        "34",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31096_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31096_UI.webp"
+      ]
+    },
+    "nanoka:6000209": {
+      "name": "心傀·思",
+      "sets": [
+        "34",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31097_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31097_UI.webp"
+      ]
+    },
+    "nanoka:6000210": {
+      "name": "心傀·悲",
+      "sets": [
+        "35",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31098_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31098_UI.webp"
+      ]
+    },
+    "nanoka:6000211": {
+      "name": "心傀·恐",
+      "sets": [
+        "35",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31099_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31099_UI.webp"
+      ]
+    },
+    "nanoka:6000212": {
+      "name": "霁息兽尊·身",
+      "sets": [
+        "33",
+        "36"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31100_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31100_UI.webp"
+      ]
+    },
+    "nanoka:6000213": {
+      "name": "霁息兽尊·首",
+      "sets": [
+        "33",
+        "36"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31101_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31101_UI.webp"
+      ]
+    },
+    "nanoka:6000214": {
+      "name": "不熄猎手",
+      "sets": [
+        "33"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31102_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31102_UI.webp"
+      ]
+    },
+    "nanoka:6000215": {
+      "name": "霁息兽尊",
+      "sets": [
+        "33",
+        "34",
+        "35"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32067_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32067_UI.webp"
+      ]
+    },
+    "nanoka:6000216": {
+      "name": "封庭械囿",
+      "sets": [
+        "33",
+        "34",
+        "35"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.webp"
+      ]
+    },
+    "nanoka:6000217": {
+      "name": "万囮牢·朽躯",
+      "sets": [
+        "34",
+        "35"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34030_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34030_UI.webp"
+      ]
+    },
+    "nanoka:6000218": {
+      "name": "千傀重楼",
+      "sets": [
+        "33",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34031_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34031_UI.webp"
+      ]
+    },
+    "nanoka:6000219": {
+      "name": "玉冥蛇",
+      "sets": [
+        "36"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31103_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31103_UI.webp"
+      ]
+    },
+    "nanoka:6000220": {
+      "name": "巡霄枪卫",
+      "sets": [
+        "37",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32069_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32069_UI.webp"
+      ]
+    },
+    "nanoka:6000221": {
+      "name": "天傀劫煞",
+      "sets": [
+        "34",
+        "35"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34032_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34032_UI.webp"
+      ]
+    },
+    "nanoka:6000222": {
+      "name": "奇绽傀",
+      "sets": [
+        "36"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31104_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31104_UI.webp"
+      ]
+    },
+    "nanoka:6000223": {
+      "name": "解形煞",
+      "sets": [
+        "36",
+        "38"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32070_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32070_UI.webp"
+      ]
+    },
+    "nanoka:6000224": {
+      "name": "绝息魄",
+      "sets": [
+        "36",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32071_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32071_UI.webp"
+      ]
+    },
+    "nanoka:6000225": {
+      "name": "共鸣回响·天演溯心",
+      "sets": [
+        "36",
+        "37"
+      ],
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34033_2_UI.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34033_2_UI.webp"
+      ]
+    }
+  },
+  "sonatas": {
+    "1": {
+      "name": "凝夜白霜",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
+      ],
+      "tiers": {
+        "2": "冷凝伤害提升10%",
+        "5": "使用普攻或重击时，冷凝伤害提升10%，该效果可叠加三层，持续15秒"
+      }
+    },
+    "2": {
+      "name": "熔山裂谷",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
+      ],
+      "tiers": {
+        "2": "热熔伤害提升10%",
+        "5": "使用共鸣技能时，热熔伤害提升30%，持续15秒"
+      }
+    },
+    "3": {
+      "name": "彻空冥雷",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.webp"
+      ],
+      "tiers": {
+        "2": "导电伤害提升10%",
+        "5": "使用重击或共鸣技能时，各获得一层导电伤害提升15%的效果，该效果可叠加两层，每层各持续15秒"
+      }
+    },
+    "4": {
+      "name": "啸谷长风",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
+      ],
+      "tiers": {
+        "2": "气动伤害提升10%",
+        "5": "使用变奏技能登场时，气动伤害提升30%，持续15秒"
+      }
+    },
+    "5": {
+      "name": "浮星祛暗",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
+      ],
+      "tiers": {
+        "2": "衍射伤害提升10%",
+        "5": "使用变奏技能登场时，衍射伤害提升30%，持续15秒"
+      }
+    },
+    "6": {
+      "name": "沉日劫明",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
+      ],
+      "tiers": {
+        "2": "湮灭伤害提升10%",
+        "5": "使用普攻或重击时，湮灭伤害提升7.5%，该效果可叠加四层，持续15秒"
+      }
+    },
+    "7": {
+      "name": "隐世回光",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp"
+      ],
+      "tiers": {
+        "2": "治疗效果提升10%",
+        "5": "自身为友方提供治疗时，全队共鸣者攻击提升15%，持续30秒"
+      }
+    },
+    "8": {
+      "name": "轻云出月",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCloud.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCloud.webp"
+      ],
+      "tiers": {
+        "2": "共鸣效率提升10%",
+        "5": "使用延奏技能后，下一个登场的共鸣者攻击提升22.5%，持续15秒"
+      }
+    },
+    "9": {
+      "name": "不绝余音",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp"
+      ],
+      "tiers": {
+        "2": "攻击提升10%",
+        "5": "在场时，自身攻击每1.5秒提升5%，该效果最多叠加四层。延奏技能伤害提升60%"
+      }
+    },
+    "10": {
+      "name": "凌冽决断之心",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
+      ],
+      "tiers": {
+        "2": "共鸣技能伤害提升12%",
+        "5": "施放共鸣技能时，自身冷凝伤害提升22.5%，持续15秒；施放共鸣解放时，自身共鸣技能伤害提升18%，持续5秒，可叠加2层。"
+      }
+    },
+    "11": {
+      "name": "此间永驻之光",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp"
+      ],
+      "tiers": {
+        "2": "衍射伤害提升10%",
+        "5": "角色为敌人添加【光噪效应】时，自身暴击提升20%，持续15秒；攻击存在10层【光噪效应】的敌人时，自身衍射伤害加成提升15%，持续15秒。"
+      }
+    },
+    "12": {
+      "name": "幽夜隐匿之帷",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp"
+      ],
+      "tiers": {
+        "2": "湮灭属性伤害提升10%",
+        "5": "角色触发延奏技能离场时，额外对周围敌人造成480%的湮灭伤害，该伤害为延奏技能伤害，并使下一个登场角色湮灭属性伤害加成提升15%，持续15秒。"
+      }
+    },
+    "13": {
+      "name": "高天共奏之曲",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp"
+      ],
+      "tiers": {
+        "2": "共鸣效率提升10%",
+        "5": "当前角色协同攻击造成的伤害提升80%；协同攻击命中敌人且暴击时，队伍中登场角色攻击力提升20%，持续4秒。"
+      }
+    },
+    "14": {
+      "name": "无惧浪涛之勇",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
+      ],
+      "tiers": {
+        "2": "共鸣效率提升10%",
+        "5": "角色攻击提升15%，共鸣效率达到250%后，当前角色全属性伤害提升30%。"
+      }
+    },
+    "16": {
+      "name": "流云逝尽之空",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindError.webp"
+      ],
+      "tiers": {
+        "2": "气动伤害提升10%",
+        "5": "角色为敌人添加【风蚀效应】时，队伍中角色气动伤害提升15%，自身气动伤害额外提升15%，持续20秒。"
+      }
+    },
+    "17": {
+      "name": "愿戴荣光之旅",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
+      ],
+      "tiers": {
+        "2": "气动伤害提升10%",
+        "5": "攻击命中存在【风蚀效应】的敌人时，自身暴击提升10%，气动伤害提升30%，持续10秒。"
+      }
+    },
+    "18": {
+      "name": "奔狼燎原之焰",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
+      ],
+      "tiers": {
+        "2": "热熔伤害提升10%",
+        "5": "施放共鸣解放时，队伍中角色热熔伤害提升15%，自身共鸣解放伤害提升20%，持续35秒。"
+      }
+    },
+    "19": {
+      "name": "失序彼岸之梦",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp"
+      ],
+      "tiers": {
+        "3": "角色共鸣能量为0时，自身暴击率提升20%，声骸技能伤害加成提升35%。"
+      }
+    },
+    "20": {
+      "name": "荣斗铸锋之冠",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp"
+      ],
+      "tiers": {
+        "3": "角色获得护盾时，自身攻击提升6%，暴击伤害提升4%，该效果可叠加5层，持续4秒，每0.5秒可触发一次。"
+      }
+    },
+    "21": {
+      "name": "息界同调之律",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp"
+      ],
+      "tiers": {
+        "3": "角色施放声骸技能时，自身重击伤害加成提升30%，持续4秒；队伍中角色声骸技能伤害加成提升4%，该效果可叠加4层，持续30秒，同名声骸仅可触发1次该效果，效果消失时重置同名声骸记录，4层时施放声骸技能可刷新持续时间。"
+      }
+    },
+    "22": {
+      "name": "焚羽猎魔之影",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp"
+      ],
+      "tiers": {
+        "3": "角色造成声骸技能伤害时，重击伤害的暴击提升20%，持续6秒；造成重击伤害时，声骸技能伤害的暴击提升20%，持续6秒。同时拥有两种效果时，自身热熔伤害提升16%。"
+      }
+    },
+    "23": {
+      "name": "命理崩毁之弦",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp"
+      ],
+      "tiers": {
+        "3": "角色为敌人添加【虚湮效应】时，自身攻击提升20%，共鸣解放伤害加成提升30%，持续5秒。"
+      }
+    },
+    "24": {
+      "name": "逆光跃彩之约",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.webp"
+      ],
+      "tiers": {
+        "2": "衍射伤害提升10%",
+        "5": "角色施放延奏技能后，下一个变奏技能登场的角色攻击提升15%，其每点谐度破坏增幅还会使攻击额外提升0.3%，上限15%，持续15秒，若切换至其他角色则该效果提前结束。"
+      }
+    },
+    "25": {
+      "name": "星构寻辉之环",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.webp"
+      ],
+      "tiers": {
+        "2": "治疗效果提升10%",
+        "5": "为队伍中角色提供治疗时，自身每1%的偏谐值累积效率使队伍中角色攻击提升0.2%，上限25%，持续4秒，同名效果之间不可叠加。"
+      }
+    },
+    "26": {
+      "name": "流金溯真之式",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.webp"
+      ],
+      "tiers": {
+        "2": "衍射伤害提升10%",
+        "5": "角色造成普攻伤害时，自身衍射伤害提升10%，该效果可叠加3层，持续5秒。叠至3层时，施放共鸣解放时，普攻伤害加成提升40%。"
+      }
+    },
+    "27": {
+      "name": "长路启航之星",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp"
+      ],
+      "tiers": {
+        "2": "热熔伤害提升10%",
+        "5": "角色为敌人添加【聚爆效应】或【震谐·偏移】时，自身暴击提升20%，热熔伤害提升20%，持续8秒。"
+      }
+    },
+    "28": {
+      "name": "斑驳粉饰之沫",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.webp"
+      ],
+      "tiers": {
+        "2": "热熔伤害提升10%",
+        "5": "角色为敌人添加【聚爆效应】时，自身获得下述效果：热熔伤害提升10%，持续15秒。持续期间内施放延奏技能后，下一个变奏技能登场的角色热熔伤害提升25%，持续15秒。"
+      }
+    },
+    "29": {
+      "name": "听唤语义之愿",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.webp"
+      ],
+      "tiers": {
+        "2": "气动伤害提升10%",
+        "5": "角色造成声骸技能伤害时，声骸技能伤害的暴击提升20%，自身气动伤害提升15%，持续5秒。"
+      }
+    },
+    "30": {
+      "name": "雪落无声之愿",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp"
+      ],
+      "tiers": {
+        "2": "冷凝伤害提升10%",
+        "5": "角色为敌人添加【霜渐效应】时，冷凝伤害提升10%，持续15秒。自身获得【落雪】效果，持续15秒，该效果每25秒可触发1次。拥有【落雪】效果时：\n·角色造成共鸣解放伤害时，将清除【落雪】效果，使自身暴击提升25%，持续6秒。该效果持续期间角色造成共鸣解放伤害时，将延长4秒的持续时间，每0.5秒可触发1次，每次清除【落雪】后该效果至多触发6次。\n·角色施放延奏技能时，将清除【落雪】效果，使下一个变奏技能登场的角色冷凝伤害提升25%，持续15秒。\n每次清除【落雪】效果时，上述效果仅能同时触发一个。"
+      }
+    },
+    "31": {
+      "name": "剪心辑梦之影",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp"
+      ],
+      "tiers": {
+        "2": "攻击提升10%",
+        "5": "角色为敌人添加【震谐·偏移】或【集谐·偏移】时，队伍中角色谐度破坏增幅提升20点，持续30秒，同名效果之间不可叠加。"
+      }
+    },
+    "32": {
+      "name": "碎梦亡鬼之魇",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAdam.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAdam.webp"
+      ],
+      "tiers": {
+        "1": "角色为敌人添加【骇破·偏移】时，自身普攻伤害加成和重击伤害加成提升35%，持续15秒。"
+      }
+    },
+    "33": {
+      "name": "羽落空尘之歌",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
+      ],
+      "tiers": {
+        "2": "共鸣效率提升10%",
+        "5": "角色为敌人添加【虚湮效应】时，获得【玄翎之羽】：自身暴击提升20%，重击伤害加成提升35%，持续15秒。\n角色为敌人添加【霜渐效应】时，获得【重明之羽】：自身每1%的共鸣效率使队伍中角色攻击提升0.1%，上限25%，持续10秒。"
+      }
+    },
+    "34": {
+      "name": "清邪荡煞之心",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.webp"
+      ],
+      "tiers": {
+        "2": "气动伤害提升10%",
+        "5": "角色为敌人添加【集谐·偏移】时，自身暴击伤害提升20%，气动伤害提升30%，持续15秒。"
+      }
+    },
+    "35": {
+      "name": "冥途夜行之灯",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.webp"
+      ],
+      "tiers": {
+        "2": "生命提升10%",
+        "5": "角色获得护盾时，自身暴击提升5%，该效果可叠加4层，持续5秒，每0.5秒可触发一次。叠至满层时，自身造成的热熔伤害提升15%。"
+      }
+    },
+    "36": {
+      "name": "衔梦照世之心",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
+      ],
+      "tiers": {
+        "2": "导电伤害提升10%",
+        "5": "角色为敌人添加【电磁效应】时，或自身获得同奏、响应同奏时，自身暴击提升15%，导电伤害提升22.5%，持续30秒。"
+      }
+    },
+    "37": {
+      "name": "镜影流电之瞬",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
+      ],
+      "tiers": {
+        "2": "导电伤害提升10%",
+        "5": "角色为敌人添加【电磁效应】时，自身获得下述效果：导电伤害提升10%，持续15秒。持续期间内施放延奏技能后，下一个变奏技能登场的角色导电伤害提升25%，持续15秒。"
+      }
+    },
+    "38": {
+      "name": "茜染怀想之花",
+      "icons": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
+      ],
+      "tiers": {
+        "2": "治疗效果提升10%",
+        "5": "为队伍中角色提供治疗时，队伍中角色攻击提升10%，持续30秒，同名效果之间不可叠加。上述效果持续期间，若角色获得同奏、响应同奏，攻击额外提升15%。"
+      }
+    }
+  }
+}

@@ -1,0 +1,5029 @@
+{
+  "schema_version": 1,
+  "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+  "profile_id": "11111111-1111-4111-8111-111111111111",
+  "provenance": {
+    "application/recommendations.py": "28405e8c4e4b49c7edcc8734f53fa38aed8dcde34110e737dd354958928ef3f1",
+    "core/scoring.py": "8569d3ffa83f86db1c81070784c1d77be7262cc9ca6f66a37a02b5686b0a8cc8",
+    "core/compatibility.py": "844609b6f923d3f4de4bfc7aeff666791df19101f3613342737eb8ad1f5a2dcf"
+  },
+  "cases": [
+    {
+      "name": "1_valid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 29.96,
+            "potential_score": 29.96,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.96,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.07,
+            "potential_score": 29.07,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.07,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 26.67,
+            "potential_score": 26.67,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 26.67,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "1_missing_metadata",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "",
+        "sonata": "",
+        "level": null,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 29.96,
+            "potential_score": 29.96,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.96,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.07,
+            "potential_score": 29.07,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.07,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 26.67,
+            "potential_score": 26.67,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 26.67,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": "名称/套装/等级等元数据待核对，不作确定推荐"
+      }
+    },
+    {
+      "name": "1_wrong_set",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "另一套",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 29.96,
+            "potential_score": 29.96,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.96,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.07,
+            "potential_score": 29.07,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.07,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 26.67,
+            "potential_score": 26.67,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 26.67,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 1,
+              "standard_id": "d9f55b920fa67e56",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "1_invalid_roll",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 1.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "1_ocr_invalid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "1_normal",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 1,
+        "main_rows": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 1
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 29.96,
+          "potential_score": 29.96,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.96,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.06,
+          "potential_score": 26.06,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 26.06,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.07,
+          "potential_score": 29.07,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.07,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1_unknown_cost",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 1,
+        "main_rows": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": null
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 29.96,
+          "potential_score": 29.96,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.06,
+          "potential_score": 26.06,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.07,
+          "potential_score": 29.07,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        }
+      ]
+    },
+    {
+      "name": "1_partial_main",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 1,
+        "main_rows": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 1
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 21.7,
+          "potential_score": 21.7,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 21.7,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 18.54,
+          "potential_score": 18.54,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 18.54,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 21.55,
+          "potential_score": 21.55,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 21.55,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1_negative_observation",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 1,
+        "main_rows": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": -1.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 1
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 3.41,
+          "potential_score": 34.89,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 3.41,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 5.25,
+          "potential_score": 36.24,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 5.25,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 5.98,
+          "potential_score": 36.25,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 5.98,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "1_excess_sub",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 1,
+        "main_rows": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "防御",
+            "value": 70.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 1
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 29.96,
+          "potential_score": 29.96,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.96,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.06,
+          "potential_score": 26.06,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 26.06,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.07,
+          "potential_score": 29.07,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.07,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 1,
+            "standard_id": "d9f55b920fa67e56",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 1 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3_valid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 30.83,
+            "potential_score": 30.83,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 30.83,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.27,
+            "potential_score": 29.27,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.27,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 27.68,
+            "potential_score": 27.68,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 27.68,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "3_missing_metadata",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "",
+        "sonata": "",
+        "level": null,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 30.83,
+            "potential_score": 30.83,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 30.83,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.27,
+            "potential_score": 29.27,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.27,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 27.68,
+            "potential_score": 27.68,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 27.68,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": "名称/套装/等级等元数据待核对，不作确定推荐"
+      }
+    },
+    {
+      "name": "3_wrong_set",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "另一套",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 30.83,
+            "potential_score": 30.83,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 30.83,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.27,
+            "potential_score": 29.27,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.27,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 27.68,
+            "potential_score": 27.68,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 27.68,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "3_invalid_roll",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 1.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "3_ocr_invalid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "3_normal",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 3,
+        "main_rows": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 3
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 30.83,
+          "potential_score": 30.83,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "A",
+            "score": 30.83,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.23,
+          "potential_score": 26.23,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 26.23,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.27,
+          "potential_score": 29.27,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.27,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3_unknown_cost",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 3,
+        "main_rows": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": null
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 30.83,
+          "potential_score": 30.83,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.23,
+          "potential_score": 26.23,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.27,
+          "potential_score": 29.27,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        }
+      ]
+    },
+    {
+      "name": "3_partial_main",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 3,
+        "main_rows": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 3
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 21.38,
+          "potential_score": 21.38,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 21.38,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 17.31,
+          "potential_score": 17.31,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 17.31,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 20.17,
+          "potential_score": 20.17,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 20.17,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3_negative_observation",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 3,
+        "main_rows": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": -1.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 3
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 5.47,
+          "potential_score": 35.55,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 5.47,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 5.61,
+          "potential_score": 36.36,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 5.61,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 6.38,
+          "potential_score": 36.36,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 6.38,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3_excess_sub",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "声骸-bebaf9d5",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.477701+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 3,
+        "main_rows": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "防御",
+            "value": 70.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 3
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 30.83,
+          "potential_score": 30.83,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "A",
+            "score": 30.83,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 26.23,
+          "potential_score": 26.23,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 26.23,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 29.27,
+          "potential_score": 29.27,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 29.27,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 3,
+            "standard_id": "6f00e4a800b0acd4",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4_valid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 31.75,
+            "potential_score": 31.75,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 31.75,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 28.88,
+            "potential_score": 28.88,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.88,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 28.71,
+            "potential_score": 28.71,
+            "state": "match",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.71,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "4_missing_metadata",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "",
+        "sonata": "",
+        "level": null,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 31.75,
+            "potential_score": 31.75,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 31.75,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 28.88,
+            "potential_score": 28.88,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.88,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 28.71,
+            "potential_score": 28.71,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.71,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": "名称/套装/等级等元数据待核对，不作确定推荐"
+      }
+    },
+    {
+      "name": "4_wrong_set",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "另一套",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 31.75,
+            "potential_score": 31.75,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 31.75,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 28.88,
+            "potential_score": 28.88,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.88,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 28.71,
+            "potential_score": 28.71,
+            "state": "mismatch",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 28.71,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 4,
+              "standard_id": "31e836ec57e15ee1",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": ""
+      }
+    },
+    {
+      "name": "4_invalid_roll",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 1.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "4_ocr_invalid",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "4_normal",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 4,
+        "main_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 4
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 31.75,
+          "potential_score": 31.75,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "A",
+            "score": 31.75,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 27.13,
+          "potential_score": 27.13,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 27.13,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 28.88,
+          "potential_score": 28.88,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 28.88,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4_unknown_cost",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 4,
+        "main_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": null
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 31.75,
+          "potential_score": 31.75,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 27.13,
+          "potential_score": 27.13,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 28.88,
+          "potential_score": 28.88,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": null
+        }
+      ]
+    },
+    {
+      "name": "4_partial_main",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 4,
+        "main_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 4
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 23.88,
+          "potential_score": 23.88,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 23.88,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 19.61,
+          "potential_score": 19.61,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 19.61,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 20.91,
+          "potential_score": 20.91,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 20.91,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4_negative_observation",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 4,
+        "main_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": -1.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 4
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 7.6,
+          "potential_score": 36.24,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 7.6,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 7.26,
+          "potential_score": 36.87,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 7.26,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 6.81,
+          "potential_score": 35.72,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "C",
+            "score": 6.81,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4_excess_sub",
+      "mode": "live",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "声骸-ade23e18",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.480336+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "analysis": {
+        "current_score": 1,
+        "cost": 4,
+        "main_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_rows": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "防御",
+            "value": 70.0,
+            "value_text": ""
+          }
+        ],
+        "observed_cost": 4
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": [{\"character_id\": \"1304\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1109\", \"modal_id\": \"phantom\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}, {\"character_id\": \"1606\", \"modal_id\": \"default\", \"element\": \"衍射\", \"sonatas\": [\"测试套装\"]}]}}}",
+      "expected": [
+        {
+          "character_id": "1304",
+          "modal_id": "default",
+          "label": "今汐-通用",
+          "current_score": 31.75,
+          "potential_score": 31.75,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "A",
+            "score": 31.75,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "default",
+          "label": "洛瑟菈-霜渐",
+          "current_score": 27.13,
+          "potential_score": 27.13,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 27.13,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        },
+        {
+          "character_id": "1109",
+          "modal_id": "phantom",
+          "label": "洛瑟菈-声骸",
+          "current_score": 28.88,
+          "potential_score": 28.88,
+          "state": "match",
+          "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+          "algorithm_version": "xwuid-single-entry-truncation-v1",
+          "rating": {
+            "label": "B",
+            "score": 28.88,
+            "scale": 50,
+            "thresholds": [
+              0.0,
+              24.0,
+              30.0,
+              35.0,
+              39.0,
+              42.0
+            ],
+            "cost": 4,
+            "standard_id": "31e836ec57e15ee1",
+            "source": "XWUID props_grade",
+            "tooltip": "单件声骸 · COST 4 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+          }
+        }
+      ]
+    },
+    {
+      "name": "deleted",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "33333333-3333-4333-8333-333333333333",
+        "name": "声骸-544a825c",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.482924+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\": 1, \"profiles\": {\"11111111-1111-4111-8111-111111111111\": {\"selections\": [[\"removed\", \"default\"], [\"1304\", \"default\"], [\"1109\", \"default\"], [\"1109\", \"phantom\"], [\"1606\", \"default\"]], \"rules\": []}}}",
+      "expected": {
+        "rows": [
+          {
+            "character_id": "1304",
+            "modal_id": "default",
+            "label": "今汐-通用",
+            "current_score": 30.83,
+            "potential_score": 30.83,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "A",
+              "score": 30.83,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1109",
+            "modal_id": "phantom",
+            "label": "洛瑟菈-声骸",
+            "current_score": 29.27,
+            "potential_score": 29.27,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 29.27,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          },
+          {
+            "character_id": "1606",
+            "modal_id": "default",
+            "label": "洛可可-通用",
+            "current_score": 27.68,
+            "potential_score": 27.68,
+            "state": "unknown",
+            "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+            "algorithm_version": "xwuid-single-entry-truncation-v1",
+            "rating": {
+              "label": "B",
+              "score": 27.68,
+              "scale": 50,
+              "thresholds": [
+                0.0,
+                24.0,
+                30.0,
+                35.0,
+                39.0,
+                42.0
+              ],
+              "cost": 3,
+              "standard_id": "6f00e4a800b0acd4",
+              "source": "XWUID props_grade",
+              "tooltip": "单件声骸 · COST 3 · 50 分制\nC≥0 / B≥24 / A≥30 / S≥35 / SS≥39 / SSS≥42\n按单件当前分及当次模版下限评级；不改变原分数。"
+            }
+          }
+        ],
+        "message": "部分已选模版失效，请在矩阵重新选择"
+      }
+    },
+    {
+      "name": "empty",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "33333333-3333-4333-8333-333333333333",
+        "name": "声骸-e0641d56",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.483444+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "",
+      "expected": {
+        "rows": [],
+        "message": "请先在当前档案的评分矩阵勾选角色/固定模态"
+      }
+    },
+    {
+      "name": "corrupt",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "33333333-3333-4333-8333-333333333333",
+        "name": "声骸-faa2cb26",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.483444+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{",
+      "expected": {
+        "rows": [],
+        "message": "当前页比较配置待修正：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      }
+    },
+    {
+      "name": "invalid_and_corrupt",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "invalid_and_future",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 1.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "声骸-4e6a0e1b",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{\"schema_version\":2,\"profiles\":{}}",
+      "expected": {
+        "rows": [],
+        "message": "当前件识别待纠错，暂不进行跨模版比较"
+      }
+    },
+    {
+      "name": "missing_and_corrupt",
+      "mode": "record",
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "",
+        "sonata": "",
+        "level": null,
+        "captured_at": "2026-10-17T06:39:46.475116+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "preferences": "{",
+      "expected": {
+        "rows": [],
+        "message": "当前页比较配置待修正：Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+      }
+    }
+  ]
+}

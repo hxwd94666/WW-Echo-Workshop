@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "retrieved": "2026-10-16",
+  "source": "https://static.nanoka.cc",
+  "release": "3.7",
+  "files": {
+    "https://static.nanoka.cc/manifest.json": {
+      "sha256": "01c506aefc2d3ec632a1565543b2b711dd1136bab8a848883054c873af063d03"
+    },
+    "https://static.nanoka.cc/ww/3.7/character.json": {
+      "sha256": "b1b7555f2ebf4da0bbbbb82378b3bb771a4785b92076266f77a4a67390811779"
+    },
+    "https://static.nanoka.cc/ww/3.7/echo.json": {
+      "sha256": "c9cfa9516fd4103b70059bb1f1fb1777cd500fdfaedfde9d80196bd697a925aa"
+    },
+    "https://static.nanoka.cc/ww/3.7/zh/sonata.json": {
+      "sha256": "a4799dbe66a1ef9e92780f6a4b2c4b340515b6a4bef47d5964ea6cfb9faf778b"
+    }
+  },
+  "icons": {
+    "1": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIce.webp"
+      ],
+      "png_sha256": "f4783637cde67472926b43d236a575b23dd98e1076956d93292e3b4a589162a1"
+    },
+    "2": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFire.webp"
+      ],
+      "png_sha256": "123a1e4b4e93f98e3b48ac8e278da5d10e22d1215201d6c29f29cf6a897f62d1"
+    },
+    "3": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunder.webp"
+      ],
+      "png_sha256": "c1bd149e1bc33444bd10d9beea0e4c87f4f5f298a8d7dce6383e13e86d7f0088"
+    },
+    "4": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWind.webp"
+      ],
+      "png_sha256": "384dfbd47c110f30c07da70262c37946828ac0fcb8679b25ad921daa7a20d6ba"
+    },
+    "5": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLight.webp"
+      ],
+      "png_sha256": "0a4ee37401953551e7192f3689b65d859b173d64e2b1c28dd4287af5dde90b29"
+    },
+    "6": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDark.webp"
+      ],
+      "png_sha256": "7bfe98f9ea6c848b932de470314ada4bdb8d781a61cb66f2c7d5d625b6f93c20"
+    },
+    "7": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCure.webp"
+      ],
+      "png_sha256": "19f66e33b6669031ddd7ac2376ae3097f0d64ba9b17b81ff12e71bdaac0520e7"
+    },
+    "8": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCloud.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCloud.webp"
+      ],
+      "png_sha256": "4f6aaa76f9be40cb40adf560de7dfcb46198dd1bcaaffb6665ebbddeba04e030"
+    },
+    "9": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttack.webp"
+      ],
+      "png_sha256": "818e134d721208f0eab722a93e7d39b3a12f7fee3daa5e570b3d21501e128d39"
+    },
+    "10": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceUltimateSkill.webp"
+      ],
+      "png_sha256": "437cb093faf66319bca3da67a966f83ceac6f409dd7f6f44188f2643e7e0810c"
+    },
+    "11": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightError.webp"
+      ],
+      "png_sha256": "4df9525af70c275b3ea8c7bc2502ff91eaed54046eeb9baf2c8b9d99d20af539"
+    },
+    "12": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkAssist.webp"
+      ],
+      "png_sha256": "161ec079e39c5d40128483c800440657c2bc6414c394ac8c521831c9e0ef49b8"
+    },
+    "13": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCooperate.webp"
+      ],
+      "png_sha256": "8b87883f25cb6c3c3124262b663c19854c7662837276226e6948b7ab1cbd066c"
+    },
+    "14": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriEnergy.webp"
+      ],
+      "png_sha256": "b038b3f5a69b093edeee834adab4f713ff97f9fbd12a3de57b31de85abcb8a02"
+    },
+    "16": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindError.webp"
+      ],
+      "png_sha256": "aa128562c2075eb8d21f9386d09245467c69e504a9d3c0d11d1d58d9887f3384"
+    },
+    "17": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindErrorA.webp"
+      ],
+      "png_sha256": "330d24dbb924639ecb9da460fa07d2f517aa674a52cc27ea5e3487cbf393b8f4"
+    },
+    "18": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireUltimateSkill.webp"
+      ],
+      "png_sha256": "5af7db7361e018b911bd8e894cfc5739d6a5d1ca0a9ab629940281d20326d25a"
+    },
+    "19": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriDarkVision.webp"
+      ],
+      "png_sha256": "3ab5e70987897c8262a7aa446acf08872b5620281c11c8b34440837d475a6a53"
+    },
+    "20": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriShield.webp"
+      ],
+      "png_sha256": "2ef25404d1d0bd258f00f61c83f1832f71c4866d6d9e92002f496640b87760e0"
+    },
+    "21": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport.webp"
+      ],
+      "png_sha256": "c43ec70867e71863b7a955cdb9a56743492d2803bcf17f45d00144b437d135d7"
+    },
+    "22": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA.webp"
+      ],
+      "png_sha256": "849d6ecb6e23efc54c50150099d42a3f215b949f002b971f192e54bd8673268b"
+    },
+    "23": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQianXiao.webp"
+      ],
+      "png_sha256": "584ad7cba9e01210bd014bbfa8aebb0dbce07accf695a0208cf020fd501dd4aa"
+    },
+    "24": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriLightWeakness.webp"
+      ],
+      "png_sha256": "8b33837814fb8f83d83dbd24293f6bd8dafbc2d4136fe4b1e034114c0c14788c"
+    },
+    "25": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureWeakness.webp"
+      ],
+      "png_sha256": "7a5acc31a7be454628ed5e17e4d41f0d97085896a7e9e354ed54d6f067f18838"
+    },
+    "26": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAttackWeakness.webp"
+      ],
+      "png_sha256": "0ce0b0e40f79ca1405717c6f0051bf287cff2fb5380f1c1b8486d20f632d22f1"
+    },
+    "27": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA1.webp"
+      ],
+      "png_sha256": "b0e48d38c40182e7f48bb397b0b3659f24f21feae25c8496590f87ec8fb9b09f"
+    },
+    "28": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriFireA2.webp"
+      ],
+      "png_sha256": "2cd0022780964d6c48ca3f77a370e26ed7073836c637a1f6f70bf38354961a09"
+    },
+    "29": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriWindVision.webp"
+      ],
+      "png_sha256": "e5a37b11a19d1728ad74ed3a51b519bd07d31f966a500a19d8d42e19b21ff4a9"
+    },
+    "30": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriIceA1.webp"
+      ],
+      "png_sha256": "67d648919fc8e243e862ffe2ff7a4d688032b210cb9c6dfcffdc54f1bacc5191"
+    },
+    "31": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriSupport1.webp"
+      ],
+      "png_sha256": "f97b96f4be68eb7ff5fb6eb1873c5950462ccf5051cd477cdce045c22bb81dcf"
+    },
+    "32": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAdam.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriAdam.webp"
+      ],
+      "png_sha256": "21bd9d94d4dd3a858f644602bea6f7bd6f1981e0446b39415d6ff94c55283e95"
+    },
+    "33": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriYangyang.webp"
+      ],
+      "png_sha256": "ddc6b02ac79e0a5f79ff764cf36fb85768290781be0f7d49ccbf6f3ecb4f091a"
+    },
+    "34": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriQingxiao.webp"
+      ],
+      "png_sha256": "f7c6621863892578cf983e1fd260bb480551654a1e8042d2a58f99f9f01ccbc7"
+    },
+    "35": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriJingran.webp"
+      ],
+      "png_sha256": "b1d8ddc3e3cd373571475bf2d1fce97564da3120aa645c9aafbdb196b3cbfb2b"
+    },
+    "36": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriXin.webp"
+      ],
+      "png_sha256": "94b3d398c9a8c6316a0c91b1efdeb9c952eadecf3fb237a196f0c767c16c6dc0"
+    },
+    "37": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriThunderError.webp"
+      ],
+      "png_sha256": "916cf6246e8b73dccf4a4eff59a5ca5a22ff8058b994de92a6e67d3dc3791409"
+    },
+    "38": {
+      "urls": [
+        "https://static.nanoka.cc/assets/ww/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp",
+        "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconElementAttri/T_IconElementAttriCureA.webp"
+      ],
+      "png_sha256": "472f35a5595b2f8bc66b10d85cd59417f8c08c26f34f4f2d68ec4394c40cf4ae"
+    }
+  }
+}

@@ -1,0 +1,1500 @@
+{
+  "schema_version": 1,
+  "rows": [
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000000",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": true,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "今汐 测试套装  测试 ２０％ ATK 攻击% 生命 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-16T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "owner",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "equipped",
+        "owner_character_id": "1304",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "長離 测试套装 owner 测试 ２０％ ATK 衍射伤害加成 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000002",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-16T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "Echo-A 测试套装  测试 ２０％ ATK 暴击 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": "current-plan"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-15T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "今汐 测试套装  测试 ２０％ ATK 攻击% 生命 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-15T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": true,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "長離 测试套装  测试 ２０％ ATK 衍射伤害加成 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000005",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-14T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "旧装备者",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "Echo-A 测试套装 旧装备者 测试 ２０％ ATK 暴击 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000006",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 15,
+        "captured_at": "2026-10-14T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "今汐 测试套装  测试 ２０％ ATK 攻击% 生命 暴击 暴击伤害 攻击%",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000007",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "bad timestamp",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "長離 测试套装  测试 ２０％ ATK 衍射伤害加成 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000008",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "Echo-A 测试套装  测试 ２０％ ATK 暴击 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000009",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123457+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "今汐 测试套装  测试 ２０％ ATK 攻击% 生命 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000010",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-12T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "search_text": "長離 测试套装  测试 ２０％ ATK 衍射伤害加成 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000011",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-11T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "duplicate",
+      "search_text": "Echo-A 测试套装  测试 ２０％ ATK 暴击 攻击 暴击 暴击伤害 攻击% 共鸣效率 共鸣技能",
+      "reservation": ""
+    }
+  ],
+  "cases": [
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "equipped"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "locked"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        2,
+        4
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "pending"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        3,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "other"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "locked",
+          "pending"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        2,
+        3,
+        4,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "equipped",
+          "locked"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        4
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "other",
+          "pending"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "equipped",
+          "locked",
+          "pending",
+          "other"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": 3,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        1,
+        4,
+        7,
+        10
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [
+          1,
+          4
+        ],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": 3,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [
+          1
+        ],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        3,
+        4,
+        6,
+        7,
+        9,
+        10
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "攻击%",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        3,
+        6,
+        9
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [
+          "攻击%",
+          "暴击"
+        ],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [
+          "暴击",
+          "攻击%"
+        ],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [
+          "共鸣技能"
+        ],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "测试套装",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": [
+          "另套装",
+          "测试套装"
+        ]
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [
+          "locked"
+        ],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [
+          "暴击"
+        ],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [
+          4
+        ],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        2
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 3,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "今汐",
+      "indices": [
+        0,
+        3,
+        6,
+        9
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "长离",
+      "indices": []
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "jx",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "chang li",
+      "indices": []
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "20%",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "ATK",
+      "indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "22222222-2222-4222-8222-000000000000",
+      "indices": []
+    },
+    {
+      "filters": {
+        "statuses": [],
+        "cost": null,
+        "main_stat": "",
+        "sub_stats": [],
+        "sonata": "",
+        "review_mode": 0,
+        "costs": [],
+        "main_stats": [],
+        "sonatas": []
+      },
+      "text": "not-found",
+      "indices": []
+    }
+  ]
+}

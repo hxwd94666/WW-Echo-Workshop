@@ -1,0 +1,527 @@
+{
+  "synthetic": true,
+  "generated_by": "original dev115 Python modules",
+  "profile": "82a3173f-34e3-4900-be48-b974ccef11dd",
+  "plan_id": "673827c6-7ffb-4fd2-80db-3ee92a79bea9",
+  "archive_sha256": "bf171fedbae29bca1b1d87dd546682c3908dad39407337ff5dc1b7f230614bbf",
+  "plan_sha256": "473090661f0a83b79cd44943098fee9e438c4befabf21e005ec606bc05be89a9",
+  "backup": {
+    "schema_version": 4,
+    "revision": 9,
+    "profiles": {
+      "82a3173f-34e3-4900-be48-b974ccef11dd": "合成兼容档案"
+    },
+    "items": [
+      {
+        "archived": false,
+        "captured_at": "2026-10-14T22:48:20.156966+00:00",
+        "cost": 3,
+        "game_discarded": true,
+        "game_equipped": true,
+        "game_locked": true,
+        "game_status_updated_at": "",
+        "handled": false,
+        "issues": [],
+        "item_id": "0c1fa40a-4756-4c24-8543-b54a49b35474",
+        "level": 25,
+        "locked": false,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "name": "样本1",
+        "note": "",
+        "owner": "",
+        "owner_character_id": "",
+        "owner_state": "unknown",
+        "owner_updated_at": "",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "raw_text": "",
+        "review": "confirmed",
+        "screenshot_ref": "",
+        "sonata": "测试套装",
+        "source": "ocr",
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ]
+      },
+      {
+        "archived": false,
+        "captured_at": "2026-10-14T22:48:20.156966+00:00",
+        "cost": 1,
+        "game_discarded": true,
+        "game_equipped": true,
+        "game_locked": true,
+        "game_status_updated_at": "",
+        "handled": false,
+        "issues": [],
+        "item_id": "7fb39c60-49c7-46b7-bd92-e93965fb7817",
+        "level": 25,
+        "locked": false,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "name": "样本4",
+        "note": "",
+        "owner": "",
+        "owner_character_id": "",
+        "owner_state": "unknown",
+        "owner_updated_at": "",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "raw_text": "",
+        "review": "confirmed",
+        "screenshot_ref": "",
+        "sonata": "测试套装",
+        "source": "ocr",
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ]
+      },
+      {
+        "archived": false,
+        "captured_at": "2026-10-14T22:48:20.156966+00:00",
+        "cost": 3,
+        "game_discarded": true,
+        "game_equipped": true,
+        "game_locked": true,
+        "game_status_updated_at": "",
+        "handled": false,
+        "issues": [],
+        "item_id": "cc9b5eb8-d179-4fca-a989-f3df2e7eef12",
+        "level": 25,
+        "locked": false,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "name": "样本2",
+        "note": "",
+        "owner": "",
+        "owner_character_id": "",
+        "owner_state": "unknown",
+        "owner_updated_at": "",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "raw_text": "",
+        "review": "confirmed",
+        "screenshot_ref": "",
+        "sonata": "测试套装",
+        "source": "ocr",
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ]
+      },
+      {
+        "archived": false,
+        "captured_at": "2026-10-14T22:48:20.156966+00:00",
+        "cost": 4,
+        "game_discarded": true,
+        "game_equipped": true,
+        "game_locked": true,
+        "game_status_updated_at": "",
+        "handled": false,
+        "issues": [],
+        "item_id": "d4dcb0f9-d158-4470-a468-9754b81776b7",
+        "level": 25,
+        "locked": false,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "name": "样本0",
+        "note": "合成历史记录",
+        "owner": "",
+        "owner_character_id": "",
+        "owner_state": "unknown",
+        "owner_updated_at": "",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "raw_text": "",
+        "review": "confirmed",
+        "screenshot_ref": "",
+        "sonata": "测试套装",
+        "source": "ocr",
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ]
+      },
+      {
+        "archived": false,
+        "captured_at": "2026-10-14T22:48:20.156966+00:00",
+        "cost": 1,
+        "game_discarded": true,
+        "game_equipped": true,
+        "game_locked": true,
+        "game_status_updated_at": "",
+        "handled": false,
+        "issues": [],
+        "item_id": "eee3f171-b72f-494a-bfab-c18aff322a1b",
+        "level": 25,
+        "locked": false,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "name": "样本3",
+        "note": "",
+        "owner": "",
+        "owner_character_id": "",
+        "owner_state": "unknown",
+        "owner_updated_at": "",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "raw_text": "",
+        "review": "confirmed",
+        "screenshot_ref": "",
+        "sonata": "测试套装",
+        "source": "ocr",
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ]
+      }
+    ],
+    "history": [
+      {
+        "item_id": "d4dcb0f9-d158-4470-a468-9754b81776b7",
+        "record": {
+          "archived": false,
+          "captured_at": "2026-10-14T22:48:20.156966+00:00",
+          "cost": 4,
+          "game_discarded": true,
+          "game_equipped": true,
+          "game_locked": true,
+          "game_status_updated_at": "",
+          "handled": false,
+          "issues": [],
+          "item_id": "d4dcb0f9-d158-4470-a468-9754b81776b7",
+          "level": 25,
+          "locked": false,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0,
+              "value_text": ""
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0,
+              "value_text": ""
+            }
+          ],
+          "name": "样本0",
+          "note": "",
+          "owner": "",
+          "owner_character_id": "",
+          "owner_state": "unknown",
+          "owner_updated_at": "",
+          "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+          "raw_text": "",
+          "review": "confirmed",
+          "screenshot_ref": "",
+          "sonata": "测试套装",
+          "source": "ocr",
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3,
+              "value_text": ""
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6,
+              "value_text": ""
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4,
+              "value_text": ""
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8,
+              "value_text": ""
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4,
+              "value_text": ""
+            }
+          ]
+        },
+        "changed_at": "2026-10-14T22:48:20.175948+00:00"
+      }
+    ],
+    "pending_captures": [
+      {
+        "record": {
+          "archived": false,
+          "captured_at": "2026-10-14T22:48:20.156966+00:00",
+          "cost": 4,
+          "game_discarded": true,
+          "game_equipped": true,
+          "game_locked": true,
+          "game_status_updated_at": "",
+          "handled": false,
+          "issues": [],
+          "item_id": "e9f0f2c5-7a16-47e7-9ff1-7d1bc7a557ac",
+          "level": 25,
+          "locked": false,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0,
+              "value_text": ""
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0,
+              "value_text": ""
+            }
+          ],
+          "name": "样本0",
+          "note": "合成历史记录",
+          "owner": "",
+          "owner_character_id": "",
+          "owner_state": "unknown",
+          "owner_updated_at": "",
+          "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+          "raw_text": "",
+          "review": "confirmed",
+          "screenshot_ref": "",
+          "sonata": "测试套装",
+          "source": "ocr",
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3,
+              "value_text": ""
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6,
+              "value_text": ""
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4,
+              "value_text": ""
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8,
+              "value_text": ""
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4,
+              "value_text": ""
+            }
+          ]
+        },
+        "reason": "duplicate",
+        "candidates": [
+          "d4dcb0f9-d158-4470-a468-9754b81776b7"
+        ]
+      }
+    ],
+    "current_loadouts": [
+      {
+        "character_id": "1304",
+        "fingerprints": [
+          "4c9bc2f363782a854ef68fbe8d75cf030137f639ae1a1e589c8e0aac75476528",
+          "231d619cc5979ffc424fb6aa5b2c975dc5e0670b770693cc1ebd43f57eb7d511",
+          "97182cdb94f70d774a3f0db9f458550ed44d77d8da87cbc7f41773ed272300c4",
+          "e442677fe4028f42f50e7edbb09d34b0b258c8ea17f6a14a14f2c6bf828e49e3",
+          "2fe74b296442719858641ef4b20d1110360ec4eb9eec7a8fc728ebb530669dcc"
+        ],
+        "item_ids": [
+          "d4dcb0f9-d158-4470-a468-9754b81776b7",
+          "0c1fa40a-4756-4c24-8543-b54a49b35474",
+          "cc9b5eb8-d179-4fca-a989-f3df2e7eef12",
+          "7fb39c60-49c7-46b7-bd92-e93965fb7817",
+          "eee3f171-b72f-494a-bfab-c18aff322a1b"
+        ],
+        "label": "今汐-通用",
+        "modal_id": "default",
+        "plan_id": "673827c6-7ffb-4fd2-80db-3ee92a79bea9",
+        "profile_id": "82a3173f-34e3-4900-be48-b974ccef11dd",
+        "protected": true,
+        "updated_at": "2026-10-14T22:48:20.283136+00:00"
+      }
+    ],
+    "loadout_revision": 1
+  },
+  "preferences": {
+    "ComparisonSettingsJSON": "{\"profiles\":{\"82a3173f-34e3-4900-be48-b974ccef11dd\":{\"filters\":{\"cost\":null,\"fully_tuned\":false,\"max_age_days\":0,\"mode\":\"all\",\"text\":\"\"},\"rules\":[],\"selections\":[[\"1304\",\"default\"]]}},\"schema_version\":1}",
+    "AllocationSettingsJSON": "{\"profiles\":{\"82a3173f-34e3-4900-be48-b974ccef11dd\":{\"fully_tuned\":true,\"roles\":[]}},\"schema_version\":1}"
+  },
+  "completed": [
+    "d4dcb0f9-d158-4470-a468-9754b81776b7"
+  ],
+  "weight_version": "699fb04be7dcec027a81c1a568e5bcbd1edd1e1299dc99daa2f84076310eb9a0",
+  "claims": {
+    "0c1fa40a-4756-4c24-8543-b54a49b35474": "1304",
+    "7fb39c60-49c7-46b7-bd92-e93965fb7817": "1304",
+    "cc9b5eb8-d179-4fca-a989-f3df2e7eef12": "1304",
+    "d4dcb0f9-d158-4470-a468-9754b81776b7": "1304",
+    "eee3f171-b72f-494a-bfab-c18aff322a1b": "1304"
+  }
+}

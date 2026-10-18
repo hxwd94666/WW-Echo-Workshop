@@ -1,0 +1,1104 @@
+{
+  "source": "Existing core.requirements.validate_fixed_items before removal",
+  "cases": [
+    {
+      "name": "valid",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": null,
+          "code": ""
+        }
+      ],
+      "message": ""
+    },
+    {
+      "name": "missing-first",
+      "records": [
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 1,
+          "code": "missing"
+        }
+      ],
+      "message": "第 1 槽固定声骸缺失或待核对；原 UUID 已保留。"
+    },
+    {
+      "name": "missing-last",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 5,
+          "code": "missing"
+        }
+      ],
+      "message": "第 5 槽固定声骸缺失或待核对；原 UUID 已保留。"
+    },
+    {
+      "name": "pending",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "pending",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 1,
+          "code": "missing"
+        }
+      ],
+      "message": "第 1 槽固定声骸缺失或待核对；原 UUID 已保留。"
+    },
+    {
+      "name": "damaged",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [
+            "synthetic"
+          ],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 1,
+          "code": "missing"
+        }
+      ],
+      "message": "第 1 槽固定声骸缺失或待核对；原 UUID 已保留。"
+    },
+    {
+      "name": "wrong-cost",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            1,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 1,
+          "code": "conflict"
+        }
+      ],
+      "message": "第 1 槽固定声骸与 COST 或主词条要求冲突。"
+    },
+    {
+      "name": "wrong-main",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [
+              "防御%"
+            ],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": 1,
+          "code": "conflict"
+        }
+      ],
+      "message": "第 1 槽固定声骸与 COST 或主词条要求冲突。"
+    },
+    {
+      "name": "valid-multi-main",
+      "records": [
+        {
+          "item_id": "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-5e13613c",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "9390217e-e1e1-47d5-b409-7418602f6044",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "声骸-e8a191bd",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [
+              "暴击",
+              "防御%"
+            ],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "c9046d0e-2ce5-476b-9cf0-9545acbfbdf2",
+            "",
+            "",
+            "",
+            "9390217e-e1e1-47d5-b409-7418602f6044"
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": null,
+          "code": ""
+        }
+      ],
+      "message": ""
+    },
+    {
+      "name": "no-pins",
+      "records": [],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": null,
+          "code": ""
+        }
+      ],
+      "message": ""
+    },
+    {
+      "name": "explicit-clear",
+      "records": [],
+      "requirements": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "costs": [
+            4,
+            3,
+            3,
+            1,
+            1
+          ],
+          "main_names": [
+            [],
+            [],
+            [],
+            [],
+            []
+          ],
+          "fixed_item_ids": [
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "expected": [
+        {
+          "key": [
+            "1304",
+            "default"
+          ],
+          "slot": null,
+          "code": ""
+        }
+      ],
+      "message": ""
+    }
+  ]
+}

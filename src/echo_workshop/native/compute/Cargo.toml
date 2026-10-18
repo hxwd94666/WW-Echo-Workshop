@@ -1,0 +1,24 @@
+[package]
+name = "echo-workshop-compute"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.98"
+publish = false
+license = "GPL-3.0-only"
+
+[dependencies]
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
+sha2 = "=0.10.9"
+
+[build-dependencies]
+sha2 = "=0.10.9"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+overflow-checks = true
+
+[lints.clippy]
+all = "warn"
+

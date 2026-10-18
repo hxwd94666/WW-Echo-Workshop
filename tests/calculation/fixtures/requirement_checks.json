@@ -1,0 +1,859 @@
+{
+  "source": "Current RoleRequirements constructor and normalize_cost/main/set helpers, frozen before new native guards",
+  "cases": [
+    {
+      "name": "valid",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": null,
+      "result": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "name": "cost_total",
+      "requirements": {
+        "costs": [
+          4,
+          4,
+          4,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "五槽位 COST 合计 14，不得超过 12。",
+      "result": null
+    },
+    {
+      "name": "short_costs",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "请为五个槽位各选择 COST 1、3 或 4。",
+      "result": null
+    },
+    {
+      "name": "cost_enum",
+      "requirements": {
+        "costs": [
+          4,
+          2,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "请为五个槽位各选择 COST 1、3 或 4。",
+      "result": null
+    },
+    {
+      "name": "short_mains",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "主词条要求须对应五个槽位；空列表表示该槽不限。",
+      "result": null
+    },
+    {
+      "name": "wrong_cost_main",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "衍射伤害加成"
+          ],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "第 1 槽主词条要求无效：主词条要求与槽位 COST 不兼容",
+      "result": null
+    },
+    {
+      "name": "duplicate_main",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击"
+          ],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "第 1 槽主词条要求无效：重复主词条要求",
+      "result": null
+    },
+    {
+      "name": "unknown_main",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "不存在"
+          ],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "第 1 槽主词条要求无效：主词条要求与槽位 COST 不兼容",
+      "result": null
+    },
+    {
+      "name": "duplicate_set_canonical",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "隱世迴光"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "允许套装名称重复。",
+      "result": null
+    },
+    {
+      "name": "set_sum",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            3
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": "套装最少件数合计超过五件。",
+      "result": null
+    },
+    {
+      "name": "set_unknown",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "未允许",
+            1
+          ]
+        ]
+      },
+      "error": "套装件数须为 1–5，名称不重复且已列入允许套装。",
+      "result": null
+    },
+    {
+      "name": "duplicate_set_requirement",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            1
+          ],
+          [
+            "隱世迴光",
+            1
+          ]
+        ]
+      },
+      "error": "套装件数须为 1–5，名称不重复且已列入允许套装。",
+      "result": null
+    },
+    {
+      "name": "zero_set_count",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            0
+          ]
+        ]
+      },
+      "error": "套装件数须为 1–5，名称不重复且已列入允许套装。",
+      "result": null
+    },
+    {
+      "name": "set_count_six",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            6
+          ]
+        ]
+      },
+      "error": "套装件数须为 1–5，名称不重复且已列入允许套装。",
+      "result": null
+    },
+    {
+      "name": "empty_allowed",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [],
+        "set_requirements": []
+      },
+      "error": null,
+      "result": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [],
+        "set_requirements": []
+      }
+    },
+    {
+      "name": "whitespace_allowed",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "  隱世迴光  "
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            5
+          ]
+        ]
+      },
+      "error": null,
+      "result": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [
+            "暴击",
+            "暴击伤害"
+          ],
+          [
+            "攻击%",
+            "共鸣效率"
+          ],
+          [],
+          [
+            "生命%"
+          ],
+          []
+        ],
+        "allowed_sonatas": [
+          "  隱世迴光  "
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            5
+          ]
+        ]
+      }
+    },
+    {
+      "name": "valid_other_layout",
+      "requirements": {
+        "costs": [
+          4,
+          4,
+          1,
+          1,
+          1
+        ],
+        "main_names": [
+          [],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": null,
+      "result": {
+        "costs": [
+          4,
+          4,
+          1,
+          1,
+          1
+        ],
+        "main_names": [
+          [],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      }
+    },
+    {
+      "name": "empty_main_choices",
+      "requirements": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      },
+      "error": null,
+      "result": {
+        "costs": [
+          4,
+          3,
+          3,
+          1,
+          1
+        ],
+        "main_names": [
+          [],
+          [],
+          [],
+          [],
+          []
+        ],
+        "allowed_sonatas": [
+          "隐世回光",
+          "自定义套装"
+        ],
+        "set_requirements": [
+          [
+            "隐世回光",
+            2
+          ],
+          [
+            "自定义套装",
+            3
+          ]
+        ]
+      }
+    }
+  ]
+}

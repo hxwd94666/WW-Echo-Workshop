@@ -1,0 +1,4387 @@
+{
+  "schema_version": 1,
+  "payload": {
+    "records": [
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000064",
+        "name": "样例-0",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.957847+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000065",
+        "name": "样例-1",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.957847+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000066",
+        "name": "",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.957847+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [],
+        "item_id": "00000000-0000-0000-0000-000000000067",
+        "name": "样例-3",
+        "sonata": "甲",
+        "level": 0,
+        "captured_at": "2026-10-16T14:35:31.957847+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000068",
+        "name": "样例-4",
+        "sonata": "甲",
+        "level": 10,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000069",
+        "name": "样例-5",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 10.51,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006a",
+        "name": "样例-6",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 12.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006b",
+        "name": "样例-7",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006c",
+        "name": "样例-8",
+        "sonata": "甲",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "人工存疑",
+          "人工存疑"
+        ],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "防御%",
+            "value": 41.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006d",
+        "name": "合成-9",
+        "sonata": "乙",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "治疗效果加成",
+            "value": 26.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006e",
+        "name": "合成-10",
+        "sonata": "乙",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-00000000006f",
+        "name": "合成-11",
+        "sonata": "乙",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "热熔伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000070",
+        "name": "合成-12",
+        "sonata": "乙",
+        "level": 25,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      {
+        "profile_id": "00000000-0000-0000-0000-000000000001",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-0000-0000-000000000072",
+        "name": "样例-14",
+        "sonata": "甲",
+        "level": null,
+        "captured_at": "2026-10-16T14:35:31.958380+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      }
+    ],
+    "selections": [
+      {
+        "character_id": "1102",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "重击伤害加成",
+              "共鸣技能伤害加成",
+              "共鸣解放伤害加成"
+            ],
+            "valid_b": [
+              "共鸣效率"
+            ],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.4,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.275,
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "散华-主/副c",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            73.765,
+            77.315,
+            81.315
+          ],
+          "skill_weight": [
+            0,
+            0.182,
+            0.45,
+            0.455
+          ],
+          "sub_props": {
+            "共鸣效率": 0.175,
+            "技能伤害加成": 1.1,
+            "攻击": 0.1,
+            "攻击%": 1.1,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1103",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [],
+            "valid_b": [],
+            "valid_s": [
+              "生命",
+              "共鸣效率",
+              "治疗效果加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0,
+              "生命": 0.003,
+              "生命%": 0.4,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0.3,
+              "属性伤害加成": 0,
+              "攻击": 0.0375,
+              "攻击%": 0.3,
+              "生命%": 0.3,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0,
+              "攻击%": 0,
+              "暴击": 0,
+              "暴击伤害": 0,
+              "治疗效果加成": 0.375,
+              "生命%": 0.3,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "生命%",
+              "生命"
+            ],
+            "3.1": [
+              "共鸣效率",
+              "攻击"
+            ],
+            "4.1": [
+              "治疗效果加成",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "生命%",
+            "生命",
+            "共鸣效率"
+          ],
+          "name": "白芷-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            50.559,
+            47.949,
+            44.498
+          ],
+          "skill_weight": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "sub_props": {
+            "共鸣效率": 1.2,
+            "技能伤害加成": 0,
+            "攻击": 0,
+            "攻击%": 0,
+            "暴击": 0,
+            "暴击伤害": 0,
+            "生命": 0.01,
+            "生命%": 1.2,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1104",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "普攻伤害加成",
+              "共鸣技能伤害加成"
+            ],
+            "valid_b": [
+              "共鸣效率",
+              "共鸣解放伤害加成"
+            ],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.4,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.275,
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "凌阳-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            74.977,
+            78.527,
+            82.527
+          ],
+          "skill_weight": [
+            0.35,
+            0,
+            0.55,
+            0.2
+          ],
+          "sub_props": {
+            "共鸣效率": 0.5,
+            "技能伤害加成": 1.1,
+            "攻击": 0.1,
+            "攻击%": 1.1,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1105",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "普攻伤害加成"
+            ],
+            "valid_b": [
+              "重击伤害加成",
+              "共鸣技能伤害加成",
+              "共鸣效率"
+            ],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.4,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.275,
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "折枝-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            74.34,
+            77.89,
+            81.89
+          ],
+          "skill_weight": [
+            0.5,
+            0.2,
+            0.2,
+            0
+          ],
+          "sub_props": {
+            "共鸣效率": 0.2,
+            "技能伤害加成": 1.1,
+            "攻击": 0.1,
+            "攻击%": 1.1,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1106",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "共鸣技能伤害加成",
+              "共鸣效率",
+              "治疗效果加成"
+            ],
+            "valid_b": [],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.4,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.275,
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0.375,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "釉瑚-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            74.34,
+            77.89,
+            81.89
+          ],
+          "skill_weight": [
+            0,
+            0,
+            0.5,
+            0
+          ],
+          "sub_props": {
+            "共鸣效率": 0.3,
+            "技能伤害加成": 1.1,
+            "攻击": 0.1,
+            "攻击%": 1.1,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1107",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "共鸣技能伤害加成"
+            ],
+            "valid_b": [
+              "共鸣效率"
+            ],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.4,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.275,
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "珂莱塔-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "score_max": [
+            78.516,
+            82.066,
+            86.066
+          ],
+          "skill_weight": [
+            0,
+            0,
+            0.7,
+            0
+          ],
+          "sub_props": {
+            "共鸣效率": 0.2,
+            "技能伤害加成": 1.3,
+            "攻击": 0.1,
+            "攻击%": 1.1,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1108",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "共鸣解放伤害加成"
+            ],
+            "valid_b": [
+              "共鸣效率"
+            ],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.7,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.3,
+              "攻击": 0.025,
+              "攻击%": 0.3,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.02,
+              "攻击%": 0.32,
+              "暴击": 0.36,
+              "暴击伤害": 0.24,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "绯雪-通用",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "revision": "暴击下降，小攻击对齐，大攻击下调",
+          "score_max": [
+            82.669,
+            81.57,
+            83.628
+          ],
+          "skill_weight": [
+            0,
+            0,
+            0,
+            1
+          ],
+          "sub_props": {
+            "共鸣效率": 0.25,
+            "技能伤害加成": 0.8,
+            "攻击": 0.13,
+            "攻击%": 1.4,
+            "暴击": 1.5,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      },
+      {
+        "character_id": "1109",
+        "modal_id": "default",
+        "template": {
+          "grade": {
+            "valid_a": [
+              "普攻伤害加成"
+            ],
+            "valid_b": [],
+            "valid_s": [
+              "暴击",
+              "暴击伤害",
+              "攻击",
+              "冷凝伤害加成",
+              "普攻伤害加成"
+            ]
+          },
+          "main_props": {
+            "1": {
+              "攻击%": 0.6,
+              "生命": 0,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "3": {
+              "共鸣效率": 0,
+              "属性伤害加成": 0.3,
+              "攻击": 0.025,
+              "攻击%": 0.3,
+              "生命%": 0,
+              "防御%": 0
+            },
+            "4": {
+              "攻击": 0.025,
+              "攻击%": 0.275,
+              "暴击": 0.5,
+              "暴击伤害": 0.25,
+              "治疗效果加成": 0,
+              "生命%": 0,
+              "防御%": 0
+            }
+          },
+          "max_main_props": {
+            "1.1": [
+              "攻击%",
+              "生命"
+            ],
+            "3.1": [
+              "属性伤害加成",
+              "攻击"
+            ],
+            "4.1": [
+              "暴击伤害",
+              "攻击"
+            ]
+          },
+          "max_sub_props": [
+            "暴击",
+            "暴击伤害",
+            "攻击%",
+            "攻击",
+            "技能伤害加成"
+          ],
+          "name": "洛瑟菈-霜渐",
+          "props_grade": [
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ],
+            [
+              0,
+              0.48,
+              0.6,
+              0.7,
+              0.78,
+              0.84
+            ]
+          ],
+          "revised": "2026-06-10",
+          "score_max": [
+            83.758,
+            84.46,
+            87.71
+          ],
+          "skill_weight": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "sub_props": {
+            "共鸣效率": 0.0,
+            "技能伤害加成": 0.9,
+            "攻击": 0.11,
+            "攻击%": 1.2,
+            "暴击": 2,
+            "暴击伤害": 1,
+            "生命": 0,
+            "生命%": 0,
+            "防御": 0,
+            "防御%": 0
+          },
+          "total_grade": [
+            0,
+            0.48,
+            0.6,
+            0.7,
+            0.78,
+            0.84
+          ],
+          "_character_element": "",
+          "_require_character_element": false
+        },
+        "rule": {
+          "element": "",
+          "sonatas": [
+            "甲",
+            "乙"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "cells": [
+      [
+        [
+          1,
+          "1",
+          [
+            4.88,
+            0.0,
+            8.54,
+            8.54,
+            4.77,
+            0.8,
+            2.14
+          ],
+          29.67,
+          29.67,
+          [
+            1,
+            29.67,
+            0
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            0.0,
+            6.76,
+            0.0,
+            0.0,
+            0.0,
+            8.06,
+            0.0
+          ],
+          14.82,
+          14.82,
+          [
+            0,
+            14.82,
+            3
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.8,
+            0.0,
+            8.4,
+            8.4,
+            4.69,
+            2.26,
+            2.58
+          ],
+          31.13,
+          31.13,
+          [
+            2,
+            31.13,
+            6
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            8.47,
+            8.47,
+            4.73,
+            0.91,
+            0.94
+          ],
+          28.36,
+          28.36,
+          [
+            1,
+            28.36,
+            9
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            8.47,
+            8.47,
+            4.73,
+            1.37,
+            2.36
+          ],
+          30.24,
+          30.24,
+          [
+            2,
+            30.24,
+            12
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.58,
+            0.0,
+            8.02,
+            8.02,
+            4.48,
+            0.86,
+            3.7
+          ],
+          29.66,
+          29.66,
+          [
+            1,
+            29.66,
+            15
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            7.62,
+            0.0,
+            5.71,
+            7.62,
+            5.41,
+            1.02,
+            0.0
+          ],
+          27.38,
+          27.38,
+          [
+            1,
+            27.38,
+            18
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            6.44,
+            0.0,
+            7.52,
+            7.52,
+            4.58,
+            0.0,
+            0.0
+          ],
+          26.06,
+          26.06,
+          [
+            1,
+            26.06,
+            21
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:name",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.88,
+            0.0
+          ],
+          4.88,
+          49.97,
+          [
+            0,
+            4.88,
+            0
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            0.0,
+            6.76
+          ],
+          6.76,
+          40.96,
+          [
+            0,
+            6.76,
+            3
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.8,
+            0.0
+          ],
+          4.8,
+          50.11,
+          [
+            0,
+            4.8,
+            6
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0
+          ],
+          4.84,
+          49.98,
+          [
+            0,
+            4.84,
+            9
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0
+          ],
+          4.84,
+          49.98,
+          [
+            0,
+            4.84,
+            12
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.58,
+            0.0
+          ],
+          4.58,
+          49.98,
+          [
+            0,
+            4.58,
+            15
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            7.62,
+            0.0
+          ],
+          7.62,
+          49.98,
+          [
+            0,
+            7.62,
+            18
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            6.44,
+            0.0
+          ],
+          6.44,
+          49.96,
+          [
+            0,
+            6.44,
+            21
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.88,
+            0.0,
+            8.54,
+            8.54
+          ],
+          21.96,
+          38.59,
+          [
+            0,
+            21.96,
+            0
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            0.0,
+            6.76,
+            0.0,
+            0.0
+          ],
+          6.76,
+          40.96,
+          [
+            0,
+            6.76,
+            3
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.8,
+            0.0,
+            8.4,
+            8.4
+          ],
+          21.6,
+          38.91,
+          [
+            0,
+            21.6,
+            6
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            8.47,
+            8.47
+          ],
+          21.78,
+          38.68,
+          [
+            0,
+            21.78,
+            9
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            8.47,
+            8.47
+          ],
+          21.78,
+          38.68,
+          [
+            0,
+            21.78,
+            12
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.58,
+            0.0,
+            8.02,
+            8.02
+          ],
+          20.62,
+          39.28,
+          [
+            0,
+            20.62,
+            15
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            7.62,
+            0.0,
+            5.71,
+            7.62
+          ],
+          20.95,
+          41.09,
+          [
+            0,
+            20.95,
+            18
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            6.44,
+            0.0,
+            7.52,
+            7.52
+          ],
+          21.48,
+          39.94,
+          [
+            0,
+            21.48,
+            21
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:duplicate_or_excess",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.88,
+            0.0,
+            14.24
+          ],
+          19.12,
+          49.98,
+          [
+            0,
+            19.12,
+            0
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            0.0,
+            6.76,
+            0.0
+          ],
+          6.76,
+          40.96,
+          [
+            0,
+            6.76,
+            3
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.8,
+            0.0,
+            14.01
+          ],
+          18.81,
+          50.12,
+          [
+            0,
+            18.81,
+            6
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            14.13
+          ],
+          18.97,
+          49.99,
+          [
+            0,
+            18.97,
+            9
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.84,
+            0.0,
+            14.13
+          ],
+          18.97,
+          49.99,
+          [
+            0,
+            18.97,
+            12
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            4.58,
+            0.0,
+            13.38
+          ],
+          17.96,
+          49.99,
+          [
+            0,
+            17.96,
+            15
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            7.62,
+            0.0,
+            9.53
+          ],
+          17.15,
+          49.99,
+          [
+            0,
+            17.15,
+            18
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          1,
+          "1",
+          [
+            6.44,
+            0.0,
+            12.54
+          ],
+          18.98,
+          49.97,
+          [
+            0,
+            18.98,
+            21
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "sub:invalid_roll:暴击",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "人工存疑",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.3,
+            7.74,
+            7.74,
+            4.32,
+            0.73,
+            1.94
+          ],
+          24.77,
+          24.77,
+          [
+            1,
+            24.77,
+            2
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            9.16,
+            0.0
+          ],
+          9.16,
+          9.16,
+          [
+            0,
+            9.16,
+            5
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.27,
+            7.63,
+            7.63,
+            4.26,
+            2.05,
+            2.34
+          ],
+          26.18,
+          26.18,
+          [
+            1,
+            26.18,
+            8
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.28,
+            7.69,
+            7.69,
+            4.29,
+            0.83,
+            0.85
+          ],
+          23.63,
+          23.63,
+          [
+            0,
+            23.63,
+            11
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.28,
+            7.69,
+            7.69,
+            4.29,
+            1.24,
+            2.14
+          ],
+          25.33,
+          25.33,
+          [
+            1,
+            25.33,
+            14
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.17,
+            7.31,
+            7.31,
+            4.08,
+            0.79,
+            3.38
+          ],
+          25.04,
+          25.04,
+          [
+            1,
+            25.04,
+            17
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            1.79,
+            5.65,
+            7.53,
+            5.35,
+            1.01,
+            0.0
+          ],
+          21.33,
+          21.33,
+          [
+            0,
+            21.33,
+            20
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.13,
+            7.18,
+            7.18,
+            4.37,
+            0.0,
+            0.0
+          ],
+          20.86,
+          20.86,
+          [
+            0,
+            20.86,
+            23
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.3,
+            7.74,
+            7.74,
+            4.32,
+            0.73,
+            1.94
+          ],
+          24.77,
+          24.77,
+          [
+            1,
+            24.77,
+            2
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            10.95,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            9.16,
+            0.0
+          ],
+          20.11,
+          20.11,
+          [
+            0,
+            20.11,
+            5
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.27,
+            7.63,
+            7.63,
+            4.26,
+            2.05,
+            2.34
+          ],
+          26.18,
+          26.18,
+          [
+            1,
+            26.18,
+            8
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.28,
+            7.69,
+            7.69,
+            4.29,
+            0.83,
+            0.85
+          ],
+          23.63,
+          23.63,
+          [
+            0,
+            23.63,
+            11
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            5.95,
+            2.28,
+            7.69,
+            7.69,
+            4.29,
+            1.24,
+            2.14
+          ],
+          31.28,
+          31.28,
+          [
+            2,
+            31.28,
+            14
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.17,
+            7.31,
+            7.31,
+            4.08,
+            0.79,
+            3.38
+          ],
+          25.04,
+          25.04,
+          [
+            1,
+            25.04,
+            17
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            1.79,
+            5.65,
+            7.53,
+            5.35,
+            1.01,
+            0.0
+          ],
+          21.33,
+          21.33,
+          [
+            0,
+            21.33,
+            20
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          4,
+          "4",
+          [
+            0.0,
+            2.13,
+            7.18,
+            7.18,
+            4.37,
+            0.0,
+            0.0
+          ],
+          20.86,
+          20.86,
+          [
+            0,
+            20.86,
+            23
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.33,
+            1.61,
+            8.14,
+            8.14,
+            4.55,
+            0.76,
+            2.04
+          ],
+          30.57,
+          30.57,
+          [
+            2,
+            30.57,
+            1
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            0.0,
+            3.91,
+            0.0,
+            0.0,
+            0.0,
+            8.5,
+            0.0
+          ],
+          12.41,
+          12.41,
+          [
+            0,
+            12.41,
+            4
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.25,
+            1.59,
+            8.02,
+            8.02,
+            4.48,
+            2.16,
+            2.46
+          ],
+          31.98,
+          31.98,
+          [
+            2,
+            31.98,
+            7
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.29,
+            1.6,
+            8.08,
+            8.08,
+            4.51,
+            0.87,
+            0.9
+          ],
+          29.33,
+          29.33,
+          [
+            1,
+            29.33,
+            10
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.29,
+            1.6,
+            8.08,
+            8.08,
+            4.51,
+            1.3,
+            2.25
+          ],
+          31.11,
+          31.11,
+          [
+            2,
+            31.11,
+            13
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.02,
+            1.52,
+            7.67,
+            7.67,
+            4.28,
+            0.82,
+            3.54
+          ],
+          30.52,
+          30.52,
+          [
+            2,
+            30.52,
+            16
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.51,
+            1.53,
+            5.79,
+            7.72,
+            5.49,
+            1.04,
+            0.0
+          ],
+          27.08,
+          27.08,
+          [
+            1,
+            27.08,
+            19
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.32,
+            1.47,
+            7.45,
+            7.45,
+            4.54,
+            0.0,
+            0.0
+          ],
+          26.23,
+          26.23,
+          [
+            1,
+            26.23,
+            22
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.33,
+            1.61,
+            8.14,
+            8.14,
+            4.55,
+            0.76,
+            2.04
+          ],
+          30.57,
+          30.57,
+          [
+            2,
+            30.57,
+            1
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            0.0,
+            3.91,
+            0.0,
+            0.0,
+            0.0,
+            8.5,
+            0.0
+          ],
+          12.41,
+          12.41,
+          [
+            0,
+            12.41,
+            4
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.25,
+            1.59,
+            8.02,
+            8.02,
+            4.48,
+            2.16,
+            2.46
+          ],
+          31.98,
+          31.98,
+          [
+            2,
+            31.98,
+            7
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.29,
+            1.6,
+            8.08,
+            8.08,
+            4.51,
+            0.87,
+            0.9
+          ],
+          29.33,
+          29.33,
+          [
+            1,
+            29.33,
+            10
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.29,
+            1.6,
+            8.08,
+            8.08,
+            4.51,
+            1.3,
+            2.25
+          ],
+          31.11,
+          31.11,
+          [
+            2,
+            31.11,
+            13
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.02,
+            1.52,
+            7.67,
+            7.67,
+            4.28,
+            0.82,
+            3.54
+          ],
+          30.52,
+          30.52,
+          [
+            2,
+            30.52,
+            16
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.51,
+            1.53,
+            5.79,
+            7.72,
+            5.49,
+            1.04,
+            0.0
+          ],
+          27.08,
+          27.08,
+          [
+            1,
+            27.08,
+            19
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        [
+          3,
+          "3",
+          [
+            5.32,
+            1.47,
+            7.45,
+            7.45,
+            4.54,
+            0.0,
+            0.0
+          ],
+          26.23,
+          26.23,
+          [
+            1,
+            26.23,
+            22
+          ]
+        ],
+        2,
+        0,
+        2,
+        0,
+        []
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ],
+      [
+        null,
+        2,
+        0,
+        3,
+        1,
+        [
+          "missing:level",
+          "inventory:not_confirmed"
+        ]
+      ]
+    ],
+    "ids": [
+      "00000000-0000-0000-0000-000000000064",
+      "00000000-0000-0000-0000-000000000065",
+      "00000000-0000-0000-0000-000000000066",
+      "00000000-0000-0000-0000-000000000067",
+      "00000000-0000-0000-0000-000000000068",
+      "00000000-0000-0000-0000-000000000069",
+      "00000000-0000-0000-0000-00000000006a",
+      "00000000-0000-0000-0000-00000000006b",
+      "00000000-0000-0000-0000-00000000006c",
+      "00000000-0000-0000-0000-00000000006d",
+      "00000000-0000-0000-0000-00000000006e",
+      "00000000-0000-0000-0000-00000000006f",
+      "00000000-0000-0000-0000-000000000070",
+      "00000000-0000-0000-0000-000000000072"
+    ],
+    "standards": [
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 1,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "d9f55b920fa67e56",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 3,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "6f00e4a800b0acd4",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      },
+      {
+        "cost": 4,
+        "scale": 50,
+        "source": "XWUID props_grade",
+        "standard_id": "31e836ec57e15ee1",
+        "thresholds": [
+          0.0,
+          24.0,
+          30.0,
+          35.0,
+          39.0,
+          42.0
+        ]
+      }
+    ]
+  },
+  "source_sha256": "dd313be28cd9a052145fd04a344bb37c5f55b152348c28801f67758634a3fe77"
+}

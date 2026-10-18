@@ -1,0 +1,2969 @@
+{
+  "source": "frozen Python production projection before review-quality migration; current calculation contract",
+  "cases": [
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000000",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000000",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "已确认",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "已确认",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "已确认"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-16T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "duplicate",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000001",
+        "title": "長離",
+        "metadata": "COST 3 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "衍射伤害加成",
+            "value": "30%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "100",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似重复 · 待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似同一件，请区分是否为另一件",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似同一件，请区分是否为另一件"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000002",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-16T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "upgrade",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000002",
+        "title": "Echo-A",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "22%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似升级 · 待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似升级，请对照旧新记录",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似升级，请对照旧新记录"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-15T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "pending",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": false,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000003",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "等待人工核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "等待人工核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-15T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": true,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "duplicate",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000004",
+        "title": "長離",
+        "metadata": "COST 3 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "衍射伤害加成",
+            "value": "30%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "100",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似重复 · 待核对 · 已保护",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": true
+      },
+      "reason": "疑似同一件，请区分是否为另一件",
+      "protection": "手动保护 · 配装占用：测试角色（待复核）",
+      "model_status": "疑似同一件，请区分是否为另一件 / 已保护"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000005",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-14T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "旧装备者",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "upgrade",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000005",
+        "title": "Echo-A",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "22%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似升级 · 待核对",
+        "issues": [],
+        "owner": "旧装备者",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似升级，请对照旧新记录",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似升级，请对照旧新记录"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000006",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 15,
+        "captured_at": "2026-10-14T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000006",
+        "title": "今汐",
+        "metadata": "COST 1 · +15 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "已确认",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "已确认",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "已确认"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000007",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "bad timestamp",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "duplicate",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000007",
+        "title": "長離",
+        "metadata": "COST 3 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "衍射伤害加成",
+            "value": "30%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "100",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似重复 · 待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似同一件，请区分是否为另一件",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似同一件，请区分是否为另一件"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000008",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "upgrade",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000008",
+        "title": "Echo-A",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "22%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似升级 · 待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似升级，请对照旧新记录",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似升级，请对照旧新记录"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000009",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123457+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000009",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "已确认",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "已确认",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "已确认"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 3,
+        "main_stats": [
+          {
+            "stat_name": "衍射伤害加成",
+            "value": 30.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 100.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000010",
+        "name": "長離",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-12T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "duplicate",
+      "issues": [
+        "ocr:ambiguous_value"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000010",
+        "title": "長離",
+        "metadata": "COST 3 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "衍射伤害加成",
+            "value": "30%",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "100",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似重复 · 待核对",
+        "issues": [
+          "ocr:ambiguous_value"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似同一件，请区分是否为另一件",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "疑似同一件，请区分是否为另一件"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 22.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "22222222-2222-4222-8222-000000000011",
+        "name": "Echo-A",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-11T15:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "upgrade",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "22222222-2222-4222-8222-000000000011",
+        "title": "Echo-A",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "22%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "疑似升级 · 待核对",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "疑似升级，请对照旧新记录",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "疑似升级，请对照旧新记录"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000100",
+        "name": "",
+        "sonata": "",
+        "level": null,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "missing:name",
+        "missing:sonata",
+        "missing:level"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000100",
+        "title": "名称待核对",
+        "metadata": "COST 1 · 等级待核对 · 套装待核对",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "missing:name",
+          "missing:sonata",
+          "missing:level"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "信息缺失，请对照游戏补填",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "信息缺失，请对照游戏补填"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000101",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "main:expected_two_slots"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000101",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "main:expected_two_slots"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "未知主词条",
+            "value": 1.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000102",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "main:invalid:0",
+        "main:invalid:1"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000102",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "未知主词条",
+            "value": "1（单位待核对）",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "main:invalid:0",
+          "main:invalid:1"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 0.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000103",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "main:invalid:0",
+        "main:invalid:1"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000103",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "0%",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "main:invalid:0",
+          "main:invalid:1"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 99.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000104",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "main:invalid:0",
+        "main:invalid:1"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000104",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "99%",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": true
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "main:invalid:0",
+          "main:invalid:1"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000105",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "sub:duplicate_or_excess"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000105",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "sub:duplicate_or_excess"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "未知词条",
+            "value": 1.0,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000106",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "sub:invalid_roll:未知词条"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000106",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "未知词条",
+            "value": "1（单位待核对）",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "sub:invalid_roll:未知词条"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.311,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000107",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "sub:invalid_roll:暴击"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000107",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.311%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "sub:invalid_roll:暴击"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.312,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000108",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "sub:invalid_roll:暴击"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000108",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.312%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "sub:invalid_roll:暴击"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [
+          {
+            "stat_name": "攻击%",
+            "value": 18.0,
+            "value_text": ""
+          },
+          {
+            "stat_name": "生命",
+            "value": 2280.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000109",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 0,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "sub:exceeds_level_capacity"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000109",
+        "title": "今汐",
+        "metadata": "COST 1 · +0 · 测试套装",
+        "rows": [
+          {
+            "name": "攻击",
+            "value": "18%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "生命",
+            "value": "2280",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "sub:exceeds_level_capacity"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "防御%",
+            "value": 41.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000110",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000110",
+        "title": "今汐",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "防御",
+            "value": "41.8%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "已确认",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "已确认",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "已确认"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 4,
+        "main_stats": [
+          {
+            "stat_name": "治疗效果加成",
+            "value": 26.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击",
+            "value": 150.0,
+            "value_text": ""
+          }
+        ],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000111",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [],
+      "usable": true,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000111",
+        "title": "今汐",
+        "metadata": "COST 4 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "治疗效果加成",
+            "value": "26.4%",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "150",
+            "main": true,
+            "uncertain": false
+          },
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": false
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": false
+          }
+        ],
+        "empty_sub": "",
+        "state": "已确认",
+        "issues": [],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "已确认",
+      "protection": "配装占用：测试角色（待复核）",
+      "model_status": "已确认"
+    },
+    {
+      "record": {
+        "profile_id": "11111111-1111-4111-8111-111111111111",
+        "cost": 1,
+        "main_stats": [],
+        "sub_stats": [
+          {
+            "stat_name": "暴击",
+            "value": 6.3,
+            "value_text": ""
+          },
+          {
+            "stat_name": "暴击伤害",
+            "value": 12.6,
+            "value_text": ""
+          },
+          {
+            "stat_name": "攻击%",
+            "value": 6.4,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣效率",
+            "value": 6.8,
+            "value_text": ""
+          },
+          {
+            "stat_name": "共鸣技能",
+            "value": 6.4,
+            "value_text": ""
+          }
+        ],
+        "item_id": "00000000-0000-4000-8000-000000000112",
+        "name": "今汐",
+        "sonata": "测试套装",
+        "level": 25,
+        "captured_at": "2026-10-17T03:04:05.123456+00:00",
+        "raw_text": "",
+        "screenshot_ref": "",
+        "source": "ocr",
+        "issues": [
+          "main:expected_two_slots",
+          "ocr:missing_tuned_rows",
+          "main:expected_two_slots"
+        ],
+        "review": "confirmed",
+        "locked": false,
+        "owner": "",
+        "owner_updated_at": "",
+        "note": "测试 ２０％ ATK",
+        "handled": false,
+        "owner_state": "unknown",
+        "owner_character_id": "",
+        "game_discarded": null,
+        "game_locked": null,
+        "game_equipped": null,
+        "game_status_updated_at": ""
+      },
+      "kind": "item",
+      "issues": [
+        "main:expected_two_slots",
+        "ocr:missing_tuned_rows"
+      ],
+      "usable": false,
+      "card": {
+        "item_id": "00000000-0000-4000-8000-000000000112",
+        "title": "今汐",
+        "metadata": "COST 1 · +25 · 测试套装",
+        "rows": [
+          {
+            "name": "暴击",
+            "value": "6.3%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "暴击伤害",
+            "value": "12.6%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "攻击",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "共鸣效率",
+            "value": "6.8%",
+            "main": false,
+            "uncertain": true
+          },
+          {
+            "name": "共鸣技能伤害加成",
+            "value": "6.4%",
+            "main": false,
+            "uncertain": true
+          }
+        ],
+        "empty_sub": "",
+        "state": "待核对",
+        "issues": [
+          "main:expected_two_slots",
+          "ocr:missing_tuned_rows"
+        ],
+        "owner": "",
+        "owner_character_id": "",
+        "locked": false
+      },
+      "reason": "识别信息或数值待核对",
+      "protection": "待核对 · 配装占用：测试角色（待复核）",
+      "model_status": "识别信息或数值待核对"
+    }
+  ]
+}

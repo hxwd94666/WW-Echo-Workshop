@@ -1,0 +1,468 @@
+{
+  "source_sha256": "3152e662e2256e398d583f3a39c2bf6961fc38c8195d9e15ab437bbc84b9c2de",
+  "source": "Existing MatchResultCards._build_projection AST; evaluated before removal",
+  "cases": [
+    {
+      "name": "mixed_visibility_unknown_and_ties",
+      "ids": [
+        "00000000-0000-4000-8000-000000000099",
+        "00000000-0000-4000-8000-000000000098",
+        "00000000-0000-4000-8000-000000000097",
+        "00000000-0000-4000-8000-000000000096",
+        "00000000-0000-4000-8000-000000000095"
+      ],
+      "roles": [
+        [
+          "role0",
+          "default"
+        ],
+        [
+          "role1",
+          "default"
+        ],
+        [
+          "role2",
+          "default"
+        ]
+      ],
+      "cells": [
+        [
+          10,
+          "",
+          "unknown"
+        ],
+        [
+          30,
+          "",
+          "match"
+        ],
+        [
+          20,
+          "slot",
+          "match"
+        ],
+        [
+          30,
+          "",
+          "match"
+        ],
+        [
+          30,
+          "",
+          "unknown"
+        ],
+        [
+          5,
+          "",
+          "match"
+        ],
+        [
+          null,
+          "invalid",
+          "excluded"
+        ],
+        [
+          null,
+          "invalid",
+          "excluded"
+        ],
+        [
+          null,
+          "invalid",
+          "excluded"
+        ],
+        [
+          40,
+          "compatibility",
+          "mismatch"
+        ],
+        [
+          15,
+          "",
+          "unknown"
+        ],
+        [
+          20,
+          "",
+          "match"
+        ],
+        [
+          30,
+          "",
+          "match"
+        ],
+        [
+          10,
+          "",
+          "match"
+        ],
+        [
+          30,
+          "",
+          "match"
+        ]
+      ],
+      "expected_views": [
+        {
+          "role": null,
+          "entries": [
+            [
+              4,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ],
+          "excluded": 1,
+          "unknown": 3
+        },
+        {
+          "role": 0,
+          "entries": [
+            [
+              4,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "excluded": 2,
+          "unknown": 1
+        },
+        {
+          "role": 1,
+          "entries": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ]
+          ],
+          "excluded": 1,
+          "unknown": 2
+        },
+        {
+          "role": 2,
+          "entries": [
+            [
+              4,
+              2
+            ],
+            [
+              3,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ],
+          "excluded": 2,
+          "unknown": 0
+        }
+      ]
+    },
+    {
+      "name": "negative_and_signed_zero",
+      "ids": [
+        "00000000-0000-4000-8000-000000000099",
+        "00000000-0000-4000-8000-000000000098",
+        "00000000-0000-4000-8000-000000000097"
+      ],
+      "roles": [
+        [
+          "role0",
+          "default"
+        ],
+        [
+          "role1",
+          "default"
+        ]
+      ],
+      "cells": [
+        [
+          -1,
+          "",
+          "match"
+        ],
+        [
+          -2,
+          "",
+          "match"
+        ],
+        [
+          -0.0,
+          "",
+          "match"
+        ],
+        [
+          0.0,
+          "",
+          "match"
+        ],
+        [
+          0.0,
+          "",
+          "unknown"
+        ],
+        [
+          -0.0,
+          "",
+          "match"
+        ]
+      ],
+      "expected_views": [
+        {
+          "role": null,
+          "entries": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 1
+        },
+        {
+          "role": 0,
+          "entries": [
+            [
+              2,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 1
+        },
+        {
+          "role": 1,
+          "entries": [
+            [
+              2,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 0
+        }
+      ]
+    },
+    {
+      "name": "single_all_excluded",
+      "ids": [
+        "00000000-0000-4000-8000-000000000099",
+        "00000000-0000-4000-8000-000000000098",
+        "00000000-0000-4000-8000-000000000097"
+      ],
+      "roles": [
+        [
+          "role0",
+          "default"
+        ]
+      ],
+      "cells": [
+        [
+          null,
+          "invalid",
+          "excluded"
+        ],
+        [
+          12,
+          "compatibility",
+          "mismatch"
+        ],
+        [
+          22,
+          "slot",
+          "match"
+        ]
+      ],
+      "expected_views": [
+        {
+          "role": null,
+          "entries": [],
+          "excluded": 3,
+          "unknown": 0
+        },
+        {
+          "role": 0,
+          "entries": [],
+          "excluded": 3,
+          "unknown": 0
+        }
+      ]
+    },
+    {
+      "name": "empty_records",
+      "ids": [],
+      "roles": [
+        [
+          "role0",
+          "default"
+        ],
+        [
+          "role1",
+          "default"
+        ]
+      ],
+      "cells": [],
+      "expected_views": [
+        {
+          "role": null,
+          "entries": [],
+          "excluded": 0,
+          "unknown": 0
+        },
+        {
+          "role": 0,
+          "entries": [],
+          "excluded": 0,
+          "unknown": 0
+        },
+        {
+          "role": 1,
+          "entries": [],
+          "excluded": 0,
+          "unknown": 0
+        }
+      ]
+    },
+    {
+      "name": "ties_preserve_first_role",
+      "ids": [
+        "00000000-0000-4000-8000-000000000099",
+        "00000000-0000-4000-8000-000000000098"
+      ],
+      "roles": [
+        [
+          "role0",
+          "default"
+        ],
+        [
+          "role1",
+          "default"
+        ]
+      ],
+      "cells": [
+        [
+          25,
+          "",
+          "unknown"
+        ],
+        [
+          25,
+          "",
+          "match"
+        ],
+        [
+          25,
+          "",
+          "match"
+        ],
+        [
+          25,
+          "",
+          "unknown"
+        ]
+      ],
+      "expected_views": [
+        {
+          "role": null,
+          "entries": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 2
+        },
+        {
+          "role": 0,
+          "entries": [
+            [
+              1,
+              0
+            ],
+            [
+              0,
+              0
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 1
+        },
+        {
+          "role": 1,
+          "entries": [
+            [
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "excluded": 0,
+          "unknown": 1
+        }
+      ]
+    }
+  ]
+}

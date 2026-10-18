@@ -1,0 +1,951 @@
+{
+  "source": "Existing candidate_feedback and native filter_records + explicit select_match_records, before migration",
+  "cases": [
+    {
+      "name": "empty",
+      "records": [],
+      "selected_ids": null,
+      "filters": {},
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "声骸库为空，请先收录或导入声骸。",
+        "action": "inventory",
+        "role_key": null
+      }
+    },
+    {
+      "name": "pending-before-empty-selection",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "pending",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": [],
+      "filters": {},
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "暂无已核对的可评分声骸，请先核对。",
+        "action": "review",
+        "role_key": null
+      }
+    },
+    {
+      "name": "explicit-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": [],
+      "filters": {},
+      "catalog_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e"
+      ],
+      "record_ids": [],
+      "feedback": {
+        "text": "尚未选择声骸，请明确选择本次候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "no-condition-success",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "5b9ec7b0-161a-46ce-a6c4-468927e4cecc",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-B",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {},
+      "catalog_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "record_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "feedback": null
+    },
+    {
+      "name": "sparse-source-order",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "5b9ec7b0-161a-46ce-a6c4-468927e4cecc",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-B",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": [
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc",
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "filters": {},
+      "catalog_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "record_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "feedback": null
+    },
+    {
+      "name": "stale-ids",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": [
+        "removed"
+      ],
+      "filters": {},
+      "catalog_ids": [
+        "cc825847-1e45-4bd0-9870-98a1ad7ede7e"
+      ],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前选择没有可评分声骸，请重新选择。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "text-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "text": "absent"
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前筛选没有可评分声骸，请重新选择候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "cost-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "cost": 3
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前筛选没有可评分声骸，请重新选择候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "min-level-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 0,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "minimum_level": 25
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "暂无已核对的可评分声骸，请先核对。",
+        "action": "review",
+        "role_key": null
+      }
+    },
+    {
+      "name": "protection-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": true,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "exclude_locked": true
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "评分范围排除了全部声骸，请检查等级、保护等选项。",
+        "action": "filters",
+        "role_key": null
+      }
+    },
+    {
+      "name": "raw-whitespace-hint",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": true,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "exclude_locked": true,
+        "text": "   "
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前筛选没有可评分声骸，请重新选择候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "mode-pending-no-records",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "mode": "pending"
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前筛选没有可评分声骸，请重新选择候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "five-stats-empty",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "fully_tuned": true
+      },
+      "catalog_ids": [],
+      "record_ids": [],
+      "feedback": {
+        "text": "当前筛选没有可评分声骸，请重新选择候选。",
+        "action": "selection",
+        "role_key": null
+      }
+    },
+    {
+      "name": "pending-catalog-but-usable-elsewhere",
+      "records": [
+        {
+          "item_id": "cc825847-1e45-4bd0-9870-98a1ad7ede7e",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 1,
+          "main_stats": [
+            {
+              "stat_name": "攻击%",
+              "value": 18.0
+            },
+            {
+              "stat_name": "生命",
+              "value": 2280.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-A",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "confirmed",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        },
+        {
+          "item_id": "5b9ec7b0-161a-46ce-a6c4-468927e4cecc",
+          "profile_id": "00000000-0000-4000-8000-000000000001",
+          "cost": 4,
+          "main_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 22.0
+            },
+            {
+              "stat_name": "攻击",
+              "value": 150.0
+            }
+          ],
+          "sub_stats": [
+            {
+              "stat_name": "暴击",
+              "value": 6.3
+            },
+            {
+              "stat_name": "暴击伤害",
+              "value": 12.6
+            },
+            {
+              "stat_name": "攻击%",
+              "value": 6.4
+            },
+            {
+              "stat_name": "共鸣效率",
+              "value": 6.8
+            },
+            {
+              "stat_name": "共鸣技能",
+              "value": 6.4
+            }
+          ],
+          "name": "ScopeEcho-B",
+          "sonata": "测试套装",
+          "level": 25,
+          "review": "pending",
+          "issues": [],
+          "locked": false,
+          "owner": "",
+          "owner_state": "unknown",
+          "game_equipped": null
+        }
+      ],
+      "selected_ids": null,
+      "filters": {
+        "mode": "pending"
+      },
+      "catalog_ids": [
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "record_ids": [
+        "5b9ec7b0-161a-46ce-a6c4-468927e4cecc"
+      ],
+      "feedback": null
+    }
+  ]
+}

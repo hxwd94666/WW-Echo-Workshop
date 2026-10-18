@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echo-workshop"
+dynamic = ["version"]
+description = "鸣潮声骸收录、评分、匹配与配装工具"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-only"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+dependencies = []
+
+[project.optional-dependencies]
+ui = ["PySide6==6.11.1", "PySide6-Fluent-Widgets==1.11.3"]
+okww = ["ok-script[ocr,qt]==2.0.8"]
+dev = ["ruff==0.17.0"]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "echo_workshop.__version__"}
+
+[tool.setuptools.package-data]
+"echo_workshop.resources" = ["builtin/*.json", "builtin/*.png"]
+"echo_workshop.ui.widgets" = ["assets/*.png"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["build", "dist", ".venv", ".tmp"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
+[tool.ruff.format]
+quote-style = "single"
+line-ending = "lf"
+
+[tool.echo_workshop]
+maximum-python-lines = 800
+plugin-install-id = "echo-workshop"
+data-namespace = "echo-workshop"
