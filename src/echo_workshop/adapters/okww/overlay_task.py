@@ -1,12 +1,11 @@
 # 适配宿主实时声骸评分任务。
 """Portable OK Script adapter for Echo scoring."""
-
 from ok import TriggerTask, og
 from ok.feature.Box import Box
 from contextlib import nullcontext
+import queue
 import threading
 import time
-
 from echo_workshop.application.templates import DEFAULT_TEMPLATE
 from echo_workshop.adapters.okww.live_presentation import live_summary
 from echo_workshop.adapters.okww.capture_recovery import CaptureRecoveryMonitor
@@ -22,43 +21,48 @@ from echo_workshop.capture.metadata import (
     record_with_metadata,
     scan_ocr_regions,
 )
-from echo_workshop.application.live_selection import (
-    live_score_settings,
-    matching_live_choices,
-    resolve_live_selection,
-)
-from echo_workshop.application.recommendations import RecommendationService
+from echo_workshop.application.live_selection import resolve_live_selection
 from echo_workshop.application.compute_protocol import ComputeFailure
 from echo_workshop.application.operations import OperationCancelled
-
-
 STATUS_PAINTER_KEY = 'echo-workshop-status'
-
-
+def _live_digest(frame):
+    try:
+        return hash(frame[::32, ::32].tobytes())
+    except (AttributeError, TypeError):
+        return None
 class EchoWorkshopOverlayTask(TriggerTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = '声骸评分后台识别'
         self.description = '识别单个声骸并按 XW-UID 模版评分'
-        self.trigger_interval = 0.25
+        self.trigger_interval = 0.15
         self.visible = False
         self.painter = EchoStatBoxPainter()
-        self.current_comparisons = None
         self._echo_owned_cleanup = True
         self._destroyed = False
         self._run_lock = threading.RLock()
         self._score_thread = None
         self._score_stop = None
         self._loop_error_at = 0.0
+        self._last_live_digest = None
+        self._live_layout = ''
+        self._live_full_at = 0.0
+        self._live_comparison = False
+        self._cost_cache = {}
+        self._manual_queue = queue.Queue(maxsize=20)
+        self._manual_pending = []
+        self._manual_total_captures = 0
+        self._manual_total_added = 0
+        self._manual_parsing = False
+        self._manual_stop = threading.Event()
+        threading.Thread(
+            target=self._manual_worker, name='EchoManualParse', daemon=True
+        ).start()
         self.default_config['_enabled'] = True
-
+        self._start_score_loop()
     def ocr_fun(self, lib):
-        # Protect the shared backend, including a cancelled scan's last inference.
-        # Capture, task pause handling and UI emissions stay outside this lock.
         from echo_workshop.capture.scan.pipeline import OCR_LOCK
-
         fun = super().ocr_fun(lib)
-
         def infer(*args, **kwargs):
             with OCR_LOCK:
                 return fun(*args, **kwargs)
@@ -82,18 +86,12 @@ class EchoWorkshopOverlayTask(TriggerTask):
         app = getattr(og, 'app', None)
         if app is None:
             return None
-        # ``set_overlay_setting('boxes', False)`` is the lifecycle switch for
-        # the *entire* overlay, not merely OCR boxes: it persists
-        # ``use_overlay=False`` and closes the native window. Keep that global
-        # lifecycle enabled, then independently disable only debug boxes on the
-        # overlay instance. Do not toggle True every frame, which could flash
-        # OCR boxes before the following False call.
         if not app.ok_config.get('use_overlay', False):
             app.set_overlay_setting('boxes', True)
         overlay = app.get_overlay_view()
         window = getattr(getattr(og, 'device_manager', None), 'hwnd_window', None)
         overlay = self._repair_overlay(app, overlay, window)
-        if overlay is not None:
+        if overlay is not None and getattr(overlay, '_boxes_enabled', False):
             overlay.set_boxes_enabled(False)
             if window is not None:
                 try:
@@ -140,9 +138,11 @@ class EchoWorkshopOverlayTask(TriggerTask):
             return False
         return bool(self._settings().get('启用声骸评分', True))
 
-    def _direct_frame(self):
-        """Read a fresh frame ourselves so host pause/stale cache cannot block recovery."""
-        manager = getattr(og, 'device_manager', None)
+    def _cached_cost(self, rows):
+        return self._cost_cache.get(tuple(rows))
+
+    @staticmethod
+    def _read_capture_frame(manager):
         capture = getattr(manager, 'capture_method', None)
         window = getattr(manager, 'hwnd_window', None)
         if (
@@ -157,12 +157,13 @@ class EchoWorkshopOverlayTask(TriggerTask):
             return None
         try:
             return get_frame()
-        except Exception as error:
-            now = time.monotonic()
-            if now - getattr(self, '_direct_error_at', 0.0) >= 30:
-                self._direct_error_at = now
-                self.log_warning(f'直接读取游戏帧失败：{error}')
+        except Exception:
             return None
+
+    def _direct_frame(self):
+        """Read the current capture directly; the recovery monitor reconnects it."""
+        manager = getattr(og, 'device_manager', None)
+        return self._read_capture_frame(manager) if manager is not None else None
 
     def post_init(self):
         self._ensure_overlay()
@@ -177,6 +178,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
             target=self._score_loop, name='EchoScoreLoop', daemon=True
         )
         self._score_thread.start()
+        self.log_info('实时评分独立线程已启动')
 
     def _stop_score_loop(self):
         stop = self._score_stop
@@ -189,15 +191,29 @@ class EchoWorkshopOverlayTask(TriggerTask):
         self._score_stop = None
 
     def _score_loop(self):
-        # Host pause (minimize, restart, task switching) stops its executor; this
-        # read-only loop keeps the overlay alive only when the host is paused.
         while not self._score_stop.wait(0.15):
-            if self._destroyed or not self._score_active():
+            try:
+                if self._destroyed or not self._score_active():
+                    continue
+            except Exception as error:
+                now = time.monotonic()
+                if now - getattr(self, '_active_error_at', 0.0) >= 30:
+                    self._active_error_at = now
+                    self.log_warning(f'实时评分开关检查失败：{error}')
                 continue
             executor = getattr(self, 'executor', None)
-            if executor is None or not executor.paused:
+            if executor is None or not getattr(executor, 'paused', False):
                 continue
+            settings_task = self._settings_task()
+            runtime = getattr(settings_task, 'runtime', None)
+            if runtime is not None:
+                status = runtime.capture.status
+                if status.mode == 'manual' and status.state in ('armed', 'single'):
+                    continue
             try:
+                recovery = getattr(self, 'capture_recovery', None)
+                if recovery is not None:
+                    recovery.poll()
                 with self._run_lock:
                     self._run_frame(direct_only=True)
             except Exception as error:
@@ -205,6 +221,48 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 if now - self._loop_error_at >= 30:
                     self._loop_error_at = now
                     self.log_warning(f'独立实时评分失败：{error}')
+
+    def _enqueue_manual(self, snapshot, request, identity, settings, runtime):
+        try:
+            self._manual_queue.put_nowait((snapshot, request, identity, settings, runtime))
+        except queue.Full:
+            return False
+        self._manual_pending.append(request)
+        runtime.capture._queued_requests.append(request)
+        self._manual_total_captures += 1
+        self.log_info(
+            f'手动收录已冻结入队：截图总计={self._manual_total_captures}，'
+            f'队列={self._manual_queue.qsize()}'
+        )
+        return True
+
+    def _manual_worker(self):
+        from .manual_capture import parse_manual_snapshot
+
+        while not self._manual_stop.is_set():
+            try:
+                snapshot, request, identity, settings, runtime = self._manual_queue.get(timeout=0.2)
+            except queue.Empty:
+                continue
+            try:
+                self._manual_parsing = True
+                started = time.monotonic()
+                self.log_info('后台收录解析开始')
+                parse_manual_snapshot(self, settings, runtime, request, snapshot, identity)
+                self.log_info(f'后台收录解析结束：{time.monotonic() - started:.2f}s')
+            except Exception as error:
+                self.log_warning(f'后台收录解析失败：{error}')
+            finally:
+                self._manual_parsing = False
+                self._manual_pending = [
+                    pending for pending in self._manual_pending if pending is not request
+                ]
+                runtime.capture._queued_requests = [
+                    queued
+                    for queued in runtime.capture._queued_requests
+                    if queued is not request
+                ]
+                self._manual_queue.task_done()
 
     def _ensure_recovery(self):
         if (
@@ -247,6 +305,10 @@ class EchoWorkshopOverlayTask(TriggerTask):
         boxes=None,
         scan=False,
         comparison_side='right',
+        fast=False,
+        layout_hint='',
+        comparison_hint=False,
+        cost_lookup=None,
     ):
         """Shared same-frame selected-panel parser for manual and automatic intake."""
         height, width = frame.shape[:2]
@@ -293,9 +355,14 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 observation_service=observation_service,
                 weight_version=snapshot.version,
                 cancel_event=cancel_event,
+                layout_hint=layout_hint,
+                comparison_hint=comparison_hint,
+                cost_lookup=cost_lookup,
             )
 
         analysis = analyze(boxes)
+        if fast:
+            return MetadataPass(analysis, tuple(boxes), tuple(boxes))
         if comparison_side == 'left':
             return MetadataPass(analysis, tuple(boxes), tuple(boxes))
         return refine_echo_metadata(
@@ -417,6 +484,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
     def _run_frame(self, direct_only=False):
         if self._destroyed:
             return False
+        started = time.monotonic()
         overlay = self._ensure_overlay()
         settings = self._settings()
         settings_task = self._settings_task()
@@ -426,6 +494,13 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 self._clear(overlay, True)
             return False
         self._ensure_recovery()
+        if runtime.capture.status.mode == 'manual' and runtime.capture.status.state in (
+            'armed',
+            'single',
+        ):
+            if overlay is not None:
+                self._clear(overlay, True)
+            return False
         collecting = (
             runtime is not None
             and not runtime._closed
@@ -433,8 +508,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
             and runtime.capture.status.mode != 'automatic'
         )
         request = runtime.capture.single_request if collecting else None
-        # The portable import is always a non-development build. Ignore stale
-        # cached values from older package versions and keep OCR boxes off.
         if not settings.get('启用声骸评分', True) and not collecting:
             if overlay is not None:
                 self._clear(overlay, True)
@@ -453,21 +526,24 @@ class EchoWorkshopOverlayTask(TriggerTask):
             if overlay is not None:
                 self._clear(overlay, True)
             return False
-        # One new captured frame is used for OCR and evidence. The executor's
-        # cached frame property alone does not establish a fresh observation.
         try:
-            # Timestamp the beginning of acquisition conservatively: a request
-            # arriving while next_frame is in flight must wait for another frame.
             captured_at = time.monotonic()
             frame = self._direct_frame()
             token = captured_at if frame is not None else None
             if frame is None:
                 if direct_only:
+                    now = time.monotonic()
+                    if now - getattr(self, '_loop_noframe_at', 0.0) >= 10:
+                        self._loop_noframe_at = now
+                        window = getattr(getattr(og, 'device_manager', None), 'hwnd_window', None)
+                        self.log_warning(
+                            '独立实时评分取不到游戏帧：capture 未连接或窗口不可见'
+                            f'（exists={getattr(window, "exists", None)}, '
+                            f'visible={getattr(window, "visible", None)}, '
+                            f'pos_valid={getattr(window, "pos_valid", None)}）'
+                        )
                     return False
                 frame = self.next_frame()
-                # Bind the host's acquisition token before OCR. A later host
-                # token does not establish freshness for this already-acquired
-                # frame.
                 token = getattr(self.executor, '_last_frame_time', None)
             if frame is None:
                 if collecting:
@@ -478,6 +554,22 @@ class EchoWorkshopOverlayTask(TriggerTask):
             recovery = getattr(self, 'capture_recovery', None)
             if recovery is not None:
                 recovery.record_frame()
+            digest = _live_digest(frame)
+            page_changed = (
+                digest is not None
+                and self._last_live_digest is not None
+                and digest != self._last_live_digest
+                and (time.monotonic() - self._live_full_at >= 0.5)
+            )
+            if (
+                digest is not None
+                and not collecting
+                and request is None
+                and digest == self._last_live_digest
+            ):
+                return False
+            self._last_live_digest = digest
+            frame_at = time.monotonic()
             frame_height, frame_width = frame.shape[:2]
             viewport = detect_echo_viewport(frame)
             if viewport is None:
@@ -486,12 +578,26 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 if overlay is not None:
                     self._clear(overlay, True)
                 return False
-            regions = EchoViewport.checked(viewport, frame_width, frame_height).ocr_regions()
+            view = EchoViewport.checked(viewport, frame_width, frame_height)
+            force_full = (
+                page_changed
+                or not self._live_layout
+                or (time.monotonic() - self._live_full_at >= 2.0)
+            )
+            comparison = self._live_comparison
+            regions = (
+                view.ocr_regions()
+                if (force_full or comparison)
+                else view.live_regions(self._live_layout)
+            )
+            if force_full:
+                self._live_full_at = time.monotonic()
             boxes = [
                 b
                 for region in regions
                 for b in self.ocr(frame=frame, box=Box(*region, name='echo-content'))
             ]
+            ocr_at = time.monotonic()
         except Exception:
             if collecting:
                 runtime.capture.interrupt()
@@ -503,8 +609,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 if request is not None and request.weights is not None
                 else runtime.weights.active
             )
-        matching_only = bool(matching_live_choices(settings))
-        settings = live_score_settings(settings, snapshot)
         try:
             metadata = self.read_metadata(
                 frame,
@@ -514,8 +618,43 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 boxes=boxes,
                 observation_service=runtime.observations,
                 cancel_event=runtime.stop_event,
+                fast=not collecting,
+                layout_hint='' if force_full else self._live_layout,
+                comparison_hint=comparison,
+                cost_lookup=self._cached_cost,
             )
             analysis = metadata.analysis
+            fell_back = False
+            if not analysis.main_rows and self._live_layout and not force_full:
+                regions = view.ocr_regions()
+                boxes = [
+                    b
+                    for region in regions
+                    for b in self.ocr(frame=frame, box=Box(*region, name='echo-content'))
+                ]
+                metadata = self.read_metadata(
+                    frame,
+                    settings,
+                    snapshot,
+                    viewport=viewport,
+                    boxes=boxes,
+                    observation_service=runtime.observations,
+                    cancel_event=runtime.stop_event,
+                    fast=not collecting,
+                    cost_lookup=self._cached_cost,
+                )
+                analysis = metadata.analysis
+                fell_back = True
+            if force_full or fell_back:
+                if analysis.layout:
+                    self._live_layout = analysis.layout
+                self._live_comparison = bool(analysis.comparison)
+            signature = tuple((row.stat_name, row.value) for row in analysis.main_rows)
+            if analysis.observed_cost is not None:
+                self._cost_cache[signature] = analysis.observed_cost
+                if len(self._cost_cache) > 64:
+                    self._cost_cache.pop(next(iter(self._cost_cache)))
+            analysis_at = time.monotonic()
         except Exception:
             if collecting:
                 runtime.capture.interrupt()
@@ -523,17 +662,9 @@ class EchoWorkshopOverlayTask(TriggerTask):
         if getattr(analysis, 'selected_ids', None):
             self.auto_matched_ids = analysis.selected_ids
         record = None
-        comparisons = ()
-        show_comparisons = bool(
-            settings.get('ShowCurrentComparisons', False) and settings.get('启用声骸评分', True)
-        )
-        if collecting or (show_comparisons and runtime is not None and not runtime._closed):
+        if collecting:
             try:
-                profile = (
-                    runtime.capture.status.profile_id
-                    if collecting
-                    else settings.get('InventoryProfileID', '')
-                )
+                profile = runtime.capture.status.profile_id
                 layout = getattr(analysis, 'layout', '')
                 sonata = (
                     request.sonata
@@ -554,8 +685,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
                             encode_evidence,
                         )
 
-                        # Geometry is deterministic and recorded before observe;
-                        # PNG compression stays lazy until the stable commit.
                         record = describe_evidence(record, analysis, frame_width, frame_height)
                         runtime.capture.observe(
                             record,
@@ -580,29 +709,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 if collecting:
                     runtime.capture.interrupt()
                     self.log_warning(f'声骸收录失败，当前库存保持：{error}')
-                comparisons = ()
-        if show_comparisons and snapshot is not None:
-            try:
-                if (
-                    self.current_comparisons is None
-                    or self.current_comparisons.compute is not runtime.compute
-                ):
-                    self.current_comparisons = RecommendationService(compute=runtime.compute)
-                comparisons = self.current_comparisons.compare_live(
-                    analysis,
-                    settings.get('ComparisonSettingsJSON', ''),
-                    settings.get('InventoryProfileID', ''),
-                    snapshot,
-                    record,
-                    cancel_event=runtime.stop_event,
-                )
-            except (ValueError, KeyError, TypeError):
-                comparisons = ()
-            except OperationCancelled:
-                return False
-            except ComputeFailure as error:
-                self.log_warning(f'当前件比较中断：{error.kind}')
-                comparisons = ()
         if overlay is None:
             return False
         if background_request and not settings_task._game_foreground():
@@ -612,9 +718,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
             self._clear(overlay, True)
             return False
         reference = None
-        if analysis.comparison:
-            # Freeze the right panel's refined choice: scoped OCR may recover
-            # a different owner than the initial full-frame observation.
+        if self._live_comparison:
             reference_settings = dict(settings)
             reference_settings['自动匹配评分模板'] = False
             if analysis.selected_ids:
@@ -630,33 +734,9 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 comparison_side='left',
                 observation_service=runtime.observations,
                 cancel_event=runtime.stop_event,
+                comparison_hint=True,
             ).analysis
-        reference_scores = {}
-        if reference is not None and reference.current_score is not None and comparisons:
-            evidence = runtime.observations.evaluate(
-                reference.main_rows,
-                reference.sub_rows,
-                selections=tuple(
-                    (
-                        row.character_id,
-                        row.modal_id,
-                        snapshot.scoring_template(row.character_id, row.modal_id),
-                    )
-                    for row in comparisons
-                ),
-                weight_version=snapshot.version,
-                cost=reference.cost,
-                cost_key=str(reference.cost),
-                cancel_event=runtime.stop_event,
-            )
-            reference_scores = dict(evidence.scores)
-        summary = live_summary(
-            analysis,
-            reference,
-            comparisons,
-            reference_scores=reference_scores,
-            matching_only=matching_only,
-        )
+        summary, summary_colours = live_summary(analysis, reference)
         if not summary:
             self._clear(overlay, True)
             return False
@@ -675,14 +755,25 @@ class EchoWorkshopOverlayTask(TriggerTask):
             tier_labels,
             tier_colors,
             row_scores,
-            layout='comparison' if analysis.comparison else analysis.layout,
+            layout='comparison' if self._live_comparison else analysis.layout,
             viewport=viewport,
+            summary_colours=summary_colours,
         )
         if analysis.rectangles or summary:
             overlay.draw(ECHO_STAT_PAINTER_KEY, self.painter.paint)
             overlay.clear_draw(STATUS_PAINTER_KEY)
         else:
             self._clear(overlay, True)
+        now = time.monotonic()
+        if now - getattr(self, '_timing_at', 0.0) >= 2.0:
+            self._timing_at = now
+            self.log_info(
+                '实时评分耗时：'
+                f'取帧={int((frame_at - started) * 1000)}ms '
+                f'OCR={int((ocr_at - frame_at) * 1000)}ms '
+                f'分析={int((analysis_at - ocr_at) * 1000)}ms '
+                f'绘制={int((now - analysis_at) * 1000)}ms'
+            )
         return False
 
     def _clear(self, overlay, include_status=False):
@@ -695,6 +786,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
         if self._destroyed:
             return
         self._destroyed = True
+        self._manual_stop.set()
         self._stop_score_loop()
         settings = self._settings_task()
         runtime = getattr(settings, 'runtime', None)

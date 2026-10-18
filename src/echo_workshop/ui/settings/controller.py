@@ -54,18 +54,12 @@ class AssistantSettingsController:
         for key, label, default in (
             ('启用声骸评分', '显示实时评分', True),
             ('自动匹配评分模板', '跟随当前装备角色评分', False),
-            ('ShowCurrentComparisons', '显示匹配角色评分', False),
         ):
             check = QCheckBox(label)
             check.setChecked(bool(self.task.config.get(key, default)))
             check.toggled.connect(lambda value, k=key: self.task.config.__setitem__(k, bool(value)))
             score.content_layout.addWidget(check)
             self.live_score_checks[key] = check
-            if key == 'ShowCurrentComparisons':
-                check.setToolTip(
-                    '匹配页已选角色时仅使用这些角色，设置中的角色和模版暂不生效；最多三个。'
-                )
-                check.toggled.connect(self.refresh_live_score_selection)
         from echo_workshop.ui.widgets.roles import RolePicker
 
         self.score_picker = RolePicker(self.runtime.weights.active)
@@ -82,7 +76,6 @@ class AssistantSettingsController:
         self.score_source_hint = BodyLabel('')
         self.score_source_hint.setWordWrap(True)
         score.content_layout.addWidget(self.score_source_hint)
-        self.refresh_live_score_selection()
         self.advanced = self.settings_sections[
             'search'
         ]  # Existing public owner of global controls.
@@ -190,26 +183,7 @@ class AssistantSettingsController:
             self.feedback.setText('诊断导出未完成：' + str(error))
         self.feedback.show()
 
-    def refresh_live_score_selection(self, *_):
-        from echo_workshop.application.live_selection import matching_live_choices
-
-        choices = matching_live_choices(self.task.config)
-        self.score_picker.setEnabled(not choices)
-        self.score_apply_button.setEnabled(not choices)
-        self.live_score_checks['自动匹配评分模板'].setEnabled(not choices)
-        self.score_source_hint.setText(
-            f'正在使用匹配页的 {min(len(choices), 3)} 个角色模版；此处选择暂不生效。'
-            if choices
-            else ''
-        )
-        self.score_source_hint.setVisible(bool(choices))
-
     def apply_score_selection(self):
-        from echo_workshop.application.live_selection import matching_live_choices
-
-        if matching_live_choices(self.task.config):
-            self.refresh_live_score_selection()
-            return
         key = self.score_picker.key()
         if key is None:
             self.feedback.setText('请选择角色和模版。')

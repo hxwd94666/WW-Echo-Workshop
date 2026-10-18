@@ -45,6 +45,7 @@ class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
         self.shortcut_message_at = float('-inf')
         self._window_signals = None
         self.scan_progress_overlay = None
+        self.manual_progress_overlay = None
         self.scan_start_notice = None
         self.default_config.update(
             {
@@ -59,7 +60,6 @@ class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 'AutoWeightUpdates': True,
                 'AllocationSettingsJSON': '',
                 'CaptureHotkeysJSON': '',
-                'ShowCurrentComparisons': False,
                 'IntakeMode': 'manual',
                 'ScanMinimumLevel': '25',
             }
@@ -79,7 +79,6 @@ class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 'AllocationSettingsJSON': {'hidden': True},
                 'CaptureHotkeysJSON': {'hidden': True},
                 '自动匹配评分模板': {'hidden': True},
-                'ShowCurrentComparisons': {'hidden': True},
                 'IntakeMode': {'hidden': True},
                 'ScanMinimumLevel': {'hidden': True},
             }
@@ -90,7 +89,6 @@ class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 '自动匹配评分模板': '按当前声骸的装备角色选择评分模版',
                 '角色评分模板': '选择用于评分的角色与模版',
                 'Show Debug Boxes': '显示 OK Script 的 OCR 调试框',
-                'ShowCurrentComparisons': '同时查看匹配页所选角色的评分，最多三个',
             }
         )
 

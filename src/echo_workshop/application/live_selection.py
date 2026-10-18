@@ -5,41 +5,6 @@ from dataclasses import dataclass
 import re
 
 from echo_workshop.core.text import simplify_echo_text
-from echo_workshop.application.recommendations import comparison_choices
-
-
-def matching_live_choices(settings):
-    """Matching owns live templates only while enabled and its profile has selections."""
-    if not settings.get('ShowCurrentComparisons', False):
-        return ()
-    try:
-        return comparison_choices(
-            settings.get('ComparisonSettingsJSON', ''), settings.get('InventoryProfileID', '')
-        )[0]
-    except (ValueError, KeyError, TypeError):
-        return ()
-
-
-def live_score_settings(settings, snapshot):
-    """Override per frame without overwriting the user's retained fixed selection."""
-    choices = matching_live_choices(settings)
-    if not choices:
-        return settings
-    effective = dict(settings)
-    effective['自动匹配评分模板'] = False
-    key, label = choices[0], ''
-    if snapshot is not None:
-        for choice in choices:
-            try:
-                label = snapshot.scoring_template(*choice)['name']
-                key = choice
-                break
-            except ValueError:
-                continue
-    effective['TemplateCharacterID'], effective['TemplateModalID'] = key
-    effective['角色评分模板'] = label
-    return effective
-
 
 @dataclass(frozen=True)
 class LiveSelection:

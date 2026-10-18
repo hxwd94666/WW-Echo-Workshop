@@ -540,7 +540,6 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         self._refresh_backup_feedback()
         if self.score_picker.snapshot.version != self.runtime.weights.active.version:
             self.score_picker.reload(self.runtime.weights.active, self.score_picker.key())
-        self.refresh_live_score_selection()
         label = {
             'stopped': '收录就绪',
             'armed': '等待收录快捷键',
@@ -580,6 +579,13 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             capture_text = f'{label} · {scan.captured} 件'
             if scan.backlog:
                 capture_text += f' · 解析 {scan.backlog}'
+        elif state.mode == 'manual' and busy:
+            queue = getattr(self.task, '_manual_queue', None)
+            backlog = queue.qsize() if queue is not None else 0
+            capture_text = (
+                f'{label} · 新增 {state.added} · 解析队列 {backlog}'
+                f' · 待核对 {state.needs_review}'
+            )
         elif not busy:
             automatic = self.task.config.get('IntakeMode', 'manual') == 'automatic'
             if automatic and self.task._capture_ready():

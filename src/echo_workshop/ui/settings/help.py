@@ -9,7 +9,6 @@ SETTING_NAMES = {
     '自动匹配评分模板': '自动选择评分角色',
     '角色评分模板': '评分角色与模版',
     'Show Debug Boxes': '识别调试框',
-    'ShowCurrentComparisons': '显示其他角色评分',
     'AutoWeightUpdates': '自动更新权重与角色属性',
     'CaptureHotkeysJSON': '收录快捷键',
     'InventoryProfileID': '声骸档案',

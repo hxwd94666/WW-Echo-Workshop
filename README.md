@@ -84,6 +84,14 @@ OKWW 运行目录/
 
 **数据位置**：玩家数据在宿主配置目录的 `plugin_data/echo-workshop/`，不在插件安装文件夹。替换或重装插件不会覆盖库存与配装；重装宿主、更换运行目录或迁移电脑前，请在 **设置 → 数据** 导出档案。
 
+### Windows 安全提示
+
+插件包含未签名的本地 Rust 计算程序（`native/bin/echo-workshop-compute.exe`），Windows 或 Defender 可能提示“打开这些文件可能会对你的计算机有害”或“Windows 已保护你的电脑”。它只在本机计算，不下载或执行远程代码。
+
+- 右键 ZIP → **属性** → 勾选 **解除锁定** → 确定；
+- 或解压后在 PowerShell 执行：`Get-ChildItem '<OKWW>\ok_import\echo-workshop' -Recurse | Unblock-File`；
+- 若 Defender 实际隔离了该 exe，确认来源后把 `ok_import\echo-workshop` 加入排除项，不要关闭 Defender。
+
 <a id="quick-start"></a>
 
 ## 快速开始
@@ -112,7 +120,7 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -B tools/run_checks.py --calculation   # 计算测试
 .\.venv\Scripts\python.exe -B tools/run_checks.py --smoke         # 强路径契约（逐模块隔离）
 .\.venv\Scripts\python.exe -B tools/compute.py build              # Rust 引擎
-.\.venv\Scripts\python.exe -B tools/build.py                      # 发行 ZIP
+.\.venv\Scripts\python.exe -B build.py                      # 发行 ZIP（输出到仓库根目录）
 ```
 
 | 目录 | 职责 |

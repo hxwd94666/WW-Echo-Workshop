@@ -79,6 +79,11 @@ class CaptureCommands:
             raise ValueError('先在 OKWW 开启并连接游戏捕获')
         self._configure_shortcuts(self.config.get('CaptureHotkeysJSON', ''))
         self.runtime.capture.arm_manual(profile_id)
+        if self.manual_progress_overlay is None:
+            from echo_workshop.adapters.okww.scan_progress import ManualProgressOverlay
+
+            self.manual_progress_overlay = ManualProgressOverlay(self)
+        self.manual_progress_overlay.start()
         self.log_info('手动收录已就绪：快捷键监听及事件分发已连接，等待按键')
 
     def capture_once(self, profile_id, *, from_ui=False):
@@ -86,8 +91,13 @@ class CaptureCommands:
             raise ValueError('点击开始仅等待快捷键，请回到游戏按收录快捷键')
         if self.runtime.backups.restoring:
             raise ValueError('库存恢复作业进行中，请稍后收录')
-        if self.runtime.capture.status.state != 'armed':
+        capture = self.runtime.capture
+        if capture.status.state not in ('armed', 'single'):
             raise ValueError('请先点击“开始收录”；已有请求时请等待完成')
+        if capture.status.state == 'single' and not any(
+            request is capture.single_request for request in capture._queued_requests
+        ):
+            raise ValueError('当前画面还在采集中，请稍后重按')
         if not self._capture_ready() or not self._game_foreground():
             raise ValueError('请连接游戏捕获，并在游戏前台按收录快捷键')
         from .capture_device import capture_source_identity
@@ -100,6 +110,7 @@ class CaptureCommands:
             source_identity=capture_source_identity(getattr(og, 'device_manager', None)),
         )
         if accepted:
+            self.log_info('手动收录新请求已接受')
             wake = getattr(self.executor, '_wake_executor', None)
             if callable(wake):
                 wake()

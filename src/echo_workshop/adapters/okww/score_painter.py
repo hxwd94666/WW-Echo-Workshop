@@ -7,7 +7,7 @@ from echo_workshop.capture.viewport import EchoViewport
 from echo_workshop.ui.widgets.rating_style import summary_colour
 
 TIER_TEXT_COLOR = (80, 185, 255)
-SUMMARY_TEMPLATE_COLOR = (110, 220, 255)
+SUMMARY_TEMPLATE_COLOR = (255, 110, 220)
 SUMMARY_CURRENT_COLOR = (255, 220, 80)
 SUMMARY_POTENTIAL_COLOR = (120, 235, 150)
 
@@ -15,15 +15,17 @@ SUMMARY_POTENTIAL_COLOR = (120, 235, 150)
 def summary_region(layout, width, height, viewport=None, rectangles=(), *, template_count=1):
     area = EchoViewport.checked(viewport or None, width, height)
     bounds = {
-        'bag': (0.47, 0.43, 0.63, 0.71),
-        'comparison': (0.385, 0.215, 0.545, 0.46),
-        'display': (0.595, 0.215, 0.755, 0.46),
-        'enhancement': (0.395, 0.235, 0.555, 0.51),
+        'bag': (0.545, 0.43, 0.665, 0.71),
+        'comparison': (0.48, 0.215, 0.64, 0.46),
+        'display': (0.64, 0.215, 0.76, 0.46),
+        'enhancement': (0.375, 0.235, 0.535, 0.51),
     }.get(layout, (0.39, 0.215, 0.66, 0.80))
     dx, dy = area.offset('left' if layout == 'enhancement' else 'right')
     x1, y1, x2, y2 = bounds
     # Fewer templates have larger text and a wider corridor, still next to the stats.
     span = (0.16, 0.145, 0.125)[max(1, min(template_count, 3)) - 1]
+    if layout in ('bag', 'display'):
+        span = min(span, 0.12)
     if layout == 'enhancement':
         x2 = x1 + span
     else:
@@ -32,24 +34,12 @@ def summary_region(layout, width, height, viewport=None, rectangles=(), *, templ
     top = dy + area.height * y1
     right = dx + area.reference_width * x2
     bottom = dy + area.height * y2
-    if rectangles:
-        top = min(r.y for r in rectangles)
-        bottom = max(r.y + r.height for r in rectangles)
-        if layout == 'comparison' and template_count >= 2:
-            # Five lines per role need a taller block; keep the shared stat centre,
-            # rather than making three-role paired comparisons unreadably small.
-            gap = max(2, round(height * 0.0015))
-            preferred = summary_font_size(template_count, height, height, 1)
-            needed = template_count * 5 * (preferred + gap) + max(4, round(height * 0.004))
-            center = (top + bottom) / 2
-            half = max(bottom - top, needed) / 2
-            top, bottom = max(area.y, center - half), min(area.y + area.height, center + half)
     return tuple(round(v) for v in (left, top, right - left, bottom - top))
 
 
 def summary_font_size(template_count, height, available_height, line_count):
     """One role is prominent; three retain compact type and all score rows."""
-    scale = (0.0292, 0.0236, 0.0194)[max(1, min(template_count, 3)) - 1]
+    scale = (0.0240, 0.0236, 0.0194)[max(1, min(template_count, 3)) - 1]
     gap = max(2, round(height * 0.0015))
     return max(12, min(round(height * scale), available_height // max(1, line_count) - gap))
 
@@ -88,6 +78,7 @@ class EchoStatBoxPainter:
         self.tier_labels = []
         self.tier_colors = []
         self.row_scores = []
+        self.summary_colours = []
 
     def update(
         self,
@@ -99,6 +90,7 @@ class EchoStatBoxPainter:
         *,
         layout='',
         viewport=(),
+        summary_colours=(),
     ):
         self.rectangles = list(rectangles)
         self.summary = summary
@@ -107,6 +99,7 @@ class EchoStatBoxPainter:
         self.tier_labels = list(tier_labels)
         self.tier_colors = list(tier_colors)
         self.row_scores = list(row_scores)
+        self.summary_colours = list(summary_colours)
 
     def paint(self, canvas, _overlay):
         for index, rectangle in enumerate(self.rectangles):
@@ -136,7 +129,13 @@ class EchoStatBoxPainter:
                 )
         if self.summary:
             _paint_score_summary(
-                canvas, _overlay, self.summary, self.layout, self.viewport, self.rectangles
+                canvas,
+                _overlay,
+                self.summary,
+                self.layout,
+                self.viewport,
+                self.rectangles,
+                self.summary_colours,
             )
 
 
@@ -182,7 +181,9 @@ def _paint_bold_text(canvas, x, y, text, color, font_size=24):
         win32_gdi.gdi32.DeleteObject(font)
 
 
-def _paint_score_summary(canvas, overlay, text, layout='', viewport=(), rectangles=()):
+def _paint_score_summary(
+    canvas, overlay, text, layout='', viewport=(), rectangles=(), summary_colours=()
+):
     if os.name != 'nt':
         return
     from ok.ui.overlay import win32_gdi
@@ -264,8 +265,10 @@ def _paint_score_summary(canvas, overlay, text, layout='', viewport=(), rectangl
         line_height = font_size + max(2, round(height * 0.0015))
         x += padding
         y = summary_text_top(y, available_height, font_size, len(lines), line_height - font_size)
+        previous_line = ''
         for index, line in enumerate(lines):
             line_y = y + index * line_height
+            row_colours = summary_colours[index] if index < len(summary_colours) else ()
             for dx, dy in ((-2, 0), (2, 0), (0, -2), (0, 2)):
                 win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(0, 0, 0))
                 win32_gdi.gdi32.TextOutW(
@@ -273,9 +276,10 @@ def _paint_score_summary(canvas, overlay, text, layout='', viewport=(), rectangl
                 )
             color = (
                 SUMMARY_POTENTIAL_COLOR
-                if line.startswith('理论最高')
+                if line.startswith('理论最高') or previous_line.startswith('理论最高')
                 else SUMMARY_CURRENT_COLOR
                 if line.startswith(('当前', '参考', '左当前', '右当前'))
+                or previous_line.startswith(('当前评分', '参考评分'))
                 else SUMMARY_TEMPLATE_COLOR
             )
             rated_colour = summary_colour(line)
@@ -287,10 +291,37 @@ def _paint_score_summary(canvas, overlay, text, layout='', viewport=(), rectangl
                 color = (255, 100, 100)
             elif '适配未知' in line or '待核对' in line or '待纠错' in line:
                 color = SUMMARY_CURRENT_COLOR
-            win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(*color))
-            win32_gdi.gdi32.TextOutW(
-                canvas.hdc, x, line_y, line, len(line.encode('utf-16-le')) // 2
-            )
+            parts = line.split(' / ')
+            if len(parts) == 2:
+                cursor = x
+                for part_index, part in enumerate(parts):
+                    rated = summary_colour(part)
+                    part_colour = (
+                        tuple(int(rated[i : i + 2], 16) for i in (1, 3, 5))
+                        if rated
+                        else (
+                            row_colours[part_index]
+                            if part_index < len(row_colours) and row_colours[part_index]
+                            else color
+                        )
+                    )
+                    win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(*part_colour))
+                    win32_gdi.gdi32.TextOutW(
+                        canvas.hdc, cursor, line_y, part, len(part.encode('utf-16-le')) // 2
+                    )
+                    cursor += measure(part)
+                    if part_index == 0:
+                        win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(*color))
+                        win32_gdi.gdi32.TextOutW(canvas.hdc, cursor, line_y, ' / ', 3)
+                        cursor += measure(' / ')
+            else:
+                if row_colours and row_colours[0]:
+                    color = row_colours[0]
+                win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(*color))
+                win32_gdi.gdi32.TextOutW(
+                    canvas.hdc, x, line_y, line, len(line.encode('utf-16-le')) // 2
+                )
+            previous_line = line
     finally:
         win32_gdi.gdi32.SetBkMode(canvas.hdc, old_mode)
         win32_gdi.gdi32.SelectObject(canvas.hdc, old_font)

@@ -23,7 +23,6 @@ BOOL_KEYS = (
     '自动匹配评分模板',
     'Show Debug Boxes',
     'AutoWeightUpdates',
-    'ShowCurrentComparisons',
 )
 LEGACY_TEXT_KEYS = (
     '角色评分模板',

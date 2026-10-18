@@ -43,11 +43,21 @@ class CaptureSession:
         *,
         stable_frames=3,
         stable_seconds=0.6,
+        manual_stable_frames=2,
+        manual_stable_seconds=0.3,
         max_frame_gap=5.0,
         clock=time.monotonic,
     ):
         if type(stable_frames) is not int or stable_frames < 2:
             raise ValueError('Capture requires multiple fresh frames')
+        if type(manual_stable_frames) is not int or manual_stable_frames < 2:
+            raise ValueError('Manual capture requires multiple fresh frames')
+        if (
+            isinstance(manual_stable_seconds, bool)
+            or not math.isfinite(manual_stable_seconds)
+            or manual_stable_seconds < 0
+        ):
+            raise ValueError('Manual capture requires a finite duration')
         if (
             isinstance(stable_seconds, bool)
             or not math.isfinite(stable_seconds)
@@ -59,11 +69,14 @@ class CaptureSession:
             raise ValueError('Capture requires finite durations and a positive frame gap')
         self.repository, self.evidence = repository, evidence
         self.stable_frames, self.stable_seconds, self.clock = stable_frames, stable_seconds, clock
+        self.manual_stable_frames = manual_stable_frames
+        self.manual_stable_seconds = manual_stable_seconds
         self.max_frame_gap = max_frame_gap
         self._lock = threading.RLock()
         self._status = CaptureStatus()
         self._reset_detection()
         self._single_request = None
+        self._queued_requests = []
         self._manual_job = None
         self._manual_armed = False
 
@@ -121,7 +134,11 @@ class CaptureSession:
         source_identity=None,
     ):
         with self._lock:
-            if self._status.state not in ('stopped', 'armed'):
+            if self._single_request is not None and not any(
+                request is self._single_request for request in self._queued_requests
+            ):
+                return False
+            if self._status.state not in ('stopped', 'armed', 'single'):
                 return False
             if self._manual_armed and profile_id != self._status.profile_id:
                 raise ValueError('档案已变，请先停止再开启收录')
@@ -521,14 +538,17 @@ class CaptureSession:
 
         with self._lock:
             if (
-                self._single_request is not request
+                (
+                    self._single_request is not request
+                    and not any(queued is request for queued in self._queued_requests)
+                )
                 or self.expire_once()
-                or self._status.state != 'single'
+                or self._status.state not in ('single', 'armed')
                 or record.profile_id != request.profile_id
                 or not proof.valid(
                     request,
-                    stable_frames=self.stable_frames,
-                    stable_seconds=self.stable_seconds,
+                    stable_frames=self.manual_stable_frames,
+                    stable_seconds=self.manual_stable_seconds,
                     max_frame_gap=self.max_frame_gap,
                 )
                 or proof.fields != record_fields(record)
@@ -536,7 +556,14 @@ class CaptureSession:
             ):
                 return False
             self._diagnostics.update(frames=len(proof.tokens), records=1)
-            return self._store_record(record, image)
+            self._queued_requests = [
+                queued for queued in self._queued_requests if queued is not request
+            ]
+            self._commit_request = request
+            try:
+                return self._store_record(record, image)
+            finally:
+                self._commit_request = None
 
     def commit_scan_snapshot(self, record, image, proof, *, generation, commit_guard):
         """Single OCR of a visually verified immutable bag snapshot, task thread only.
@@ -610,7 +637,9 @@ class CaptureSession:
                 marked=False,
             )
         self._committed = (record.fingerprint, record.validation_issues, (record.game_equipped,))
-        if self._single_request is not None:
+        if self._single_request is not None and self._single_request is getattr(
+            self, '_commit_request', None
+        ):
             self._finish_manual(
                 'completed', 'capture_pending' if duplicate or upgraded else 'capture_completed'
             )

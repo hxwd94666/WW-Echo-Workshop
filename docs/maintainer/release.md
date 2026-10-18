@@ -10,7 +10,7 @@
 .\.venv\Scripts\python.exe -B tools/run_checks.py tests.calculation.test_scoring
 .\.venv\Scripts\python.exe -B tools/compute.py build
 .\.venv\Scripts\python.exe -B tools/compute.py test
-.\.venv\Scripts\python.exe -B tools/build.py
+.\.venv\Scripts\python.exe -B build.py
 ```
 
 普通改动只跑相关方法/模块。目录迁移收敛时可明确运行 `tools/run_checks.py --calculation`，不自动遍历历史UI套件。宿主加载检查需要可选宿主依赖并在隔离目录运行。

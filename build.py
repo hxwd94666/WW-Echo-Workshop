@@ -13,10 +13,11 @@ import sys
 import tempfile
 import zipfile
 
-from check_structure import check
-from resources import validate as validate_resources
+ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT / 'tools'))
 
-ROOT = Path(__file__).resolve().parents[1]
+from check_structure import check  # noqa: E402
+from resources import validate as validate_resources  # noqa: E402
 INSTALL_ID = 'echo-workshop'
 
 
@@ -154,16 +155,19 @@ def build(output=None):
     if structural['errors']:
         raise ValueError('Structure gate not passed: ' + '\n'.join(structural['errors']))
     resource_check = validate_resources()
-    output = Path(output or ROOT / 'dist').resolve()
+    explicit = output is not None
+    output = Path(output).resolve() if explicit else ROOT.resolve()
     source = (ROOT / 'src').resolve()
-    if output == ROOT or output == source or source in output.parents:
+    if output == source or source in output.parents:
         raise ValueError('Build output must not overwrite source')
-    output.mkdir(parents=True, exist_ok=True)
+    # 解压目录固定在 dist，发行 ZIP 默认落在仓库根目录，便于手动取用。
+    folder_root = output if explicit else (ROOT / 'dist')
+    folder_root.mkdir(parents=True, exist_ok=True)
     expected = contents(native_members())
-    folder = output / INSTALL_ID
+    folder = folder_root / INSTALL_ID
     if folder.exists():
         # 删除只针对固定构建目录，并先验证其绝对位置及无外部链接。
-        if folder.resolve().parent != output or folder.is_symlink():
+        if folder.resolve().parent != folder_root or folder.is_symlink():
             raise ValueError('Unexpected build folder location')
         if any(path.is_symlink() for path in folder.rglob('*')):
             raise ValueError('Build folder contains a symbolic link')

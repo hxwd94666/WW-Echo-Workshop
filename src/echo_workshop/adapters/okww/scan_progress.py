@@ -232,3 +232,68 @@ class ScanProgressOverlay(QWidget):
     def closeEvent(self, event):
         self.timer.stop()
         super().closeEvent(event)
+
+
+class ManualProgressOverlay(ScanProgressOverlay):
+    """In-game top banner for shortcut intake and its parse queue."""
+
+    def _overlay_task(self):
+        try:
+            for task in self.task.get_tasks():
+                if task.__class__.__name__ == 'EchoWorkshopOverlayTask':
+                    return task
+        except Exception:
+            pass
+        return None
+
+    def refresh(self):
+        runtime = self.task.runtime
+        if self.task._destroyed or runtime is None or runtime._closed:
+            self.close()
+            return
+        capture = runtime.capture.status
+        overlay = self._overlay_task()
+        queue = getattr(overlay, '_manual_queue', None)
+        backlog = queue.qsize() if queue is not None else 0
+        pending = len(getattr(overlay, '_manual_pending', ()))
+        if capture.mode != 'manual':
+            self.hide()
+            self.timer.stop()
+            return
+        if capture.state == 'stopped' and not backlog and not pending:
+            self.hide()
+            self.timer.stop()
+            return
+        try:
+            foreground = self.task._game_foreground()
+        except Exception:
+            foreground = False
+        game = self._game_rect() if foreground else None
+        if game is None:
+            self.hide()
+            return
+        geometry = banner_bounds(game)
+        if geometry.width() < 120 or geometry.height() < 20:
+            self.hide()
+            return
+        self.setGeometry(geometry)
+        label = '等待收录快捷键' if capture.state == 'armed' else '手动收录'
+        in_flight = backlog + (1 if getattr(overlay, '_manual_parsing', False) else 0)
+        self.progress.setText(
+            f'{label} · 截图 {getattr(overlay, "_manual_total_captures", 0)}'
+            f' · 新增 {getattr(overlay, "_manual_total_added", 0)}'
+            f' · 解析队列 {in_flight}'
+        )
+        self.notice.setText(
+            '回到游戏按收录快捷键；已冻结的画面会在后台解析'
+            if capture.state == 'armed'
+            else '可继续按快捷键，解析在后台进行'
+        )
+        size = max(8, min(13, (geometry.height() - 6) // 3))
+        self.progress.setStyleSheet(
+            f'color: #f4f7fb; font-size: {size}px; background: transparent;'
+        )
+        self.notice.setStyleSheet(f'color: #ffda83; font-size: {size}px; background: transparent;')
+        self.setGeometry(geometry)
+        if not self.isVisible():
+            self.show()

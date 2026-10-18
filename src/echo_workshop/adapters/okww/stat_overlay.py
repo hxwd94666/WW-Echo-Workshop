@@ -8,6 +8,7 @@ import re
 from types import SimpleNamespace
 
 from echo_workshop.application.text import simplify_echo_text
+from echo_workshop.ui.widgets.rating_style import rating_colour
 from echo_workshop.capture.viewport import EchoViewport
 from echo_workshop.adapters.okww.score_painter import EchoStatBoxPainter  # noqa: F401
 
@@ -71,6 +72,19 @@ class EchoStatAnalysis:
     layout_provisional: bool = False
     comparison: bool = False
     current_score: float | None = None
+    potential_score: float | None = None
+    score_text: str = ''
+    potential_text: str = ''
+    rating_color: tuple[int, int, int] | None = None
+
+
+def _rating_rgb(rating):
+    if rating is None:
+        return None
+    value = rating_colour(rating, True)
+    if not value.startswith('#'):
+        return None
+    return tuple(int(value[i : i + 2], 16) for i in (1, 3, 5))
 
 
 def analyze_echo_stats(
@@ -86,6 +100,9 @@ def analyze_echo_stats(
     observation_service,
     weight_version,
     cancel_event=None,
+    layout_hint='',
+    comparison_hint=False,
+    cost_lookup=None,
 ):
     """Recognize one Echo panel and calculate its row and total scores."""
     if not screen_width or not screen_height:
@@ -131,18 +148,28 @@ def analyze_echo_stats(
         b
         for b in right_boxes
         if str(b.name).strip() in ('声骸技能', 'Echo Skill')
-        and screen_width * 0.57 <= b.x <= screen_width * 0.99
+        and screen_width * 0.50 <= b.x <= screen_width * 0.99
         and screen_height * 0.18 <= b.y <= screen_height * 0.82
     ]
-    comparison = any(b.x < screen_width * 0.77 for b in headings) and any(
-        b.x >= screen_width * 0.77 for b in headings
+    page_text = ' '.join(str(box.name) for box in ocr_boxes)
+    bag_markers = any(
+        marker in page_text for marker in ('声骸管理方案', '等级顺序', '批量管理')
     )
+    display_markers = any(
+        marker in page_text for marker in ('合鸣筛选', '未装备优先', '声骸推荐', '简述')
+    )
+    comparison_detected = (
+        any(b.x < screen_width * 0.77 for b in headings)
+        and any(b.x >= screen_width * 0.77 for b in headings)
+    ) or (area.wide and len(left_rows) >= 2 and len(headings) >= 1)
+    comparison_detected = comparison_detected and not bag_markers
+    comparison = comparison_detected or comparison_hint
     if comparison_side == 'left' and not comparison:
         return EchoStatAnalysis((), (), '')
     min_x, max_x = (0.68, 0.99)
     selection_boxes = ocr_boxes
     if comparison:
-        min_x, max_x = (0.57, 0.775) if comparison_side == 'left' else (0.775, 0.99)
+        min_x, max_x = (0.52, 0.775) if comparison_side == 'left' else (0.775, 0.99)
         dx, _ = area.offset('right')
         # Both columns use the right/selected echo's role selection. Scores
         # under two different owners' weights would not be a valid delta.
@@ -180,11 +207,19 @@ def analyze_echo_stats(
     # Left-side stat rows are accepted only on the tuning page.  This excludes
     # the Resonator Attribute Details page and the initial Echo summary page,
     # both of which also contain six ordinary stat rows in the same area.
-    if is_tuning_page and len(left_rows) >= 2 and skill_headings and len(right_rows) >= 2:
+    hint_tuning = layout_hint in ('enhancement', 'tuning')
+    hint_single = layout_hint in ('single', 'display')
+    hint_bag = layout_hint == 'bag'
+    if (
+        (is_tuning_page or hint_tuning)
+        and len(left_rows) >= 2
+        and skill_headings
+        and len(right_rows) >= 2
+    ):
         return EchoStatAnalysis((), (), '声骸布局待确认：左右详情混合，等待新帧')
-    if is_tuning_page and len(left_rows) >= 2:
+    if (is_tuning_page or hint_tuning) and len(left_rows) >= 2:
         rows = left_rows
-    elif is_single_echo_page and skill_headings and len(right_rows) >= 2:
+    elif (is_single_echo_page or hint_single or hint_bag) and len(right_rows) >= 2:
         rows = right_rows
         # A tuning marker elsewhere must not relabel a selected right panel,
         # discard its observed COST or switch its metadata to the left side.
@@ -197,8 +232,17 @@ def analyze_echo_stats(
     main_rows, sub_rows = rows[:2], rows[2:]
     layout = (
         'enhancement'
-        if is_tuning_page
-        else ('bag' if main_rows[0].y > screen_height * 0.35 else 'display')
+        if (is_tuning_page or hint_tuning)
+        else 'bag'
+        if (
+            hint_bag
+            or (
+                not hint_single
+                and not display_markers
+                and (bag_markers or main_rows[0].y > screen_height * 0.35)
+            )
+        )
+        else 'display'
     )
     # Restrict observed COST to the selected detail header. The display's
     # left budget (12/12, 13/12), grid COST icons and other panels are excluded.
@@ -213,6 +257,8 @@ def analyze_echo_stats(
         ]
     )
     observed_cost = _observed_cost(cost_boxes)
+    if observed_cost is None and cost_lookup is not None:
+        observed_cost = cost_lookup(tuple((row.stat_name, row.value) for row in main_rows))
     dx, dy = area.offset('left' if is_tuning_page else 'right')
 
     def captured(row):
@@ -303,8 +349,12 @@ def analyze_echo_stats(
         observed_cost,
         area.bounds if provisional else (),
         provisional,
-        comparison,
+        comparison_detected,
         score.current_score,
+        score.potential_score,
+        f'{score.current_score:.2f}{grade}',
+        f'{score.potential_score:.2f}',
+        _rating_rgb(rating),
     )
 
 

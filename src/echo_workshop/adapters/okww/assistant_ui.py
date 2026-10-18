@@ -118,6 +118,8 @@ class SettingsUIBridge:
             self.scan_start_notice = None
         if self.scan_progress_overlay is not None:
             self.scan_progress_overlay.close()
+        if self.manual_progress_overlay is not None:
+            self.manual_progress_overlay.close()
         if self.embedded_panel is not None:
             from shiboken6 import isValid
 

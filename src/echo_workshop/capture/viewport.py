@@ -46,6 +46,27 @@ class EchoViewport:
     def offset(self, side):
         return (self.x + (self.width - self.reference_width if side == 'right' else 0), self.y)
 
+    def live_regions(self, layout=''):
+        """Fixed panels for the last known page; fall back to full-panel OCR."""
+        if layout not in ('enhancement', 'single', 'display', 'tuning', 'comparison'):
+            return self.ocr_regions()
+        if layout == 'comparison':
+            return self.ocr_regions()
+        if layout in ('enhancement', 'tuning'):
+            # The enhancement header/COST sits outside the left stat column;
+            # cropping it made the score flip between current/reference.
+            return self.ocr_regions()
+        if layout in ('single', 'display', 'bag'):
+            return (
+                (
+                    self.x + round(self.width * 0.74),
+                    self.y + round(self.height * 0.12),
+                    round(self.width * 0.25),
+                    round(self.height * 0.36),
+                ),
+            )
+        return self.ocr_regions()
+
     def ocr_regions(self):
         if not self.wide:
             return (self.bounds,)
