@@ -233,5 +233,9 @@ class AllocationUX:
             )
         lines.append('保存不等于已装备，请在游戏中手动装备。')
         self.outcome.setPlainText('\n'.join(lines))
+        if hasattr(self, 'outcome_label'):
+            self.outcome_label.setText(lines[-2])
+            self.outcome_label.setToolTip('\n'.join(lines))
+            self.outcome_label.setVisible(True)
         self.precheck_panel.toggle.setChecked(False)
         self.steps.setCurrentIndex(2)

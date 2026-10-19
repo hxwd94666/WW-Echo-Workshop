@@ -1,0 +1,13 @@
+# 定义页面忙状态、草稿和停止入口，避免 shell 读取页面私有字段。
+from typing import Protocol, runtime_checkable
+
+
+@runtime_checkable
+class PageLifecycle(Protocol):
+    def lifecycle_busy(self) -> bool: ...
+
+    def lifecycle_draft(self) -> bool: ...
+
+    def lifecycle_rule_dirty(self) -> bool: ...
+
+    def request_stop(self) -> None: ...

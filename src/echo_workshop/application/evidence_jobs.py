@@ -55,4 +55,5 @@ class EvidenceViewJobs:
         # Future.cancel can invoke _finished inline; never hold _lock here.
         for job in jobs:
             job.cancel()
-        self._pool.shutdown(wait=True, cancel_futures=True)
+        # A slow PNG decode must not hold the host unload path.
+        self._pool.shutdown(wait=False, cancel_futures=True)

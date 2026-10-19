@@ -203,7 +203,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
     def _help_navigate(self, route):
         if self.has_edit_draft() or self._match_inventory_session is not None:
             return '请先保存或取消当前编辑、选择，再切换模式。'
-        if any(getattr(page, '_rule_dirty', False) for page in self._owned_pages.values()):
+        if any(self._page_rule_dirty(page) for page in self._owned_pages.values()):
             return '请先保存或取消角色要求，再切换模式。'
         self.navigate(route)
         if self.stack.currentWidget() is not self._owned_pages.get(route):
@@ -403,23 +403,40 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             current = getattr(page, '_accepted_profile', selector.currentData())
             if current == target:
                 continue
-            if getattr(page, '_editor', None) is not None:
+            if self._page_draft(page):
                 return '还有未保存的编辑，请保存或取消后再切换档案。'
-            if getattr(page, '_role_draft', None) is not None and page.incoming.count():
-                return '还有待配置角色，请确认或取消后再切换档案。'
-            if (
-                getattr(page, '_future', None) is not None
-                or getattr(page, '_io_future', None) is not None
-            ):
+            if self._page_busy(page):
                 return '比较或配装正在处理，请完成或取消后再切换档案。'
         return ''
 
-    def has_edit_draft(self):
-        return any(
-            getattr(page, '_editor', None) is not None
-            or (getattr(page, '_role_draft', None) is not None and page.incoming.count())
-            for page in self._owned_pages.values()
+    @staticmethod
+    def _page_busy(page):
+        method = getattr(page, 'lifecycle_busy', None)
+        if callable(method):
+            return bool(method())
+        return bool(
+            getattr(page, '_future', None) is not None
+            or getattr(page, '_io_future', None) is not None
         )
+
+    @staticmethod
+    def _page_draft(page):
+        method = getattr(page, 'lifecycle_draft', None)
+        if callable(method):
+            return bool(method())
+        return getattr(page, '_editor', None) is not None or (
+            getattr(page, '_role_draft', None) is not None and page.incoming.count()
+        )
+
+    @staticmethod
+    def _page_rule_dirty(page):
+        method = getattr(page, 'lifecycle_rule_dirty', None)
+        if callable(method):
+            return bool(method())
+        return bool(getattr(page, '_rule_dirty', False))
+
+    def has_edit_draft(self):
+        return any(self._page_draft(page) for page in self._owned_pages.values())
 
     def profile_mutation_error(self, *, ignore_backup=False):
         if self._stopped or self.task._destroyed or self.runtime._closed:
@@ -435,19 +452,9 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         if self._match_inventory_session is not None:
             return '请先完成或取消声骸选择，再管理档案。'
         for page in self._owned_pages.values():
-            if (
-                getattr(page, '_future', None) is not None
-                or getattr(page, '_io_future', None) is not None
-                or getattr(page, '_publication', None) is not None
-                or getattr(page, '_pending_precheck', None) is not None
-                or getattr(page, '_pending_current_action', None) is not None
-            ):
+            if self._page_busy(page):
                 return '请先结束当前计算或确认操作，再管理档案。'
-            if (
-                getattr(page, '_editor', None) is not None
-                or getattr(page, '_rule_dirty', False)
-                or (getattr(page, '_role_draft', None) is not None and page.incoming.count())
-            ):
+            if self._page_draft(page) or self._page_rule_dirty(page):
                 return '请先保存或取消当前编辑，再管理档案。'
         if getattr(getattr(self, 'repair', None), 'future', None) is not None:
             return '配置修复正在进行，请结束后再管理档案。'
@@ -583,8 +590,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             queue = getattr(self.task, '_manual_queue', None)
             backlog = queue.qsize() if queue is not None else 0
             capture_text = (
-                f'{label} · 新增 {state.added} · 解析队列 {backlog}'
-                f' · 待核对 {state.needs_review}'
+                f'{label} · 新增 {state.added} · 解析队列 {backlog} · 待核对 {state.needs_review}'
             )
         elif not busy:
             automatic = self.task.config.get('IntakeMode', 'manual') == 'automatic'
@@ -652,7 +658,11 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         """No Qt calls: task unload may run off the GUI thread."""
         self._stopped = True
         for page in tuple(self._owned_pages.values()):
-            page.stop_worker()
+            request = getattr(page, 'request_stop', None)
+            if callable(request):
+                request()
+            else:
+                page.stop_worker()
         repair = getattr(self, 'repair', None)
         if repair is not None:
             repair.stop_worker()

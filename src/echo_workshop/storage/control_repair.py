@@ -11,7 +11,7 @@ import tempfile
 from uuid import uuid4
 
 from echo_workshop.core.models import canonical_json
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.storage.locks import plan_file_lock
 from echo_workshop.storage.preferences import PreferenceRecovery, LOCK_ID
 from echo_workshop.storage.inventory import EchoRepository
@@ -46,7 +46,7 @@ class ControlRepair:
     def __init__(self, config_file, *, plan_evaluator=None):
         self.config_file = Path(config_file).resolve()
         # Same host-relative namespace, without constructing a runtime/DB.
-        from echo_workshop.application.runtime import data_dir_for_config
+        from echo_workshop.storage.paths import data_dir_for_config
 
         self.manager = WorkspaceManager(
             data_dir_for_config(self.config_file), plan_evaluator=plan_evaluator

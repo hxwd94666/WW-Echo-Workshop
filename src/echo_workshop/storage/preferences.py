@@ -10,12 +10,12 @@ by exact before/after hashes, never described as a global transaction.
 from pathlib import Path
 
 from echo_workshop.core.allocation.models import AllocationRequest
-from echo_workshop.application.search_budget import SearchBudget
-from echo_workshop.application.allocation_preferences import pending_role_keys
+from echo_workshop.core.search_budget import SearchBudget
+from echo_workshop.core.allocation_preferences import pending_role_keys
 from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.application.matching.filtering import validate_filter_options
+from echo_workshop.core.matching_filters import validate_filter_options
 from echo_workshop.core.costs import cost_layouts_from_rows
-from echo_workshop.application.matching.calculation import (
+from echo_workshop.core.matching_calculation import (
     MAX_CANDIDATE_IDS,
     MatchCalculationOptions,
     links_to_groups,

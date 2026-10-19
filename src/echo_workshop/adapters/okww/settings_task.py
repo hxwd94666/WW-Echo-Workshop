@@ -21,6 +21,9 @@ class EchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        from .assistant_ui import ensure_task_card_patch
+
+        self._host_card_patch, self._host_card_error = ensure_task_card_patch()
         self.name = '声骸工坊'
         from echo_workshop.ui.widgets.workshop_icon import WorkshopIcon
 

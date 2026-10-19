@@ -11,7 +11,7 @@ import zipfile
 from echo_workshop.storage.evidence import EvidenceStore, MAX_IMAGE_BYTES, validate_png
 from echo_workshop.core.models import EchoRecord, canonical_json
 from echo_workshop.storage.inventory import EchoRepository
-from echo_workshop.application.operations import checkpoint, report_progress
+from echo_workshop.core.cancellation import checkpoint, report_progress
 from echo_workshop.resources.http import strict_json
 from echo_workshop.storage.plans import AllocationStore, MAX_PLAN_BYTES, validate_plan
 from echo_workshop.storage.loadouts import validate_current_plan_references

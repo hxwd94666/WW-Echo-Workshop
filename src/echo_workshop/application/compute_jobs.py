@@ -25,12 +25,16 @@ class _Ticket:
     deadline: float
     cancel: object
     phase: str = 'queued'
+    abandoned_at: float | None = None
     lock: object = field(default_factory=threading.Lock)
 
 
 class ComputeJobs:
-    def __init__(self, executable=None, *, fault_tests=False):
+    def __init__(self, executable=None, *, fault_tests=False, prepare_grace=2.0):
+        if type(prepare_grace) not in (int, float) or not 0 < prepare_grace <= 60:
+            raise ValueError('计算准备宽限期须为 0–60 秒')
         self._executable, self._fault_tests = executable, fault_tests
+        self._prepare_grace = float(prepare_grace)
         self._closed, self._reaped = threading.Event(), threading.Event()
         self._lock = threading.Lock()
         self._workers, self._threads, self._running = {}, {}, {}
@@ -100,35 +104,47 @@ class ComputeJobs:
 
     def _watch(self):
         while not self._closed.wait(0.02):
+            now = time.monotonic()
             with self._lock:
                 tickets = tuple(self._tickets.values())
             for ticket in tickets:
-                if ticket.future.done():
+                with ticket.lock:
+                    if ticket.abandoned_at is None and not ticket.future.done():
+                        error = None
+                        if ticket.cancel is not None and ticket.cancel.is_set():
+                            error = ComputeFailure('cancelled', '计算作业已取消')
+                        elif now >= ticket.deadline:
+                            error = ComputeFailure('timeout', '计算作业超过截止时间')
+                        if error is not None:
+                            # A cooperative builder often returns immediately after the
+                            # caller is released. Do not poison the lane until the
+                            # preparation has actually failed to return.
+                            if ticket.phase == 'preparing':
+                                ticket.abandoned_at = now
+                            self._finish(ticket.future, error=error)
+                    abandoned_at = ticket.abandoned_at
+                    done = ticket.future.done()
+                if abandoned_at is not None and now - abandoned_at >= self._prepare_grace:
+                    with self._lock:
+                        newly_stalled = ticket.lane not in self._stalled
+                        self._stalled.add(ticket.lane)
+                    if newly_stalled:
+                        self._drain(
+                            ticket.lane,
+                            ComputeFailure(
+                                'restart_limit',
+                                '计算输入准备线程未返回，需要重新打开插件后再计算',
+                            ),
+                        )
+                if done and (abandoned_at is None or now - abandoned_at >= self._prepare_grace):
                     with self._lock:
                         self._tickets.pop(ticket.future, None)
-                    continue
-                preparing = False
-                error = None
-                with ticket.lock:
-                    if ticket.future.done():
-                        continue
-                    if ticket.cancel is not None and ticket.cancel.is_set():
-                        error = ComputeFailure('cancelled', '计算作业已取消')
-                    elif time.monotonic() >= ticket.deadline:
-                        error = ComputeFailure('timeout', '计算作业超过截止时间')
-                    if error is not None:
-                        preparing = ticket.phase == 'preparing'
-                        if preparing:
-                            with self._lock:
-                                self._stalled.add(ticket.lane)
-                        # Feedback does not wait for uninterruptible process creation or reap.
-                        # The lane still owns that call; no replacement thread is started here.
-                        self._finish(ticket.future, error=error)
-                if preparing:
-                    self._drain(ticket.lane, error)
 
     def _run(self, lane):
         while not self._closed.is_set():
+            with self._lock:
+                if lane in self._stalled:
+                    return
             try:
                 ticket = self._queues[lane].get(timeout=0.05)
             except queue.Empty:
@@ -156,7 +172,12 @@ class ComputeJobs:
                     self._running[lane] = (future, 'computing')
                     if self._closed.is_set():
                         raise ComputeFailure('closed', '计算服务已关闭')
-                    if lane in self._stalled or deadline <= time.monotonic():
+                    if lane in self._stalled:
+                        raise ComputeFailure(
+                            'restart_limit',
+                            '计算准备线程未返回，需要重新打开插件后再计算',
+                        )
+                    if deadline <= time.monotonic():
                         raise ComputeFailure('timeout', '输入准备超过截止时间')
                     if self._failures[lane] >= 2:
                         raise ComputeFailure('restart_limit', '计算队列故障达到重建上限')

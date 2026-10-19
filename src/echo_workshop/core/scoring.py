@@ -44,6 +44,31 @@ SUBSTAT_TIERS = {
     '共鸣技能': (6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6),
     '共鸣解放': (6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6),
 }
+
+
+def normalize_stat_unit(base, value, is_percent=False):
+    """Recover percent/flat units from the fixed stat tables, not OCR's percent sign."""
+    if base not in ('攻击', '生命', '防御') or not isinstance(value, (int, float)):
+        return base
+    percent_values = set(SUBSTAT_TIERS.get(base + '%', ()))
+    flat_values = set(SUBSTAT_TIERS.get(base, ()))
+    for slots in MAX_MAINSTAT_VALUES.values():
+        for slot in slots:
+            percent_values.update(amount for name, amount in slot.items() if name == base + '%')
+            flat_values.update(amount for name, amount in slot.items() if name == base)
+    if base == '防御':
+        percent_values.add(41.8)
+    percent = any(abs(value - amount) <= 0.011 for amount in percent_values)
+    flat = any(abs(value - amount) <= 0.011 for amount in flat_values)
+    if percent and not flat:
+        return base + '%'
+    if flat and not percent:
+        return base
+    if is_percent and percent:
+        return base + '%'
+    return base
+
+
 MAX_MAINSTAT_VALUES = {
     1: (
         {'攻击%': 18.0, '生命%': 22.8, '防御%': 22.8},

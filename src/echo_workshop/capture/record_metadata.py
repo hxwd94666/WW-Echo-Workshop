@@ -1,7 +1,7 @@
 # 从选中面板的OCR文本生成声骸记录与元数据候选。
 import re
 
-from echo_workshop.core.models import EchoRecord, StatValue, utc_now
+from echo_workshop.core.models import EchoRecord, StatValue, cost_from_main_stats, utc_now
 from echo_workshop.application.text import simplify_echo_text
 from echo_workshop.capture.viewport import EchoViewport
 
@@ -41,7 +41,7 @@ def record_from_analysis(analysis, boxes, profile_id, width, height):
     layout = getattr(analysis, 'layout', '')
     regions = {
         'bag': (0.68, 0.99, 0.09, 0.25),
-        'display': (0.76, 0.99, 0.12, 0.16),
+        'display': (0.76, 0.99, 0.06, 0.18),
         'enhancement': (0.09, 0.38, 0.11, 0.23),
     }
     header_boxes = []
@@ -107,9 +107,18 @@ def record_from_analysis(analysis, boxes, profile_id, width, height):
         name, sonata, level, owner, issues, panel_text = _panel_metadata(
             normalized, header_boxes, layout, width, height
         )
-    if not explicit_cost:
-        # Split COST labels/numbers are supported by the score overlay, but
-        # inventory must not quietly trust its nearest-value COST heuristic.
+    main = tuple(StatValue(row.stat_name, row.value, row.value_text) for row in analysis.main_rows)
+    sub = tuple(StatValue(row.stat_name, row.value, row.value_text) for row in analysis.sub_rows)
+    inferred_cost = cost_from_main_stats(main, level=level)
+    cost = analysis.cost
+    if explicit_cost:
+        if inferred_cost is not None and inferred_cost != analysis.cost:
+            issues.append('ocr:cost_conflict')
+    elif inferred_cost is not None:
+        cost = inferred_cost
+    else:
+        # Split COST labels are supported by the score overlay, but inventory
+        # must not quietly trust its nearest-value COST heuristic.
         issues.append('ocr:cost_needs_review')
     if getattr(analysis, 'layout_provisional', False):
         issues.append('ocr:layout_needs_review')
@@ -118,15 +127,13 @@ def record_from_analysis(analysis, boxes, profile_id, width, height):
         for row in analysis.main_rows + analysis.sub_rows
     ):
         issues.append('ocr:ambiguous_value')
-    main = tuple(StatValue(row.stat_name, row.value, row.value_text) for row in analysis.main_rows)
-    sub = tuple(StatValue(row.stat_name, row.value, row.value_text) for row in analysis.sub_rows)
     # Existing overlay truncates at 7 rows. A declared +25/all-tuned panel with
     # missing rolls must not look like a deliberately partially tuned item.
     if '已完成全部调谐' in panel_text and len(sub) != 5:
         issues.append('ocr:missing_tuned_rows')
     return EchoRecord(
         profile_id,
-        analysis.cost,
+        cost,
         main,
         sub,
         name=name,
@@ -156,7 +163,7 @@ def _header_name_candidate(text):
         )
     ):
         return ''
-    if not re.fullmatch(r'[\u4e00-\u9fffA-Za-z0-9·・\s]+', value):
+    if not re.fullmatch(r'[\u4e00-\u9fffA-Za-z0-9·・\s（）()\-—]+', value):
         return ''
     if re.search(r'[\u4e00-\u9fff]', value):
         return value
@@ -167,11 +174,91 @@ def _header_name_candidate(text):
     )
 
 
+def _merge_header_candidates(headers):
+    """Join OCR fragments of one long title before treating them as distinct names."""
+    items = []
+    for box, text in headers:
+        candidate = _header_name_candidate(text)
+        if candidate:
+            items.append((box, candidate))
+    items.sort(key=lambda pair: (pair[0].y + pair[0].height / 2, pair[0].x))
+    lines = []
+    for box, candidate in items:
+        center = box.y + box.height / 2
+        if lines:
+            previous, right, parts = lines[-1]
+            previous_center = previous.y + previous.height / 2
+            if (
+                abs(center - previous_center) <= max(box.height, previous.height) * 0.6
+                and -max(box.height, previous.height)
+                <= box.x - right
+                <= max(box.height, previous.height) * 4
+            ):
+                parts.append(candidate)
+                lines[-1] = (previous, max(right, box.x + box.width), parts)
+                continue
+        lines.append((box, box.x + box.width, [candidate]))
+    merged = []
+    for _, _, parts in lines:
+        text = ''.join(parts)
+        candidate = _header_name_candidate(text) or text
+        if candidate:
+            merged.append(candidate)
+    return merged
+
+
+def _catalog_key(name):
+    key = re.sub(r'[\s·・:：\-—_]+', '', simplify_echo_text(name)).lower()
+    return key.replace('(', '（').replace(')', '）')
+
+
+def _match_echo_name(candidate):
+    """Resolve an OCR title against the bundled echo catalog when it is unique."""
+    from difflib import SequenceMatcher
+
+    from echo_workshop.resources.echo_names import builtin_echo_names
+
+    key = _catalog_key(candidate)
+    if not key:
+        return ''
+    try:
+        catalog = builtin_echo_names()
+    except (OSError, ValueError):
+        return ''
+    catalog_keys = [(name, _catalog_key(name)) for name in catalog]
+    exact = next((name for name, value in catalog_keys if value == key), '')
+    if exact:
+        return exact
+    # A single prefix/suffix match is strong evidence for short or truncated
+    # names; multiple matches remain ambiguous and must stay pending.
+    if len(key) >= 2:
+        affixes = [
+            name for name, value in catalog_keys if value.startswith(key) or value.endswith(key)
+        ]
+        if len(affixes) == 1:
+            return affixes[0]
+    scored = sorted(
+        (SequenceMatcher(None, key, value).ratio(), name) for name, value in catalog_keys
+    )
+    if not scored:
+        return ''
+    best_score, best = scored[-1]
+    second = scored[-2][0] if len(scored) > 1 else 0.0
+    if (
+        len(key) >= 2
+        and best_score >= 0.8
+        and best_score - second >= 0.06
+        and abs(len(key) - len(_catalog_key(best))) <= max(1, len(key) // 3)
+    ):
+        return best
+    return ''
+
+
 def _panel_metadata(normalized, headers, layout, width, height):
     """Read candidates only within the selected panel; conflicts stay unknown."""
     regions = {
         'bag': (0.68, 0.99, 0.09, 0.90),
-        'display': (0.76, 0.99, 0.12, 0.92),
+        'display': (0.76, 0.99, 0.06, 0.92),
         'enhancement': (0.09, 0.38, 0.11, 0.90),
     }
     x1, x2, y1, y2 = regions[layout]
@@ -189,7 +276,7 @@ def _panel_metadata(normalized, headers, layout, width, height):
             return empty
         return next(iter(values), empty)
 
-    names, explicit_names, levels = [], [], []
+    explicit_names, levels = [], []
     invalid_level = False
     for _, text in headers:
         explicit = re.fullmatch(r'(?:声骸名称|Echo Name)\s*[:：]\s*(.+)', text, re.I)
@@ -206,11 +293,24 @@ def _panel_metadata(normalized, headers, layout, width, height):
                 levels.append(value)
             else:
                 invalid_level = True
-        candidate = _header_name_candidate(text)
-        if candidate:
-            names.append(candidate)
+    merged_names = _merge_header_candidates(headers)
+    if len(merged_names) > 1:
+        joined_name = _match_echo_name(''.join(merged_names))
+        if joined_name:
+            merged_names = [joined_name]
+        else:
+            merged_names = [
+                candidate
+                for candidate in merged_names
+                if not any(candidate != other and candidate in other for other in merged_names)
+            ]
+    names, catalog_matched = [], False
+    for candidate in merged_names:
+        resolved = _match_echo_name(candidate)
+        names.append(resolved or candidate)
+        catalog_matched = catalog_matched or bool(resolved)
     name = single(names + explicit_names, 'header_name')
-    if name and not explicit_names and layout == 'enhancement':
+    if name and not explicit_names and layout == 'enhancement' and not catalog_matched:
         issues.append('ocr:header_name_needs_review')
     level = single(levels, 'header_level', None)
     if invalid_level:

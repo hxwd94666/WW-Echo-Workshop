@@ -24,6 +24,7 @@ from echo_workshop.core.scoring import MAX_MAINSTAT_VALUES, SUBSTAT_TIERS
 _validation_limits = {
     cost: tuple(dict(slot) for slot in slots) for cost, slots in MAX_MAINSTAT_VALUES.items()
 }
+_validation_limits[1][0].update({'防御%': 18.0})
 _validation_limits[4][0].update({'防御%': 41.8, '治疗效果加成': 26.4})
 MAINSTAT_VALIDATION_MAXIMA = MappingProxyType(
     {
@@ -32,6 +33,29 @@ MAINSTAT_VALIDATION_MAXIMA = MappingProxyType(
     }
 )
 del _validation_limits
+
+
+def cost_from_main_stats(main_stats, *, level=None):
+    """Infer a unique +25 COST from the two main-stat name/value pairs."""
+    if level != 25 or len(main_stats) != 2:
+        return None
+    matches = []
+    for cost, slots in MAINSTAT_VALIDATION_MAXIMA.items():
+        if all(_main_stat_matches(slot, stat, cost) for slot, stat in zip(slots, main_stats)):
+            matches.append(cost)
+    return matches[0] if len(matches) == 1 else None
+
+
+def _main_stat_matches(slot, stat, cost):
+    amount = slot.get(stat.stat_name)
+    if amount is None or not isinstance(stat.value, (int, float)):
+        return False
+    if abs(stat.value - amount) <= 0.011:
+        return True
+    if cost == 4 and stat.stat_name in ('防御%', '治疗效果加成'):
+        alternate = MAX_MAINSTAT_VALUES[4][0].get(stat.stat_name)
+        return alternate is not None and abs(stat.value - alternate) <= 0.011
+    return False
 
 
 def utc_now():
@@ -158,6 +182,7 @@ class EchoRecord:
 
     @property
     def validation_issues(self):
+        """Test/legacy structural projection; production uses native quality facts."""
         problems = list(self.issues)
         for field_name in ('name', 'sonata', 'level'):
             if getattr(self, field_name) in (None, ''):
@@ -167,7 +192,13 @@ class EchoRecord:
             problems.append('main:expected_two_slots')
         for index, stat in enumerate(self.main_stats):
             maximum = slots[index].get(stat.stat_name) if index < 2 else None
-            if maximum is None or not 0 < stat.value <= maximum + 0.01:
+            # The +25 table is an upper bound only at max level; lower-level
+            # main stats scale down and must not be rejected by that bound.
+            if (
+                maximum is None
+                or not 0 < stat.value
+                or (self.level == 25 and stat.value > maximum + 0.01)
+            ):
                 problems.append(f'main:invalid:{index}')
         if len(self.sub_stats) > 5 or len({stat.stat_name for stat in self.sub_stats}) != len(
             self.sub_stats
@@ -183,6 +214,7 @@ class EchoRecord:
 
     @property
     def usable(self):
+        """Test/legacy convenience only; production must consume native facts."""
         return self.review == 'confirmed' and not self.validation_issues
 
     @property
@@ -216,7 +248,13 @@ class EchoRecord:
         try:
             row['main_stats'] = tuple(StatValue(**stat) for stat in row['main_stats'])
             row['sub_stats'] = tuple(StatValue(**stat) for stat in row.get('sub_stats', []))
-            row['issues'] = tuple(row.get('issues', []))
+            # A successful metadata re-read recovered the value; keep the old
+            # raw observation but do not keep the record pending forever.
+            row['issues'] = tuple(
+                issue
+                for issue in row.get('issues', [])
+                if not issue.startswith('ocr:metadata_recovered:')
+            )
             return cls(**row)
         except (KeyError, TypeError) as error:
             raise ValueError('Malformed inventory record') from error

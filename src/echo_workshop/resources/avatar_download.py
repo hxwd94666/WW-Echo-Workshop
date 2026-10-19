@@ -5,7 +5,7 @@ import re
 import struct
 import time
 
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.download import conditional_get
 from echo_workshop.storage.evidence import validate_png
 

@@ -28,7 +28,7 @@ from echo_workshop.storage.archives import (
 from echo_workshop.storage.loadouts import validate_current_plan_references
 from echo_workshop.core.models import canonical_json, validate_id
 from echo_workshop.core.requirements import requirements_from_rows
-from echo_workshop.application.operations import checkpoint, report_progress
+from echo_workshop.core.cancellation import checkpoint, report_progress
 from echo_workshop.storage.locks import plan_file_lock
 from echo_workshop.storage.preferences import validate_application
 from echo_workshop.storage.inventory import EchoRepository

@@ -96,17 +96,21 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.confirm_button = PushButton('这是另一件', self)
         self.upgrade_button = PushButton('更新旧件', self)
         self.ignore_button = PushButton('忽略本次观察', self)
+        self.confirm_safe_button = PushButton('确认无问题项', self)
         for button, callback in (
             (self.confirm_button, self.confirm_selected),
             (self.upgrade_button, self.upgrade_selected),
             (self.ignore_button, self.discard_selected),
+            (self.confirm_safe_button, self.confirm_safe_pending),
         ):
             button.clicked.connect(lambda checked=False, fn=callback: self.action(fn))
+        self.confirm_safe_button.hide()
         self._action_buttons = [
             self.clear_library_button,
             self.confirm_button,
             self.upgrade_button,
             self.ignore_button,
+            self.confirm_safe_button,
         ]
         self._mutation_buttons = list(self._action_buttons)
         self.inventory_body = QWidget()
@@ -171,9 +175,12 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.filter_button.clicked.connect(self.filter_drawer.open_panel)
         self.filter_drawer.applied.connect(self._apply_filters)
         self.compact_status = CaptionLabel('正在读取声骸…')
+        self.pending_summary = CaptionLabel('')
+        self.pending_summary.setWordWrap(False)
         status_row = QHBoxLayout()
         status_row.setSpacing(14)
         status_row.addWidget(self.compact_status)
+        status_row.addWidget(self.pending_summary)
         self.operation_hint = CaptionLabel('右键声骸可进行操作，支持多选批量操作')
         hint_font = self.operation_hint.font()
         hint_font.setPointSizeF(8)
@@ -222,7 +229,12 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.content_splitter.setSizes([620, 340])
         outer.addWidget(self.content_splitter, 1)
         actions = QHBoxLayout()
-        for button in (self.confirm_button, self.upgrade_button, self.ignore_button):
+        for button in (
+            self.confirm_button,
+            self.upgrade_button,
+            self.ignore_button,
+            self.confirm_safe_button,
+        ):
             put(actions, button)
         actions.addStretch()
         outer.addLayout(actions)

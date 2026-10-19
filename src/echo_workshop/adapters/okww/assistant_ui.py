@@ -416,32 +416,37 @@ class SettingsUIBridge:
 
 
 def _patch_imported_task_card():
-    """Customize the card synchronously, before the host can display it.
-
-    ``post_init`` runs before ``MainWindow`` creates imported tabs in official
-    OKWW, so a timer started there is not a reliable UI hook. Wrapping the
-    existing card constructor makes the customization deterministic while
-    leaving every non-Echo task untouched.
-    """
-    from ok.ui.qt.tasks.TaskCard import TaskCard
+    """Customize the card when the host exposes it; never block plugin loading."""
+    try:
+        from ok.ui.qt.tasks.TaskCard import TaskCard
+    except ImportError as error:
+        return False, str(error)
 
     if getattr(TaskCard, '_echo_score_card_patch', False):
-        return
+        return True, ''
     original_init = TaskCard.__init__
 
     def patched_init(card, task, onetime):
         original_init(card, task, onetime)
         if task.__class__.__name__ != 'EchoWorkshopSettingsTask':
             return
-        task._install_total_switch(card)
-        task._install_search_combo(card)
-        task._install_inventory_button(card)
-        task._sync_card_entry(card)
-        if not getattr(card, '_echo_compact_entry', False):
-            card.setExpand(True)
+        try:
+            task._install_total_switch(card)
+            task._install_search_combo(card)
+            task._install_inventory_button(card)
+            task._sync_card_entry(card)
+            if not getattr(card, '_echo_compact_entry', False):
+                card.setExpand(True)
+        except Exception as error:
+            try:
+                task.log_warning(f'宿主卡片适配未完成：{error}')
+            except Exception:
+                pass
 
     TaskCard.__init__ = patched_init
     TaskCard._echo_score_card_patch = True
+    return True, ''
 
 
-_patch_imported_task_card()
+def ensure_task_card_patch():
+    return _patch_imported_task_card()

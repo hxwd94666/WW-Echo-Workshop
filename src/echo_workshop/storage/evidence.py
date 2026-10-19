@@ -12,7 +12,6 @@ import time
 from contextlib import contextmanager
 
 from echo_workshop.core.models import validate_id
-from echo_workshop.application.evidence_jobs import EvidenceViewJobs
 
 
 MAX_IMAGE_BYTES = 16 * 1024 * 1024
@@ -82,11 +81,13 @@ def validate_png(data):
 
 
 class EvidenceStore:
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, *, view_factory=None):
         self.data_dir = Path(data_dir).resolve()
         self.folder = self.data_dir / 'screenshots'
         self.folder.mkdir(parents=True, exist_ok=True)
-        self.views = EvidenceViewJobs(lambda reference: self.read(reference))
+        # The owner may inject a background viewer; storage itself has no UI job
+        # scheduler dependency.
+        self.views = view_factory(self.read) if view_factory is not None else None
 
     @contextmanager
     def operation(self, *, wait=True):

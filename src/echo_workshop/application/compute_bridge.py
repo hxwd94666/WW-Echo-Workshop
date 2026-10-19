@@ -1,10 +1,9 @@
 # 将冻结业务输入和 Rust 结果在应用模型之间转换，不重复求值。
 from collections.abc import Mapping
-from functools import lru_cache
 import sys
 
 from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.core.rating import LABELS, Rating
+from echo_workshop.core.rating import LABELS, Rating, _rating_tooltip, rating_result
 from echo_workshop.core.scoring import EchoScoreResult
 
 
@@ -41,34 +40,6 @@ def record_payload(record):
         'owner_state': record.owner_state,
         'game_equipped': record.game_equipped,
     }
-
-
-@lru_cache(maxsize=512)
-def _rating_tooltip(cost, thresholds):
-    scope = f'单件声骸 · COST {cost} · 50 分制' if cost is not None else '五件声骸总评级 · 250 分制'
-    rows = ' / '.join(f'{label}≥{value:g}' for label, value in zip(LABELS, thresholds))
-    basis = (
-        '按单件当前分及当次模版下限评级；不改变原分数。'
-        if cost is not None
-        else '仅完整五件；按上游卡片近满分修约评级，求解累计分保持原值。'
-    )
-    return f'{scope}\n{rows}\n{basis}'
-
-
-def rating_result(data):
-    if data is None:
-        return None
-    thresholds = tuple(data['thresholds'])
-    return Rating(
-        data['label'],
-        data['score'],
-        data['scale'],
-        thresholds,
-        data['cost'],
-        data['standard_id'],
-        data['source'],
-        _rating_tooltip(data['cost'], thresholds),
-    )
 
 
 def _rating_fields(standard):

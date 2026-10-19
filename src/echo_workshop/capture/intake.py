@@ -6,8 +6,6 @@ import math
 import threading
 import time
 
-from echo_workshop.application.diagnostics import begin_job
-
 
 @dataclass(frozen=True)
 class CaptureStatus:
@@ -47,6 +45,9 @@ class CaptureSession:
         manual_stable_seconds=0.3,
         max_frame_gap=5.0,
         clock=time.monotonic,
+        quality=None,
+        cancel_event=None,
+        job_factory=None,
     ):
         if type(stable_frames) is not int or stable_frames < 2:
             raise ValueError('Capture requires multiple fresh frames')
@@ -72,6 +73,9 @@ class CaptureSession:
         self.manual_stable_frames = manual_stable_frames
         self.manual_stable_seconds = manual_stable_seconds
         self.max_frame_gap = max_frame_gap
+        self._quality = quality
+        self._cancel_event = cancel_event
+        self._job_factory = job_factory
         self._lock = threading.RLock()
         self._status = CaptureStatus()
         self._reset_detection()
@@ -170,7 +174,9 @@ class CaptureSession:
                     'single', '正在收录当前声骸', profile_id=profile_id, mode='manual'
                 )
             )
-            self._manual_job = begin_job(
+            if self._job_factory is None:
+                raise ValueError('手动收录缺少诊断作业工厂')
+            self._manual_job = self._job_factory(
                 'manual-capture', metadata={'weight_version': getattr(weights, 'version', '')}
             )
             self._manual_job.stage('waiting_frame', {'timeout_seconds': timeout})
@@ -221,9 +227,12 @@ class CaptureSession:
         *,
         diagnostic_state='cancelled',
         summary_code='capture_cancelled',
+        request=None,
     ):
         with self._lock:
-            if self._single_request is not None:
+            if self._single_request is not None and (
+                request is None or self._single_request is request
+            ):
                 # Bounded counters only; no item names, attributes, images or
                 # local profile identifiers are written into application logs.
                 self._finish_manual(diagnostic_state, summary_code)
@@ -234,6 +243,36 @@ class CaptureSession:
                     message=message,
                 )
                 self._reset_detection()
+
+    def fail_manual(
+        self,
+        stage,
+        error,
+        *,
+        request=None,
+        message='后台收录解析失败，请重试',
+        summary_code='capture_failed',
+    ):
+        """Close one failed manual request so the shortcut is immediately usable."""
+        with self._lock:
+            if (
+                self._single_request is None
+                or self._manual_job is None
+                or (request is not None and self._single_request is not request)
+            ):
+                return False
+            # Preserve the real traceback in the bounded diagnostic job; never
+            # report a normal cancellation as a failure here.
+            self._manual_job.exception(stage, error, summary_code)
+            self._finish_manual('failed', summary_code)
+            self._single_request = None
+            self._status = replace(
+                self._status,
+                state='armed' if self._manual_armed else 'stopped',
+                message=message,
+            )
+            self._reset_detection()
+            return True
 
     def start(self, profile_id):
         with self._lock:
@@ -464,7 +503,7 @@ class CaptureSession:
             if self._single_request is not None:
                 self._diagnostics['records'] += 1
             game_flags = (record.game_equipped,)
-            committed_key = (record.fingerprint, record.validation_issues, game_flags)
+            committed_key = (record.fingerprint, game_flags)
             if committed_key == self._committed:
                 # Returning to A interrupts B's run even when A was already
                 # saved. Otherwise B/A/B/A/B incorrectly adds three B frames.
@@ -595,6 +634,20 @@ class CaptureSession:
         # but evidence, duplicate/upgrade staging and undo are identical.
         if self._single_request is not None and self._manual_job is not None:
             self._manual_job.stage('committing')
+        if self._quality is None:
+            raise ValueError('收录缺少原生质量服务')
+        # Remove warnings already resolved by catalog/icon/field resolution
+        # before the final native quality decision.
+        from echo_workshop.capture.metadata import settle_observation_issues
+
+        record = replace(
+            record,
+            issues=tuple(dict.fromkeys(settle_observation_issues(record, record.issues))),
+        )
+        facts = self._quality((record,), cancel_event=self._cancel_event)
+        if len(facts) != 1 or facts[0].record is not record:
+            raise ValueError('收录质量结论与当前记录不一致')
+        issues = tuple(facts[0].issues)
         reference = self.evidence.put(record.item_id, image)
         record = replace(
             record,
@@ -625,18 +678,18 @@ class CaptureSession:
             # Fresh equal observations or a verified frozen multi-frame proof
             # already established this item's visual stability.
             # Only actual missing/conflicting/invalid data require review.
-            if not record.validation_issues:
+            if not issues:
                 record = replace(record, review='confirmed')
             self.repository.add(record)
-            message = '已收录' if not record.validation_issues else '已保存，请核对识别有疑问的字段'
+            message = '已收录' if not issues else '已保存，请核对识别有疑问的字段'
             self._status = replace(
                 self._status,
                 added=self._status.added + 1,
-                needs_review=self._status.needs_review + (not record.usable),
+                needs_review=self._status.needs_review + bool(issues),
                 message=message,
                 marked=False,
             )
-        self._committed = (record.fingerprint, record.validation_issues, (record.game_equipped,))
+        self._committed = (record.fingerprint, (record.game_equipped,))
         if self._single_request is not None and self._single_request is getattr(
             self, '_commit_request', None
         ):

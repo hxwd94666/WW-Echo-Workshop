@@ -11,7 +11,7 @@ import tempfile
 import threading
 import time
 
-from echo_workshop.application.operations import OperationCancelled
+from echo_workshop.core.cancellation import OperationCancelled
 from echo_workshop.resources.weight_control import WeightBusyError, WeightConflictError
 
 from echo_workshop.resources.http import (

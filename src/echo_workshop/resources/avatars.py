@@ -11,7 +11,7 @@ import re
 import tempfile
 import threading
 import time
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.avatar_download import (
     AVATAR_BASES as AVATAR_BASES,
     MAX_AVATAR_BYTES,

@@ -6,10 +6,14 @@ from PySide6.QtCore import QObject, Signal
 
 
 def install_unload_cleanup():
-    from ok.core.task_manager import TaskManager
+    try:
+        from ok.core.task_manager import TaskManager
+    except ImportError:
+        # The official on_destroy path still runs; only the fallback is absent.
+        return False
 
     if getattr(TaskManager, '_echo_unload_cleanup', False):
-        return
+        return True
     original = TaskManager.unload_task
 
     def unload(manager, task):
@@ -29,6 +33,7 @@ def install_unload_cleanup():
 
     TaskManager.unload_task = unload
     TaskManager._echo_unload_cleanup = True
+    return True
 
 
 class _WindowSignals(QObject):

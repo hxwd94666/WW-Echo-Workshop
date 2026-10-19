@@ -6,6 +6,7 @@ import re
 
 from echo_workshop.core.text import simplify_echo_text
 
+
 @dataclass(frozen=True)
 class LiveSelection:
     ids: tuple[str, str]

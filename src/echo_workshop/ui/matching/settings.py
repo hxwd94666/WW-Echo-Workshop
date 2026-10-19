@@ -627,8 +627,11 @@ class MatchingRoleSettingsController:
             for name, count in self._saved_role_requirements(key).set_requirements
             if set_name(name) in allowed
         )
+        costs = self.cost_layout_picker.costs()
+        if sum(costs) > 12:
+            raise ValueError('五槽 COST 合计不得超过 12；请调整后再保存')
         value = RoleRequirements(
-            self.cost_layout_picker.costs(),
+            costs,
             self.main_requirements_picker.main_names(),
             names,
             counts,

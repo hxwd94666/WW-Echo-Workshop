@@ -4,7 +4,7 @@ import threading
 import time
 import http.client
 
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.download import conditional_get, remaining_time
 from echo_workshop.resources.role_defaults import (
     SOURCES,

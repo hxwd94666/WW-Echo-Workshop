@@ -10,3 +10,10 @@ class ComparisonCancelled(Exception):
 def checkpoint(cancel_event=None):
     if cancel_event is not None and cancel_event.is_set():
         raise OperationCancelled('作业已取消；未完成部分不作为成功结果，已提交数据不撤销')
+
+
+def report_progress(callback, stage, done, total, cancel_event=None):
+    checkpoint(cancel_event)
+    if callback is not None:
+        callback(stage, done, total)
+    checkpoint(cancel_event)

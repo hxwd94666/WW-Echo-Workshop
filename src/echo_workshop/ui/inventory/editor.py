@@ -1,12 +1,13 @@
 # 校验声骸核对表单并保留原始观察证据。
 from dataclasses import replace
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QCheckBox,
     QDialog,
     QDialogButtonBox,
     QFormLayout,
+    QFrame,
     QHeaderView,
     QLabel,
     QMessageBox,
@@ -23,7 +24,11 @@ from echo_workshop.ui.widgets.inputs import QComboBox, QDoubleSpinBox, QSpinBox
 from echo_workshop.core.models import StatValue, MAINSTAT_VALIDATION_MAXIMA, utc_now
 from echo_workshop.core.scoring import SUBSTAT_TIERS
 from echo_workshop.ui.widgets.layout import Disclosure, fit_dialog
-from echo_workshop.application.view_state import review_reason
+from echo_workshop.application.view_state import (
+    review_checked_reason,
+    review_issue_details,
+    review_reason,
+)
 from echo_workshop.ui.inventory.evidence import open_evidence
 from echo_workshop.ui.inventory.review_fields import ChoiceBox, ReviewChoices
 
@@ -39,10 +44,28 @@ class StatEditorDelegate(QStyledItemDelegate):
 
 class RecordEditorContent:
     def __init__(
-        self, record, parent=None, *, evidence=None, confirm=False, previous=None, choices=None
+        self,
+        record,
+        parent=None,
+        *,
+        evidence=None,
+        confirm=False,
+        previous=None,
+        choices=None,
+        quality_check=None,
+        quality=None,
+        review_kind=None,
     ):
         super().__init__(parent)
         self.record = record
+        self.quality = quality
+        self.review_kind = review_kind
+        self._quality_check = quality_check
+        self._quality_request = None
+        self._quality_pending_record = None
+        self._quality_timer = QTimer(self)
+        self._quality_timer.setInterval(20)
+        self._quality_timer.timeout.connect(self._poll_quality)
         self.result_record = None
         self.require_confirmation = confirm
         self.setWindowTitle('对照截图纠错 / 确认字段')
@@ -69,7 +92,31 @@ class RecordEditorContent:
                 self._preview_pixmap.loadFromData(evidence.read(record.screenshot_ref), 'PNG')
             except (OSError, ValueError):
                 self.preview.setText('原截图读取失败，已有证据引用保留。')
-        left_layout.addWidget(self.preview, 1)
+        left_layout.addWidget(self.preview)
+        self.reason_label = QLabel('')
+        self.reason_label.setWordWrap(True)
+        self.reason_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
+        issues = self.quality.issues if self.quality is not None else tuple(record.issues)
+        details = review_issue_details(issues)
+        reasons = list(details)
+        if self.review_kind == 'duplicate':
+            reasons.insert(0, '疑似重复：属性与库存中已有记录相同，请选择另存或更新旧件')
+        elif self.review_kind == 'upgrade':
+            reasons.insert(0, '疑似升级：与旧件同套装、同主词条，请选择更新旧件或另存')
+        if reasons:
+            self.reason_label.setText(
+                '待核对原因：\n' + '\n'.join('· ' + detail for detail in reasons)
+            )
+        elif record.review != 'confirmed':
+            self.reason_label.setText('待核对原因：字段完整；勾选“已核对”后可保存确认。')
+        self.reason_scroll = QScrollArea()
+        self.reason_scroll.setWidgetResizable(True)
+        self.reason_scroll.setFrameShape(QFrame.NoFrame)
+        self.reason_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.reason_scroll.setMaximumHeight(150)
+        self.reason_scroll.setWidget(self.reason_label)
+        self.reason_scroll.setVisible(bool(self.reason_label.text()))
+        left_layout.addWidget(self.reason_scroll)
         screenshot = QPushButton('打开原始截图，对照后返回纠错')
         screenshot.setEnabled(bool(record.screenshot_ref and evidence is not None))
 
@@ -115,6 +162,7 @@ class RecordEditorContent:
             old.content_layout.addWidget(old_image)
             old.toggle.setChecked(True)
             left_layout.addWidget(old)
+        left_layout.addStretch(1)
         self.splitter.addWidget(left)
         self.field_area = QScrollArea()
         self.field_area.setWidgetResizable(True)
@@ -239,9 +287,12 @@ class RecordEditorContent:
         fields_layout.addWidget(self.stats)
         self.acknowledge = QCheckBox('已对照原始截图核对上述字段，清除识别警告（原文及历史仍保留）')
         fields_layout.addWidget(self.acknowledge)
-        self.feedback = QLabel(
-            review_reason(record) + '；未展示的套装/COST 请在游戏内查看后补填，不会自动猜测。'
+        reason = (
+            review_checked_reason(record, self.quality)
+            if self.quality is not None
+            else review_reason(record)
         )
+        self.feedback = QLabel(reason + '；未展示的套装/COST 请在游戏内查看后补填，不会自动猜测。')
         self.feedback.setWordWrap(True)
         fields_layout.addWidget(self.feedback)
         fields_layout.addStretch(1)
@@ -257,7 +308,7 @@ class RecordEditorContent:
         self.resizeEvent(None)
 
     def configure_fields(self, *_):
-        issues = self.record.validation_issues
+        issues = self.quality.issues if self.quality is not None else tuple(self.record.issues)
         all_fields = self.edit_all.isChecked()
         fields = (
             (self.name_edit, 'name'),
@@ -335,15 +386,47 @@ class RecordEditorContent:
                 source='manual_review',
                 issues=() if self.acknowledge.isChecked() else self.record.issues,
             )
-            if self.require_confirmation and record.validation_issues:
-                raise ValueError(
-                    '仍有待补字段或不合理数值，请修正后保存。详情：'
-                    + ', '.join(record.validation_issues)
-                )
-            self.result_record = record
-            self.accept()
+            if self._quality_check is None:
+                raise ValueError('编辑器缺少原生质量校验服务，无法保存')
+            self._start_quality_check(record)
         except (ValueError, TypeError) as error:
             self.feedback.setText(f'请修正输入：{error}')
+
+    def _start_quality_check(self, record):
+        if self._quality_request is not None:
+            return
+        try:
+            self._quality_request = self._quality_check((record,))
+        except Exception as error:
+            self.feedback.setText(f'质量校验未启动：{error}')
+            return
+        self._quality_pending_record = record
+        self._quality_timer.start()
+        self.feedback.setText('正在校验原生质量结论…')
+
+    def _poll_quality(self):
+        request = self._quality_request
+        if request is None or not request.future.done():
+            return
+        self._quality_timer.stop()
+        record = self._quality_pending_record
+        try:
+            facts = request.future.result()
+            if len(facts) != 1 or facts[0].record != record:
+                raise ValueError('质量校验返回记录身份错误')
+            if facts[0].issues:
+                raise ValueError(
+                    '仍有待补字段或不合理数值，请修正后保存。详情：' + ', '.join(facts[0].issues)
+                )
+        except Exception as error:
+            self._quality_request = None
+            self._quality_pending_record = None
+            self.feedback.setText(f'质量校验未通过：{error}')
+            return
+        self._quality_request = None
+        self._quality_pending_record = None
+        self.result_record = replace(record, review='confirmed')
+        self.accept()
 
 
 class RecordEditor(RecordEditorContent, QDialog):

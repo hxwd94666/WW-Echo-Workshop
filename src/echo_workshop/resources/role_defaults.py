@@ -14,7 +14,7 @@ import time
 from types import MappingProxyType
 
 from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.resources.paths import builtin_path
 
 SOURCES = tuple(

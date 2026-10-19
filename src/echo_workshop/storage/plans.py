@@ -1,6 +1,7 @@
 # 保存冻结配装方案和保护信息。
 """Atomic, integrity-checked plan snapshots and manual progress, outside install."""
 
+from collections import OrderedDict
 from contextlib import contextmanager
 import hashlib
 import json
@@ -18,7 +19,7 @@ from echo_workshop.core.allocation.models import (
 )
 from echo_workshop.core.models import EchoRecord, canonical_json, utc_now, validate_id
 from echo_workshop.storage.locks import plan_file_lock
-from echo_workshop.application.operations import OperationCancelled, checkpoint, report_progress
+from echo_workshop.core.cancellation import OperationCancelled, checkpoint, report_progress
 from echo_workshop.resources.http import strict_json
 from echo_workshop.resources.weights import ALGORITHM_VERSION, WeightSnapshot
 
@@ -27,7 +28,7 @@ MAX_PLAN_BYTES = 4 * 1024 * 1024
 
 def _role_summary(native):
     """Map already computed native evidence into display-only metadata."""
-    from echo_workshop.application.compute_bridge import rating_result
+    from echo_workshop.core.rating import rating_result
 
     summary = {
         key: native[key]
@@ -156,10 +157,20 @@ class AllocationStore:
         self.plan_evaluator = plan_evaluator
         self.folder = Path(data_dir).resolve() / 'allocation-plans'
         self._lock = threading.RLock()
+        # Immutable plans repeat across sidebar/detail reads. Cache only the
+        # fact that a raw payload hash passed native validation; never cache
+        # current inventory constraints or query results.
+        self._validated = OrderedDict()
+        self._list_cache = None
 
     def _path(self, plan_id):
         validate_id(plan_id)
-        return self.folder / (plan_id + '.json')
+        if self.folder.is_symlink():
+            raise ValueError('方案目录不接受符号链接')
+        path = self.folder / (plan_id + '.json')
+        if path.is_symlink():
+            raise ValueError('方案文件不接受符号链接；原文件保留')
+        return path
 
     @contextmanager
     def _operation_lock(self, cancel_event):
@@ -171,8 +182,9 @@ class AllocationStore:
         finally:
             self._lock.release()
 
-    def _write(self, payload, *, cancel_event=None, before_commit=None):
-        validate_plan(payload, plan_evaluator=self.plan_evaluator, cancel_event=cancel_event)
+    def _write(self, payload, *, cancel_event=None, before_commit=None, validated=False):
+        if not validated:
+            validate_plan(payload, plan_evaluator=self.plan_evaluator, cancel_event=cancel_event)
         encoded = canonical_json(payload)
         envelope = canonical_json(
             dict(sha256=hashlib.sha256(encoded.encode('utf-8')).hexdigest(), payload=payload)
@@ -228,7 +240,12 @@ class AllocationStore:
         with self._operation_lock(cancel_event), plan_file_lock(self.folder, payload['plan_id']):
             if self._path(payload['plan_id']).exists():
                 raise ValueError('此历史方案已存在；请创建独立备份')
-            self._write(payload, cancel_event=cancel_event, before_commit=before_commit)
+            self._write(
+                payload,
+                cancel_event=cancel_event,
+                before_commit=before_commit,
+                validated=True,
+            )
             return payload
 
     def load(self, plan_id, *, cancel_event=None, evidence_sink=None):
@@ -273,7 +290,8 @@ class AllocationStore:
                 raise ValueError('方案文件超过大小限制')
             try:
                 checkpoint(cancel_event)
-                envelope = strict_json(path.read_text(encoding='utf-8'))
+                raw = path.read_bytes()
+                envelope = strict_json(raw)
                 checkpoint(cancel_event)
                 payload = envelope['payload']
                 if (
@@ -283,12 +301,22 @@ class AllocationStore:
                     raise ValueError('方案内容哈希校验失败；原文件保留')
                 if payload['plan_id'] != plan_id:
                     raise ValueError('方案 ID 与文件名不一致')
-                return validate_plan(
+                cache_key = (plan_id, hashlib.sha256(raw).hexdigest(), ALGORITHM_VERSION)
+                if evidence_sink is None and cache_key in self._validated:
+                    self._validated.move_to_end(cache_key)
+                    return payload
+                validated = validate_plan(
                     payload,
                     plan_evaluator=self.plan_evaluator,
                     cancel_event=cancel_event,
                     evidence_sink=evidence_sink,
                 )
+                if evidence_sink is None:
+                    self._validated[cache_key] = True
+                    self._validated.move_to_end(cache_key)
+                    while len(self._validated) > 64:
+                        self._validated.popitem(last=False)
+                return validated
             except (KeyError, TypeError, RecursionError) as error:
                 raise ValueError('方案数据格式错误；原文件保留') from error
 
@@ -300,6 +328,31 @@ class AllocationStore:
         result, errors, summaries = [], [], {}
         paths = sorted(self.folder.glob('*.json'))
         checkpoint(cancel_event)
+        signature = None
+        if len(paths) <= 1000:
+            try:
+                hashes = []
+                for path in paths:
+                    checkpoint(cancel_event)
+                    hashes.append((path.name, hashlib.sha256(path.read_bytes()).hexdigest()))
+                signature = (
+                    profile_id,
+                    ALGORITHM_VERSION,
+                    summary_sink is not None,
+                    tuple(hashes),
+                )
+            except OSError:
+                signature = None
+        if signature is not None:
+            with self._lock:
+                cached = self._list_cache
+            if cached is not None and cached[0] == signature:
+                report_progress(
+                    progress, '历史方案缓存', len(cached[1]), len(cached[1]), cancel_event
+                )
+                if summary_sink is not None:
+                    summary_sink.update(cached[3])
+                return cached[1], cached[2]
         report_progress(progress, '逐项校验历史方案', 0, min(len(paths), 1000), cancel_event)
         for index, path in enumerate(paths):
             checkpoint(cancel_event)
@@ -335,6 +388,14 @@ class AllocationStore:
         # no partial read result escapes on cancellation or a failed sort.
         if summary_sink is not None:
             summary_sink.update(summaries)
+        if signature is not None:
+            with self._lock:
+                self._list_cache = (
+                    signature,
+                    ordered,
+                    tuple(errors),
+                    dict(summaries),
+                )
         return ordered, tuple(errors)
 
     def mark(

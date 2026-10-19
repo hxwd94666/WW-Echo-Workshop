@@ -10,9 +10,9 @@ import hashlib
 
 from echo_workshop.storage.plans import MAX_PLAN_BYTES, validate_plan
 from echo_workshop.core.models import canonical_json, validate_id
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.storage.locks import plan_file_lock
-from echo_workshop.application.hotkeys import parse_bindings
+from echo_workshop.core.hotkeys import parse_bindings
 from echo_workshop.resources.http import strict_json
 
 KIND = 'okww-echo-workshop-workspace'

@@ -1,6 +1,26 @@
 # 核对宿主窗口捕获与输入设备身份。
 
 
+def read_capture_frame(manager):
+    """Read a fresh host capture frame; never use the cached frame property."""
+    capture = getattr(manager, 'capture_method', None)
+    window = getattr(manager, 'hwnd_window', None)
+    if (
+        capture is None
+        or window is None
+        or not getattr(window, 'exists', False)
+        or not getattr(window, 'pos_valid', True)
+    ):
+        return None
+    get_frame = getattr(capture, 'get_frame', None)
+    if not callable(get_frame):
+        return None
+    try:
+        return get_frame()
+    except Exception:
+        return None
+
+
 def capture_source_identity(manager):
     window = getattr(manager, 'hwnd_window', None)
     return (

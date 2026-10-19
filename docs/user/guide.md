@@ -1,6 +1,8 @@
 # 声骸工坊使用指南
 
-可在“声骸库 / 匹配 / 配装”切换；标题栏提供档案和设置。连接游戏只影响收录，已有库存可离线评分和配装。
+声骸工坊是 [OKWW](https://github.com/ok-oldking/ok-wuthering-waves) 插件。请先安装 [OKWW Releases](https://github.com/ok-oldking/ok-wuthering-waves/releases)，再把插件放入 `ok_import/`。
+
+可在“声骸库 / 匹配 / 配装”切换；标题栏提供档案和设置。实时评分需要 OKWW 捕获连接；已有库存可离线评分和配装。
 
 > **Windows 安全提示**：插件包含未签名的本地计算程序，系统可能提示“打开这些文件可能会对你的计算机有害”。请右键 ZIP → 属性 → 勾选“解除锁定”，或在插件目录执行 `Get-ChildItem '...\echo-workshop' -Recurse | Unblock-File`；不要关闭 Defender。程序只在本机计算，不执行远程代码。
 

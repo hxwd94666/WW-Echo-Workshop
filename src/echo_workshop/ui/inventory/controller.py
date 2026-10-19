@@ -13,6 +13,16 @@ from echo_workshop.ui.inventory.review_fields import ReviewChoices
 
 
 class InventoryContent:
+    def lifecycle_busy(self):
+        reader = getattr(self, '_reader', None)
+        return reader is not None and reader.status.state == 'running'
+
+    def lifecycle_draft(self):
+        return getattr(self, '_editor', None) is not None
+
+    def request_stop(self):
+        self.stop_worker()
+
     def __init__(self, task, parent=None):
         super().__init__(parent)
         self.task, self.runtime = task, task.runtime
@@ -303,6 +313,31 @@ class InventoryContent:
         self._finished_capture_hint = None
         self.refresh(force=True)
 
+    def _refresh_pending_summary(self):
+        rows = getattr(self, '_rows', ())
+        safe = issue = linked = 0
+        for record, kind, _ in rows:
+            if kind != 'item':
+                linked += 1
+                continue
+            if record.review == 'confirmed':
+                continue
+            quality = self.inventory_model.quality(record)
+            if quality.issues:
+                issue += 1
+            else:
+                safe += 1
+        if not hasattr(self, 'pending_summary'):
+            return
+        self.pending_summary.setText(
+            f'待核对：可安全确认 {safe} 件 · 需修正 {issue} 件 · 重复/升级 {linked} 件'
+            if safe or issue or linked
+            else ''
+        )
+        self.pending_summary.setVisible(bool(safe or issue or linked))
+        self.confirm_safe_button.setText(f'确认无问题项（{safe}）')
+        self.confirm_safe_button.setVisible(bool(safe))
+
     def refresh(self, *, force=False):
         try:
             self._refresh(force=force)
@@ -375,6 +410,7 @@ class InventoryContent:
                     result.rows, claims=result.claims, quality=result.quality
                 )
                 self._rows = self.inventory_model.rows
+                self._refresh_pending_summary()
                 index = self.inventory_model.row_for_id(previous_id)
                 if selected_ids is not None and changed is not False:
                     self.table.restore_selection(selected_ids, previous_id)
@@ -502,13 +538,19 @@ class InventoryContent:
         record, kind, _ = selected
         revision = self._mutation_revision()
         if kind == 'item':
-            self.runtime.inventory.confirm(record.item_id, expected_revision=revision)
+            self.runtime.inventory.confirm(
+                record.item_id,
+                expected_revision=revision,
+                quality=self.inventory_model.quality(record),
+            )
         else:
             editor = RecordEditor(
                 record,
                 self,
                 evidence=self.runtime.evidence,
                 choices=ReviewChoices.from_runtime(self.runtime, record),
+                quality_check=self.runtime.quality_checks.start,
+                quality=self.inventory_model.quality(record),
             )
             editor.setWindowTitle('确认这是独立的另一件声骸（不是合并）')
             if editor.exec() == QDialog.Accepted:

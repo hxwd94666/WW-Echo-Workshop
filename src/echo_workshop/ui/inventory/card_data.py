@@ -77,9 +77,9 @@ class CardData:
 
 
 def project_card(record, kind='item'):
-    """No scoring normalization, deduplication, sorting, image IO or OCR."""
-    issues = record.validation_issues
-    return _project_card(record, kind, issues, record.review == 'confirmed' and not issues)
+    """Project persisted observation status without re-running quality rules."""
+    issues = tuple(record.issues)
+    return _project_card(record, kind, issues, record.review == 'confirmed')
 
 
 def project_checked_card(record, quality, kind='item'):

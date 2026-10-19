@@ -7,6 +7,7 @@ from echo_workshop.capture.viewport import EchoViewport
 from echo_workshop.capture.scan.grid import bag_sort_direction
 from echo_workshop.core.cancellation import OperationCancelled
 from .capture_device import _window_capture_available
+from .snapshot_parse import parse_snapshot_record
 
 
 class _ObservationStop:
@@ -251,7 +252,6 @@ class ScanObservation:
         # Bind the complete job environment now. A cancelled inference may
         # finish after this task/runtime is gone; it retains no repository/UI.
         from echo_workshop.capture.evidence import prepare_evidence
-        from echo_workshop.capture.scan.pipeline import bag_region
         from echo_workshop.capture.scan.crop import read_fields
 
         if crop_mode not in ('original', 'packed'):
@@ -292,62 +292,29 @@ class ScanObservation:
                         timings.increment('packed_crop_errors')
                 if timings is not None:
                     timings.increment('packed_crop_attempts')
-            incomplete_rows = (
-                metadata is not None
-                and hasattr(metadata.analysis, 'main_rows')
-                and (
-                    len(metadata.analysis.main_rows) != 2
-                    or len(metadata.analysis.sub_rows) != snapshot.proof.level // 5
-                )
-            )
-            if (
-                metadata is None
-                or getattr(metadata.analysis, 'layout', '') != 'bag'
-                or getattr(metadata.analysis, 'layout_provisional', False)
-                or getattr(metadata, 'issues', ())
-                or incomplete_rows
-            ):
-                if crop_mode == 'packed' and timings is not None:
+            if crop_mode == 'packed' and timings is not None and metadata is not None:
+                if (
+                    getattr(metadata, 'issues', ())
+                    or getattr(metadata.analysis, 'layout', '') != 'bag'
+                ):
                     timings.increment('packed_legacy_fallbacks')
-                rect = bag_region(frame, viewport, (0.665, 0.08, 0.995, 0.93))
-                boxes = parser.ocr(frame=frame, box=Box(*rect, name='echo-bag-detail'))
-                with measure('metadata'):
-                    metadata = parser.read_metadata(
-                        frame,
-                        settings,
-                        weights,
-                        viewport=viewport,
-                        boxes=boxes,
-                        scan=True,
-                        observation_service=observations,
-                        cancel_event=stop_event,
-                    )
-            # A large panel OCR can miss its small skill heading. Retry only
-            # failed layout recognition, with non-overlapping bands of THIS
-            # immutable snapshot. Never obtain a later/previous item's frame.
-            if getattr(metadata.analysis, 'layout', '') != 'bag' or getattr(
-                metadata.analysis, 'layout_provisional', False
-            ):
-                bands = []
-                if timings is not None:
-                    timings.increment('layout_band_retries')
-                for i, (top, bottom) in enumerate(((0.08, 0.39), (0.39, 0.735), (0.735, 0.93))):
-                    rect = bag_region(frame, viewport, (0.665, top, 0.995, bottom))
-                    bands.extend(
-                        parser.ocr(frame=frame, box=Box(*rect, name='echo-bag-retry-' + str(i)))
-                    )
-                with measure('metadata'):
-                    metadata = parser.read_metadata(
-                        frame,
-                        settings,
-                        weights,
-                        viewport=viewport,
-                        boxes=bands,
-                        scan=True,
-                        observation_service=observations,
-                        cancel_event=stop_event,
-                    )
-                boxes = bands
+            with measure('metadata'):
+                metadata, record = parse_snapshot_record(
+                    parser,
+                    frame,
+                    viewport,
+                    settings,
+                    weights,
+                    profile,
+                    sonata,
+                    scene='bag',
+                    boxes=boxes or None,
+                    initial=metadata,
+                    expected_level=snapshot.proof.level,
+                    observations=observations,
+                    cancel_event=stop_event,
+                )
+            boxes = getattr(metadata, 'original_boxes', boxes)
             if getattr(metadata.analysis, 'layout', '') != 'bag' or getattr(
                 metadata.analysis, 'layout_provisional', False
             ):
@@ -361,18 +328,20 @@ class ScanObservation:
                     f'rows=({len(getattr(analysis, "main_rows", ()))},{len(getattr(analysis, "sub_rows", ()))}); '
                     f'boxes={len(boxes)}'
                 )
-            with measure('record_fields'):
-                record = parser.read_record(metadata, frame, viewport, profile, weights, sonata)
             if record is None or record.level != snapshot.proof.level:
                 raise ValueError('Queued snapshot level/details disagree')
             if packed_observation is not metadata and getattr(packed_observation, 'issues', ()):
                 # A later same-frame read must not erase an earlier conflicting
-                # observation. Preserve its raw boxes and concrete review issues.
+                # observation. Preserve its raw boxes and unresolved issues, but
+                # drop warnings the final record has already resolved.
                 from dataclasses import replace
 
+                from echo_workshop.capture.metadata import settle_observation_issues
+
+                packed_issues = tuple(settle_observation_issues(record, packed_observation.issues))
                 record = replace(
                     record,
-                    issues=tuple(dict.fromkeys(record.issues + tuple(packed_observation.issues))),
+                    issues=tuple(dict.fromkeys(record.issues + packed_issues)),
                     raw_text=record.raw_text
                     + '\n[echo-scan-packed-observation]\n'
                     + packed_observation.raw_text(),

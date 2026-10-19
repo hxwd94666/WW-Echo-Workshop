@@ -97,7 +97,11 @@ class TestComputeProcess(unittest.TestCase):
             self.assertTrue(jobs.wait_closed())
 
     def test_preparation_hang_has_deadline_and_does_not_block_other_lane(self):
-        jobs, release, entered = ComputeJobs(ENGINE), threading.Event(), threading.Event()
+        jobs, release, entered = (
+            ComputeJobs(ENGINE, prepare_grace=0.1),
+            threading.Event(),
+            threading.Event(),
+        )
         try:
 
             def stuck():
@@ -108,10 +112,13 @@ class TestComputeProcess(unittest.TestCase):
             first = jobs.submit('ping', stuck, timeout=0.15)
             self.assertTrue(entered.wait(1))
             queued = jobs.submit('ping', dict, timeout=1)
-            for future in (first, queued):
-                with self.assertRaises(ComputeFailure) as error:
-                    future.result(timeout=1)
-                self.assertEqual('timeout', error.exception.kind)
+            with self.assertRaises(ComputeFailure) as error:
+                first.result(timeout=1)
+            self.assertEqual('timeout', error.exception.kind)
+            # The queued ticket is drained once the preparation grace expires.
+            with self.assertRaises(ComputeFailure) as error:
+                queued.result(timeout=1)
+            self.assertEqual('restart_limit', error.exception.kind)
             with self.assertRaises(ComputeFailure) as error:
                 jobs.submit('ping', dict)
             self.assertEqual('restart_limit', error.exception.kind)
@@ -120,6 +127,33 @@ class TestComputeProcess(unittest.TestCase):
             jobs.close()
             self.assertTrue(jobs.wait_closed())
             release.set()
+
+    def test_cancel_during_preparation_keeps_lane_healthy(self):
+        jobs, release, entered, cancel = (
+            ComputeJobs(ENGINE),
+            threading.Event(),
+            threading.Event(),
+            threading.Event(),
+        )
+        try:
+
+            def blocked():
+                entered.set()
+                release.wait()
+                return {}
+
+            work = jobs.submit('ping', blocked, timeout=10, cancel_event=cancel)
+            self.assertTrue(entered.wait(1))
+            cancel.set()
+            with self.assertRaises(ComputeFailure) as error:
+                work.result(timeout=1)
+            self.assertEqual('cancelled', error.exception.kind)
+            release.set()
+            self.assertEqual({}, jobs.submit('ping', dict).result(timeout=3))
+        finally:
+            release.set()
+            jobs.close()
+            self.assertTrue(jobs.wait_closed())
 
     def test_stuck_preparation_does_not_prevent_interpreter_exit(self):
         source = ENGINE.parents[3] / 'src'

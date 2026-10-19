@@ -2,7 +2,7 @@
 
 ## 插件没有出现
 
-检查完整 `echo-workshop` 文件夹是否位于实际运行目录的 `ok_import/`，不要多嵌套一层，也不要同时保留两份插件。更新后完全退出并重启OKWW。宿主版本与插件适配版本不匹配时，查看宿主日志的加载阶段。
+请先用 [OKWW Releases](https://github.com/ok-oldking/ok-wuthering-waves/releases) 安装并启动宿主；插件本身不能独立运行。检查完整 `echo-workshop` 文件夹是否位于实际运行目录的 `ok_import/`，不要多嵌套一层，也不要同时保留两份插件。更新后完全退出并重启 OKWW。宿主版本与插件适配版本不匹配时，查看宿主日志的加载阶段。
 
 ## 选择角色后没有结果
 

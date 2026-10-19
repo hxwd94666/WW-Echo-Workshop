@@ -21,6 +21,16 @@ class LoadoutSnapshot:
         return dict(self.claims)
 
 
+def unprotected_loadout(row, *, updated_at):
+    """Return the one explicit representation of an unprotected loadout row."""
+    return dict(
+        row,
+        protected=False,
+        protected_item_ids=[],
+        updated_at=updated_at,
+    )
+
+
 def protected_item_ids(row):
     """Legacy rows reserve all five; an explicit empty subset reserves none."""
     if 'protected_item_ids' not in row:
@@ -98,7 +108,7 @@ def validate_loadouts(rows, profiles, by_id):
     return rows
 
 
-def loadout_issues(row, by_id):
+def loadout_issues(row, by_id, *, quality_by_id=None):
     issues = []
     for item_id, fingerprint in zip(row['item_ids'], row['fingerprints']):
         record = by_id.get(item_id)
@@ -107,7 +117,11 @@ def loadout_issues(row, by_id):
         elif record.profile_id != row['profile_id']:
             issues.append('wrong_profile')
         else:
-            if not record.usable:
+            if quality_by_id is not None:
+                quality = quality_by_id.get(item_id)
+                if quality is None or not quality.usable:
+                    issues.append('unusable_item')
+            elif record.review != 'confirmed':
                 issues.append('unusable_item')
             if record.fingerprint != fingerprint:
                 issues.append('content_changed')

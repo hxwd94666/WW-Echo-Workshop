@@ -8574,7 +8574,15 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25 · B",
+        "potential_text": "26.25",
+        "rating_color": [
+          93,
+          201,
+          150
+        ]
       }
     },
     {
@@ -8936,7 +8944,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25",
+        "potential_text": "26.25",
+        "rating_color": null
       }
     },
     {
@@ -9424,7 +9436,15 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": true,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25 · B",
+        "potential_text": "26.25",
+        "rating_color": [
+          93,
+          201,
+          150
+        ]
       }
     },
     {
@@ -9914,7 +9934,15 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": true,
-        "current_score": 22.41
+        "current_score": 22.41,
+        "potential_score": 22.41,
+        "score_text": "22.41 · C",
+        "potential_text": "22.41",
+        "rating_color": [
+          182,
+          186,
+          194
+        ]
       }
     },
     {
@@ -10062,7 +10090,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": null
+        "current_score": null,
+        "potential_score": null,
+        "score_text": "",
+        "potential_text": "",
+        "rating_color": null
       }
     },
     {
@@ -10562,7 +10594,15 @@
         ],
         "layout_provisional": true,
         "comparison": true,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25 · B",
+        "potential_text": "26.25",
+        "rating_color": [
+          93,
+          201,
+          150
+        ]
       }
     },
     {
@@ -10588,7 +10628,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": null
+        "current_score": null,
+        "potential_score": null,
+        "score_text": "",
+        "potential_text": "",
+        "rating_color": null
       }
     },
     {
@@ -10614,7 +10658,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": null
+        "current_score": null,
+        "potential_score": null,
+        "score_text": "",
+        "potential_text": "",
+        "rating_color": null
       }
     },
     {
@@ -10767,7 +10815,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": null
+        "current_score": null,
+        "potential_score": null,
+        "score_text": "",
+        "potential_text": "",
+        "rating_color": null
       }
     },
     {
@@ -11086,7 +11138,11 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": null
+        "current_score": null,
+        "potential_score": null,
+        "score_text": "",
+        "potential_text": "",
+        "rating_color": null
       }
     },
     {
@@ -11460,7 +11516,15 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25 · B",
+        "potential_text": "26.25",
+        "rating_color": [
+          93,
+          201,
+          150
+        ]
       }
     },
     {
@@ -11831,7 +11895,15 @@
         "viewport": [],
         "layout_provisional": false,
         "comparison": false,
-        "current_score": 26.25
+        "current_score": 26.25,
+        "potential_score": 26.25,
+        "score_text": "26.25 · B",
+        "potential_text": "26.25",
+        "rating_color": [
+          93,
+          201,
+          150
+        ]
       }
     }
   ]

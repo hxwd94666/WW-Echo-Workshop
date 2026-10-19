@@ -5,6 +5,7 @@ import threading
 import time
 
 from echo_workshop.application.operations import OperationCancelled
+from echo_workshop.application.shutdown import join_bounded
 
 
 @dataclass(frozen=True)
@@ -88,4 +89,4 @@ class ScreenshotCleanupService:
     def close(self):
         self._wake.set()
         if self._thread is not None:
-            self._thread.join()
+            join_bounded(self._thread, 2.0, name='screenshot-cleanup')

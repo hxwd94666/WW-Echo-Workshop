@@ -100,7 +100,7 @@ class SavedModesStorageContract(unittest.TestCase):
                 expected_loadout_revision=self.repo.loadout_revision,
             ),
         )
-        self.assertEqual(saved.payload['publication']['kind'], 'current')
+        self.assertEqual(saved.payload['publication']['kind'], 'generated')
         self.assertTrue(saved.current_committed)
         current = self.repo.loadout_snapshot(self.profile)
         self.assertEqual(len(current.current), 1)

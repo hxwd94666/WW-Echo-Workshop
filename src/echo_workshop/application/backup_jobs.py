@@ -8,6 +8,7 @@ import threading
 from echo_workshop.storage.archives import export_archive, import_archive
 from echo_workshop.application.operations import OperationCancelled
 from echo_workshop.application.diagnostics import begin_job
+from echo_workshop.application.shutdown import join_bounded
 
 
 @dataclass(frozen=True)
@@ -320,17 +321,20 @@ class BackupService:
                     self._status, state='cancelling', message='已请求取消；等待当前 I/O 检查点'
                 )
 
-    def wait(self):
+    def wait(self, timeout=None):
         with self._lock:
             thread = self._thread
         if thread is not None and thread is not threading.current_thread():
-            thread.join()
+            if timeout is None:
+                thread.join()
+            else:
+                join_bounded(thread, timeout, name='inventory-backup')
 
-    def cancel_and_wait(self):
+    def cancel_and_wait(self, timeout=None):
         self.cancel()
-        self.wait()
+        self.wait(timeout=timeout)
 
     def close(self):
         with self._lock:
             self._closed = True
-        self.cancel_and_wait()
+        self.cancel_and_wait(timeout=2.0)

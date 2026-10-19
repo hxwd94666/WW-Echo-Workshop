@@ -1,16 +1,17 @@
 # 组合插件运行时并管理服务生命周期。
 """Explicit host-config-relative runtime ownership, without module import I/O."""
 
-from pathlib import Path
 import threading
 
 from echo_workshop.storage.evidence import EvidenceStore
+from echo_workshop.application.evidence_jobs import EvidenceViewJobs
 from echo_workshop.storage.inventory import EchoRepository
 from echo_workshop.application.scoring import ScoreService
 from echo_workshop.application.compute_jobs import ComputeJobs
 from echo_workshop.application.observations import ObservationService
 from echo_workshop.application.custom_weights import CustomWeightService
 from echo_workshop.application.inventory_query import InventoryQueryService
+from echo_workshop.application.quality_jobs import QualityCheckService
 from echo_workshop.application.match_projection import MatchProjectionService
 from echo_workshop.application.pins import PinCheckService
 from echo_workshop.application.requirements_check import RequirementsCheckService
@@ -32,19 +33,10 @@ from echo_workshop.resources.avatars import AvatarCache
 from echo_workshop.resources.updates import ResourceUpdateService
 from echo_workshop.resources.role_defaults import RoleDefaultsProvider
 from echo_workshop.resources.role_default_updates import RoleDefaultsUpdateService
-from echo_workshop.resources.paths import package_manifest, plugin_root
+from echo_workshop.resources.paths import package_manifest
+from echo_workshop.storage.paths import data_dir_for_config
 from echo_workshop.application.inventory import InventoryService
 from echo_workshop.application.plan_jobs import PlanCommands
-
-
-def data_dir_for_config(config_file):
-    if not isinstance(config_file, (str, Path)) or not str(config_file):
-        raise ValueError('Host config_file is required')
-    root = Path(config_file).resolve().parent / 'plugin_data' / 'echo-workshop'
-    installation = plugin_root()
-    if root == installation or installation in root.parents:
-        raise ValueError('User data must not be inside the plugin installation')
-    return root
 
 
 class PluginRuntime:
@@ -53,6 +45,7 @@ class PluginRuntime:
         self.observations = ObservationService(compute=self.compute)
         self.custom_weights = CustomWeightService(compute=self.compute)
         self.inventory_queries = InventoryQueryService(compute=self.compute)
+        self.quality_checks = QualityCheckService(self.inventory_queries.quality)
         self.match_projections = MatchProjectionService(compute=self.compute)
         self.pin_checks = PinCheckService(compute=self.compute)
         self.requirements_checks = RequirementsCheckService(compute=self.compute)
@@ -60,6 +53,9 @@ class PluginRuntime:
         try:
             self._initialize(config_file)
         except BaseException:
+            quality_checks = getattr(self, 'quality_checks', None)
+            if quality_checks is not None:
+                quality_checks.close()
             self.compute.close()
             repository = getattr(self, 'repository', None)
             if repository is not None:
@@ -85,7 +81,7 @@ class PluginRuntime:
         init_job = begin_job('plugin-runtime', metadata={'plugin_version': version})
         init_job.stage('offline-providers')
         try:
-            self.evidence = EvidenceStore(self.data_dir)
+            self.evidence = EvidenceStore(self.data_dir, view_factory=EvidenceViewJobs)
             self.game_catalog = GameCatalog(self.data_dir)
             self.game_updates = GameCatalogUpdates(self.game_catalog, stop_event=self.stop_event)
             self.game_assets = GameAssets(self.data_dir)
@@ -121,7 +117,13 @@ class PluginRuntime:
                 allocation=self.allocation,
                 queries=self.inventory_queries,
             )
-            self.capture = CaptureSession(self.repository, self.evidence)
+            self.capture = CaptureSession(
+                self.repository,
+                self.evidence,
+                quality=self.inventory_queries.quality,
+                cancel_event=self.stop_event,
+                job_factory=begin_job,
+            )
             self.scan = ScanTraversal()
             self.updates = WeightUpdateService(
                 self.weights,
@@ -138,6 +140,7 @@ class PluginRuntime:
                 stop_event=self.stop_event,
                 defaults=self.role_default_updates,
                 catalog=self.game_updates,
+                job_factory=begin_job,
             )
             self.backups = BackupService(
                 self.repository,
@@ -181,6 +184,7 @@ class PluginRuntime:
         if not self._closed:
             self._closed = True
             self.stop_event.set()
+            self.quality_checks.close()
             self.compute.close()
             self.stop_intake()
             self.backups.close()
@@ -191,7 +195,8 @@ class PluginRuntime:
             self.updates.stop()
             self.sonata_updates.stop()
             self.sonata_effect_updates.stop()
-            self.evidence.views.close()
+            if self.evidence.views is not None:
+                self.evidence.views.close()
             self.screenshot_cleanup.close()
             self.repository.close()
 

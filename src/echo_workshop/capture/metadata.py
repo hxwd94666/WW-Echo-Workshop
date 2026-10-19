@@ -4,6 +4,7 @@
 from dataclasses import dataclass, replace
 import json
 import math
+import re
 
 from echo_workshop.capture.viewport import EchoViewport
 
@@ -66,7 +67,7 @@ def metadata_regions(analysis, width, height):
     ratios = (
         ((0.68, 0.08, 0.99, 0.32), (0.68, 0.77, 0.99, 0.90))
         if layout == 'bag'
-        else ((0.76, 0.11, 0.99, 0.215), (0.76, 0.82, 0.99, 0.93))
+        else ((0.76, 0.06, 0.99, 0.18), (0.76, 0.82, 0.99, 0.93))
     )
     regions = []
     for i, (x1, y1, x2, y2) in enumerate(ratios):
@@ -118,8 +119,109 @@ def scan_ocr_regions(viewport, width, height):
     return tuple(result)
 
 
+def metadata_complete(analysis, boxes, width, height):
+    """True when the first OCR parse already yields unambiguous panel metadata."""
+    if getattr(analysis, 'layout_provisional', False):
+        return False
+    from echo_workshop.capture.record_metadata import record_from_analysis
+
+    record = record_from_analysis(
+        analysis,
+        boxes,
+        '00000000-0000-4000-8000-000000000001',
+        width,
+        height,
+    )
+    if (
+        record is None
+        or getattr(analysis, 'observed_cost', None) is None
+        or not record.name
+        or not record.sonata
+        or record.level is None
+    ):
+        return False
+    blocked = (
+        'ocr:header_name_needs_review',
+        'ocr:conflicting_header_level',
+        'ocr:sonata_needs_review',
+        'ocr:conflicting_sonata_heading',
+        'ocr:cost_needs_review',
+        'ocr:conflicting_owner',
+        'ocr:metadata_',
+    )
+    return not any(issue.startswith(blocked) for issue in record.issues)
+
+
+def _resolve_echo_name(value):
+    if not value:
+        return ''
+    from echo_workshop.capture.record_metadata import _match_echo_name
+
+    return _match_echo_name(value)
+
+
+def _resolve_character(value, characters):
+    if not value or characters is None:
+        return ''
+    observation = characters.resolve(value)
+    if observation.name:
+        return observation.name
+    from difflib import SequenceMatcher
+
+    from echo_workshop.core.text import simplify_echo_text
+
+    key = re.sub(r'\s+', '', simplify_echo_text(value))
+    if not key:
+        return ''
+    names = [(name, re.sub(r'\s+', '', name)) for name in characters.by_name]
+    if len(key) >= 2:
+        affixes = [
+            name
+            for name, normalized in names
+            if normalized.startswith(key) or normalized.endswith(key)
+        ]
+        if len(affixes) == 1:
+            return affixes[0]
+    scored = sorted(
+        (SequenceMatcher(None, key, normalized).ratio(), name) for name, normalized in names
+    )
+    if not scored:
+        return ''
+    best_score, best = scored[-1]
+    second = scored[-2][0] if len(scored) > 1 else 0.0
+    if best_score >= 0.8 and best_score - second >= 0.06:
+        return best
+    return ''
+
+
+def _choose_observed(old, new, resolver):
+    """Prefer the catalog-known value; only two known different values conflict."""
+    if old == new:
+        return old, False
+    if not old or not new:
+        return (new or old), False
+    old_hit, new_hit = resolver(old), resolver(new)
+    if old_hit and new_hit:
+        if old_hit == new_hit:
+            return old_hit, False
+        return '', True
+    if old_hit:
+        return old_hit, False
+    if new_hit:
+        return new_hit, False
+    return '', True
+
+
 def refine_echo_metadata(
-    analysis, boxes, width, height, read_region, analyze, *, complete_only=False
+    analysis,
+    boxes,
+    width,
+    height,
+    read_region,
+    analyze,
+    *,
+    complete_only=False,
+    characters=None,
 ):
     """Read two bounded ROIs on the caller's same frame, preserve stat geometry.
 
@@ -128,6 +230,8 @@ def refine_echo_metadata(
     IO/OCR exceptions propagate to the task's existing interruption handling.
     """
     original = tuple(boxes)
+    if metadata_complete(analysis, original, width, height):
+        return MetadataPass(analysis, original, original)
     regions = metadata_regions(analysis, width, height)
     if not regions:
         return MetadataPass(analysis, original, original)
@@ -164,23 +268,56 @@ def refine_echo_metadata(
     before = record_from_analysis(analysis, original, profile, width, height)
     after = record_from_analysis(refined, merged, profile, width, height)
     issues = []
+    chosen = {}
     if before is None or after is None:
         return MetadataPass(
             analysis, original, original, regions, observations, ('ocr:metadata_geometry_changed',)
         )
-    for field in ('name', 'level', 'owner', 'sonata'):
+
+    def owner_resolver(value):
+        return _resolve_character(value, characters)
+
+    for field, resolver in (('name', _resolve_echo_name), ('owner', owner_resolver)):
         old, new = getattr(before, field), getattr(after, field)
-        if old != new:
+        if old == new:
+            continue
+        value, conflict = _choose_observed(old, new, resolver)
+        if value:
+            chosen[field] = value
+        if conflict:
             kind = (
                 'missing'
                 if new in ('', None)
                 else ('recovered' if old in ('', None) else 'disagreement')
             )
-            issues.append('ocr:metadata_' + kind + ':' + field)
+            if kind != 'recovered':
+                issues.append('ocr:metadata_' + kind + ':' + field)
+    old, new = before.level, after.level
+    if old != new:
+        old_ok = old is not None and 0 <= old <= 25
+        new_ok = new is not None and 0 <= new <= 25
+        if old_ok and not new_ok:
+            chosen['level'] = old
+        elif new_ok and not old_ok:
+            chosen['level'] = new
+        elif old_ok and new_ok:
+            issues.append('ocr:metadata_disagreement:level')
+        else:
+            issues.append('ocr:metadata_missing:level')
+    old, new = before.sonata, after.sonata
+    if old != new:
+        kind = (
+            'missing'
+            if new in ('', None)
+            else ('recovered' if old in ('', None) else 'disagreement')
+        )
+        if kind != 'recovered':
+            issues.append('ocr:metadata_' + kind + ':sonata')
     old, new = analysis.observed_cost, refined.observed_cost
     if old != new:
         kind = 'missing' if new is None else ('recovered' if old is None else 'disagreement')
-        issues.append('ocr:metadata_' + kind + ':cost')
+        if kind != 'recovered':
+            issues.append('ocr:metadata_' + kind + ':cost')
     retained = []
     for field in ('name', 'level', 'owner', 'sonata'):
         old, new = getattr(before, field), getattr(after, field)
@@ -188,6 +325,9 @@ def refine_echo_metadata(
             # Preserve an actual original observation, never invent a value;
             # the missing scoped read and its raw evidence still require review.
             retained.append((field, old))
+    for field, value in chosen.items():
+        retained = [pair for pair in retained if pair[0] != field]
+        retained.append((field, value))
     if analysis.observed_cost is not None and refined.observed_cost is None:
         # Re-use only the original head COST label/digits. Re-analyze with the
         # pinned scoring callback so a different inferred COST cannot mis-score.
@@ -217,6 +357,49 @@ def refine_echo_metadata(
     )
 
 
+def settle_observation_issues(record, issues):
+    """Drop old observation warnings that the final record has already resolved."""
+    name_resolved = False
+    if record.name:
+        from echo_workshop.capture.record_metadata import _match_echo_name
+
+        name_resolved = bool(_match_echo_name(record.name))
+    resolved_fields = {
+        'name': name_resolved,
+        'sonata': bool(record.sonata),
+        'level': record.level is not None,
+        'owner': bool(record.owner),
+        'cost': record.cost in (1, 3, 4),
+    }
+    for issue in issues:
+        if issue.startswith('ocr:metadata_recovered:'):
+            continue
+        if issue.startswith('ocr:metadata_missing:'):
+            field = issue.split(':', 2)[2]
+            if resolved_fields.get(field):
+                continue
+        if issue == 'ocr:header_name_needs_review' and resolved_fields['name']:
+            continue
+        if (
+            issue == 'ocr:sonata_needs_review'
+            and resolved_fields['sonata']
+            and issue not in record.issues
+        ):
+            continue
+        if issue == 'ocr:cost_needs_review' and resolved_fields['cost']:
+            continue
+        if (
+            (
+                issue == 'ocr:sonata_icon_conflict'
+                or issue.startswith(('ocr:conflicting_sonata', 'ocr:metadata_disagreement:sonata'))
+            )
+            and resolved_fields['sonata']
+            and issue not in record.issues
+        ):
+            continue
+        yield issue
+
+
 def record_with_metadata(
     observation, profile, width, height, *, icon=None, characters=None, frame=None
 ):
@@ -229,7 +412,14 @@ def record_with_metadata(
         record,
         **dict(observation.retained_fields),
         raw_text=observation.raw_text(),
-        issues=tuple(dict.fromkeys(record.issues + observation.issues)),
+    )
+    record = replace(
+        record,
+        issues=tuple(
+            dict.fromkeys(
+                record.issues + tuple(settle_observation_issues(record, observation.issues))
+            )
+        ),
     )
     if icon is not None or characters is not None:
         record = attach_visual_metadata(
@@ -268,18 +458,33 @@ def attach_visual_metadata(
             bounds=icon.bounds,
             version=icon.version,
         )
-        if icon.state == 'matched':
-            if record.sonata and simplify_echo_text(record.sonata) != icon.name:
-                issues.append('ocr:sonata_icon_conflict')
-            elif any(issue.startswith('ocr:conflicting_sonata') for issue in issues):
-                # Conflicting written sets stay visible even if one icon wins.
-                issues.append('ocr:sonata_icon_conflict')
-            else:
-                changes['sonata'] = icon.name
-                # A matching icon independently validates this observed set
-                # heading. Other missing/conflicting fields remain untouched.
-                if record.sonata:
-                    issues = [i for i in issues if i != 'ocr:sonata_needs_review']
+        if icon.state == 'matched' and icon.name:
+            evidence['icon']['observed_text'] = record.sonata
+            evidence['icon']['text_mismatch'] = bool(
+                record.sonata and simplify_echo_text(record.sonata) != icon.name
+            )
+            changes['sonata'] = icon.name
+            # A high-confidence icon is authoritative for the selected panel;
+            # keep the text in evidence but do not keep a text-only conflict.
+            issues = [
+                issue
+                for issue in issues
+                if not (
+                    issue in ('ocr:sonata_needs_review', 'ocr:sonata_icon_conflict')
+                    or issue.startswith(
+                        (
+                            'ocr:conflicting_sonata',
+                            'ocr:metadata_disagreement:sonata',
+                            'ocr:metadata_missing:sonata',
+                        )
+                    )
+                )
+            ]
+        else:
+            # The game always carries a sonata icon for an actual echo. A
+            # text-only heading is therefore not enough to confirm the set.
+            evidence['icon']['observed_text'] = record.sonata
+            changes['sonata'] = ''
     if characters is not None:
         observed = characters.resolve(record.owner)
         state, ident = observed.state, observed.character_id

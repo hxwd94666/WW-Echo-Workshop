@@ -271,7 +271,7 @@ class SonataProvider:
             checked_png(icons[ident])
             items[ident] = dict(name=name, file=f'sonata_{ident}.png', sha256=_digest(icons[ident]))
         data = dict(schema_version=1, source=source, icon_source=source, items=items)
-        from echo_workshop.application.operations import checkpoint
+        from echo_workshop.core.cancellation import checkpoint
 
         checkpoint(cancel_event)
         self.root.mkdir(parents=True, exist_ok=True)
@@ -398,7 +398,7 @@ class SonataUpdateService:
             self._status = replace(self._status, message=text)
 
     def check_once(self, *, cancel_event=None):
-        from echo_workshop.application.operations import OperationCancelled
+        from echo_workshop.core.cancellation import OperationCancelled
 
         token = cancel_event or self.stop_event
         self.last_failure = None

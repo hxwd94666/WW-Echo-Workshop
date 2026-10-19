@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 from PySide6.QtCore import Qt, Slot
 from PySide6.QtGui import QPixmap
+from qfluentwidgets import MessageBox
 from echo_workshop.ui.matching.controller import _StopToken
 from echo_workshop.ui.inventory.evidence import open_evidence
 from echo_workshop.application.operations import checkpoint, OperationCancelled
@@ -371,13 +372,21 @@ class SavedPlanController:
             expected_loadout_revision=snapshot.revision,
             _guard_weight=self.runtime.weights.active.version,
         )
-        self.queue_current_action(
-            kind,
-            arguments,
+        message = (
             ('解除保护：' if kind == 'release-current' else '移除当前配装：')
             + row['label']
-            + '。这会释放其声骸预留；历史方案和手动进度保留，不操作游戏。',
+            + '。这会释放其声骸预留；历史方案和手动进度保留，不操作游戏。'
         )
+        if kind in ('remove-current', 'release-current'):
+            self.cancel_current_action()
+            self._pending_current_action = (kind, dict(arguments), self._scope_generation)
+            title = '解除保护' if kind == 'release-current' else '移除配装'
+            if not MessageBox(title, message, self.window()).exec():
+                self.cancel_current_action()
+                return
+            self.confirm_current_action()
+            return
+        self.queue_current_action(kind, arguments, message)
 
     def refresh_saved(self):
         if not self.profile.currentData():

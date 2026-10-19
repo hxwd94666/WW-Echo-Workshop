@@ -20,7 +20,7 @@ import threading
 import time
 from types import MappingProxyType
 
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.game_sources import SOURCES
 
 

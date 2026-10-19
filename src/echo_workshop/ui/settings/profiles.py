@@ -245,7 +245,7 @@ class ProfileManagementController:
         if not self._profile_action_ready():
             return
         path, _ = QFileDialog.getOpenFileName(
-            self, '导入档案（兼容旧声骸库和完整备份）', '', '档案数据 (*.zip)'
+            self, '导入当前档案包（旧备份会被明确拒绝）', '', '档案数据 (*.zip)'
         )
         if not path or not self._profile_action_ready():
             return

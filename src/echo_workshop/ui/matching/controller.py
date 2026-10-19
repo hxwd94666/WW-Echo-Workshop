@@ -42,6 +42,18 @@ class _StopToken:
 
 
 class ComparisonContent(ComparisonUX):
+    def lifecycle_busy(self):
+        return self._future is not None or self._publication is not None or self._facts_busy
+
+    def lifecycle_draft(self):
+        return bool(getattr(self, '_rule_dirty', False))
+
+    def lifecycle_rule_dirty(self):
+        return bool(getattr(self, '_rule_dirty', False))
+
+    def request_stop(self):
+        self.stop_worker()
+
     def __init__(self, task, parent=None):
         super().__init__(parent)
         self.task, self.runtime = task, task.runtime
@@ -570,7 +582,7 @@ class ComparisonContent(ComparisonUX):
                 self._generation += 1
                 pool = self._pool
             if pool is not None:
-                pool.shutdown(wait=True, cancel_futures=True)
+                pool.shutdown(wait=False, cancel_futures=True)
             with self._worker_lock:
                 self._pool = None
                 self._future = None

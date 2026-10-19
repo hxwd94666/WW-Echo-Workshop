@@ -195,6 +195,8 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         results.addWidget(self.result_cards, 1)
         self.review_button = PushButton('核对0件', self)
         self.review_button.clicked.connect(lambda: self.action(lambda: self.open_remedy('review')))
+        self.outcome_label = CaptionLabel('', self)
+        self.outcome_label.setWordWrap(False)
         outer.addWidget(self.pages, 1)
         self.editor_area = EditorHost(self)
         self.editor_area.hide()
@@ -223,6 +225,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.protect_button.clicked.connect(lambda: self.action(self.save_loadout))
         self._changes_dialog = None
         self.result_actions.addWidget(self.review_button)
+        self.result_actions.addWidget(self.outcome_label)
         self.result_actions.addStretch(1)
         self.result_actions.addWidget(self.save_button)
         self.result_actions.addWidget(self.protect_button)
@@ -344,6 +347,8 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.checklist.setRowCount(0)
         self.summary.clear()
         self.outcome.clear()
+        if hasattr(self, 'outcome_label'):
+            self.outcome_label.clear()
         self.steps.setCurrentIndex(1)
 
     def _result_role_changed(self, key):

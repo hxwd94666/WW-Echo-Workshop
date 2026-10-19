@@ -8,6 +8,7 @@ from echo_workshop.capture.viewport import detect_echo_viewport
 from echo_workshop.application.compute_protocol import ComputeFailure
 from echo_workshop.core.cancellation import OperationCancelled
 from .capture_device import capture_source_identity
+from .snapshot_parse import detect_scene, parse_snapshot_record
 
 
 def _guard(task, settings, runtime, request, identity, *, frozen=False):
@@ -44,69 +45,78 @@ def _cancel_current(task, capture, request, message, **kwargs):
 
 
 def parse_manual_snapshot(task, settings, runtime, request, snapshot, identity):
-            capture = runtime.capture
-            frames_required = capture.manual_stable_frames
-            seconds_required = capture.manual_stable_seconds
-            started = time.monotonic()
-            weights = request.weights if request.weights is not None else runtime.weights.active
-            sonata = request.sonata if request.sonata is not None else runtime.sonata.active
-            metadata = task.read_metadata(
-                snapshot.frame,
-                settings.config,
-                weights,
-                viewport=snapshot.viewport,
-                observation_service=runtime.observations,
-                cancel_event=runtime.stop_event,
-            )
-            record = task.read_record(
-                metadata, snapshot.frame, snapshot.viewport, request.profile_id, weights, sonata
-            )
-            if not _guard(task, settings, runtime, request, identity, frozen=True):
-                return False
-            analysis = metadata.analysis
-            if record is None or analysis.layout not in ('bag', 'display'):
-                _cancel_current(task, capture, request,
-                    '请在背包或声骸展示页收录',
-                    diagnostic_state='failed',
-                    summary_code='capture_wrong_page',
-                )
-                return False
-            proof = snapshot.prove(metadata, record)
-            if proof is None or not proof.valid(
-                request,
-                stable_frames=frames_required,
-                stable_seconds=seconds_required,
-                max_frame_gap=capture.max_frame_gap,
-            ):
-                _cancel_current(task, capture, request,
-                    '采样期间声骸信息发生变化，请保持选中项后重试',
-                    diagnostic_state='failed',
-                    summary_code='capture_unstable',
-                )
-                task.log_info('手动收录未提交：采样词条或名称发生变化')
-                return False
-            capture.single_progress(request, 'capturing_evidence', '正在保存收录截图', records=1)
-            from echo_workshop.capture.evidence import prepare_evidence
+    capture = runtime.capture
+    frames_required = capture.manual_stable_frames
+    seconds_required = capture.manual_stable_seconds
+    started = time.monotonic()
+    weights = request.weights if request.weights is not None else runtime.weights.active
+    sonata = request.sonata if request.sonata is not None else runtime.sonata.active
+    scene = detect_scene(task, snapshot.frame, snapshot.viewport)
+    metadata, record = parse_snapshot_record(
+        task,
+        snapshot.frame,
+        snapshot.viewport,
+        settings.config,
+        weights,
+        request.profile_id,
+        sonata,
+        scene=scene,
+        observations=runtime.observations,
+        cancel_event=runtime.stop_event,
+        cost_lookup=getattr(task, '_cached_cost', None),
+    )
+    if not _guard(task, settings, runtime, request, identity, frozen=True):
+        return False
+    analysis = metadata.analysis
+    if record is None or analysis.layout not in ('bag', 'display'):
+        _cancel_current(
+            task,
+            capture,
+            request,
+            '请在背包或声骸展示页收录',
+            diagnostic_state='failed',
+            summary_code='capture_wrong_page',
+        )
+        return False
+    proof = snapshot.prove(metadata, record)
+    if proof is None or not proof.valid(
+        request,
+        stable_frames=frames_required,
+        stable_seconds=seconds_required,
+        max_frame_gap=capture.max_frame_gap,
+    ):
+        _cancel_current(
+            task,
+            capture,
+            request,
+            '采样期间声骸信息发生变化，请保持选中项后重试',
+            diagnostic_state='failed',
+            summary_code='capture_unstable',
+        )
+        task.log_info('手动收录未提交：采样词条或名称发生变化')
+        return False
+    capture.single_progress(request, 'capturing_evidence', '正在保存收录截图', records=1)
+    from echo_workshop.capture.evidence import prepare_evidence
 
-            record, image = prepare_evidence(record, snapshot.frame, analysis)
-            # Encoding and parsing must refer to the same immutable final sample.
-            if hashlib.sha256(snapshot.frame.tobytes()).hexdigest() != proof.signature:
-                raise ValueError('冻结截图内容发生变化')
-            saved = capture.commit_single_snapshot(
-                record,
-                image,
-                proof,
-                request=request,
-                commit_guard=lambda: _guard(task, settings, runtime, request, identity, frozen=True),
-            )
-            if saved:
-                task._manual_total_added += 1
-            if not saved and capture.single_request is request:
-                _cancel_current(task, capture, request, '采样证明已失效，本次未保存，请重新按快捷键')
-            task.log_info(
-                f'手动收录冻结帧识别完成：页面={analysis.layout}，主词条={len(analysis.main_rows)}，副词条={len(analysis.sub_rows)}，解析耗时={time.monotonic() - started:.2f}s，已提交={saved}'
-            )
-            return False
+    record, image = prepare_evidence(record, snapshot.frame, analysis)
+    # Encoding and parsing must refer to the same immutable final sample.
+    if hashlib.sha256(snapshot.frame.tobytes()).hexdigest() != proof.signature:
+        raise ValueError('冻结截图内容发生变化')
+    saved = capture.commit_single_snapshot(
+        record,
+        image,
+        proof,
+        request=request,
+        commit_guard=lambda: _guard(task, settings, runtime, request, identity, frozen=True),
+    )
+    if saved:
+        task._manual_total_added += 1
+    if not saved and capture.single_request is request:
+        _cancel_current(task, capture, request, '采样证明已失效，本次未保存，请重新按快捷键')
+    task.log_info(
+        f'手动收录冻结帧识别完成：页面={analysis.layout}，主词条={len(analysis.main_rows)}，副词条={len(analysis.sub_rows)}，解析耗时={time.monotonic() - started:.2f}s，已提交={saved}'
+    )
+    return False
 
 
 def run_manual_capture(task, settings, runtime, request, *, wait=None):

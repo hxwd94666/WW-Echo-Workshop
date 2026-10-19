@@ -13,7 +13,7 @@ from uuid import uuid4
 
 from echo_workshop.core.models import EchoRecord, canonical_json, utc_now, validate_id
 from echo_workshop.storage.loadouts import LoadoutRepositoryMixin
-from echo_workshop.core.loadout import claim_labels
+from echo_workshop.core.loadout import claim_labels, unprotected_loadout
 from echo_workshop.storage.inventory_backup import InventoryBackupMixin
 from echo_workshop.storage.revision import RevisionProbe
 from echo_workshop.storage.screenshot_cleanup import ScreenshotCleanupMixin
@@ -278,7 +278,7 @@ class EchoRepository(InventoryBackupMixin, LoadoutRepositoryMixin, ScreenshotCle
 
     def inventory_snapshot(self, profile_id, *, cancel_event=None, include_loadouts=False):
         """Pin records and revision together, without exposing a DB handle."""
-        from echo_workshop.application.operations import checkpoint
+        from echo_workshop.core.cancellation import checkpoint
 
         while not self._lock.acquire(timeout=0.05):
             checkpoint(cancel_event)
@@ -325,7 +325,7 @@ class EchoRepository(InventoryBackupMixin, LoadoutRepositoryMixin, ScreenshotCle
 
     def review_snapshot(self, profile_id, *, cancel_event=None, include_loadouts=False):
         """Inventory and pending decisions in one transaction; decode off-lock."""
-        from echo_workshop.application.operations import checkpoint
+        from echo_workshop.core.cancellation import checkpoint
 
         while not self._lock.acquire(timeout=0.05):
             checkpoint(cancel_event)
@@ -474,7 +474,7 @@ class EchoRepository(InventoryBackupMixin, LoadoutRepositoryMixin, ScreenshotCle
                         'DELETE FROM current_loadouts WHERE profile_id=? AND character_id=?',
                         (profile_id, row['character_id']),
                     )
-                    self._write_loadout(dict(row, protected=False, updated_at=utc_now()))
+                    self._write_loadout(unprotected_loadout(row, updated_at=utc_now()))
                 if affected:
                     self._bump_loadouts()
                 related = [
@@ -500,9 +500,8 @@ class EchoRepository(InventoryBackupMixin, LoadoutRepositoryMixin, ScreenshotCle
             return changed
 
     def confirm(self, item_id, *, expected_revision):
+        # The application layer validates native quality before this write.
         record = self.get(item_id)
-        if record.validation_issues:
-            raise ValueError('Correct missing or invalid fields before confirming')
         self.update(replace(record, review='confirmed'), expected_revision=expected_revision)
 
     def history(self, item_id):
@@ -572,8 +571,8 @@ class EchoRepository(InventoryBackupMixin, LoadoutRepositoryMixin, ScreenshotCle
             if record.item_id != capture_id or record.profile_id != original.profile_id:
                 raise ValueError('Capture identity cannot change during correction')
             if action != 'discard':
-                if record.validation_issues:
-                    raise ValueError('Correct all fields before resolving a capture')
+                # The editor obtains native quality facts before this write; the
+                # storage layer must not re-evaluate a second rule set.
                 record = replace(record, review='confirmed')
                 if action == 'new':
                     self._insert(record, from_capture=True)

@@ -17,7 +17,7 @@ import tempfile
 from echo_workshop.storage.archives import MAX_BACKUP_BYTES, MAX_RECORDS, _records
 from echo_workshop.storage.evidence import EvidenceStore
 from echo_workshop.core.models import EchoRecord, canonical_json, validate_id
-from echo_workshop.application.operations import checkpoint, report_progress
+from echo_workshop.core.cancellation import checkpoint, report_progress
 from echo_workshop.storage.locks import plan_file_lock
 from echo_workshop.storage.inventory import EchoRepository
 from echo_workshop.resources.http import strict_json

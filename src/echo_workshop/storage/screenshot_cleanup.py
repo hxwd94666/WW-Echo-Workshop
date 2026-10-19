@@ -2,7 +2,7 @@
 import json
 import logging
 
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.storage.evidence import _REF
 
 

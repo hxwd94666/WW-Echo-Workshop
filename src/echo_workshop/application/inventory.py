@@ -6,6 +6,8 @@ import threading
 
 from echo_workshop.application.operations import checkpoint, OperationCancelled
 from echo_workshop.application.diagnostics import begin_job
+from echo_workshop.application.record_quality import RecordQuality
+from echo_workshop.application.shutdown import join_bounded
 
 
 @dataclass(frozen=True)
@@ -134,7 +136,7 @@ class InventoryReader:
                 thread = self._thread
                 self._status = ReaderStatus(self._status.generation + 1, 'closed')
             if thread is not None:
-                thread.join()
+                join_bounded(thread, 2.0, name='inventory-reader')
 
 
 def game_status_labels(record):
@@ -252,7 +254,12 @@ class InventoryService:
             'edit', lambda: self._repository.update(record, expected_revision=expected_revision)
         )
 
-    def confirm(self, identity, *, expected_revision):
+    def confirm(self, identity, *, expected_revision, quality):
+        record = self._repository.get(identity)
+        if not isinstance(quality, RecordQuality) or quality.record != record:
+            raise ValueError('确认需要当前记录的原生质量结论，请刷新后重试')
+        if quality.issues:
+            raise ValueError('仍有待纠正字段，不能确认：' + '、'.join(quality.issues))
         return self._mutate(
             'confirm',
             lambda: self._repository.confirm(identity, expected_revision=expected_revision),
@@ -261,6 +268,8 @@ class InventoryService:
     def resolve_capture(
         self, identity, action, *, expected_revision, corrected=None, target_id=None
     ):
+        if action != 'discard' and (corrected is None or corrected.review != 'confirmed'):
+            raise ValueError('待核对记录须先通过原生质量校验再保存')
         return self._mutate(
             'resolve-capture',
             lambda: self._repository.resolve_capture(

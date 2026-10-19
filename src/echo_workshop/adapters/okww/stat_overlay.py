@@ -8,6 +8,7 @@ import re
 from types import SimpleNamespace
 
 from echo_workshop.application.text import simplify_echo_text
+from echo_workshop.core.scoring import normalize_stat_unit
 from echo_workshop.ui.widgets.rating_style import rating_colour
 from echo_workshop.capture.viewport import EchoViewport
 from echo_workshop.adapters.okww.score_painter import EchoStatBoxPainter  # noqa: F401
@@ -152,9 +153,7 @@ def analyze_echo_stats(
         and screen_height * 0.18 <= b.y <= screen_height * 0.82
     ]
     page_text = ' '.join(str(box.name) for box in ocr_boxes)
-    bag_markers = any(
-        marker in page_text for marker in ('声骸管理方案', '等级顺序', '批量管理')
-    )
+    bag_markers = any(marker in page_text for marker in ('声骸管理方案', '等级顺序', '批量管理'))
     display_markers = any(
         marker in page_text for marker in ('合鸣筛选', '未装备优先', '声骸推荐', '简述')
     )
@@ -230,6 +229,15 @@ def analyze_echo_stats(
 
     rows = rows[:7]
     main_rows, sub_rows = rows[:2], rows[2:]
+    # The first main slot is always a percentage main stat; the second is the
+    # fixed HP/ATK companion. Recover this from position, not from level-scaled
+    # OCR values that cannot match the +25 value table.
+    main_rows = [
+        replace(row, stat_name=row.stat_name + '%')
+        if index == 0 and row.stat_name in ('攻击', '生命', '防御')
+        else row
+        for index, row in enumerate(main_rows)
+    ]
     layout = (
         'enhancement'
         if (is_tuning_page or hint_tuning)
@@ -429,9 +437,9 @@ def _normalize_stat_name(text, value_text):
         return '共鸣解放'
     for name in ('攻击', '防御', '生命'):
         if name in compact:
-            # XW-UID names percentage rolls with a trailing percent marker;
-            # the unmarked name is the fixed companion/main property.
-            return f'{name}%' if is_percent else name
+            # Recover the unit from the fixed stat tiers; a lost '%' must not
+            # turn a percentage roll into the flat companion stat.
+            return normalize_stat_unit(name, _numeric_value(value_text), is_percent)
     return compact
 
 

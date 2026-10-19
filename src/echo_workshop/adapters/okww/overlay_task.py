@@ -1,5 +1,6 @@
 # 适配宿主实时声骸评分任务。
 """Portable OK Script adapter for Echo scoring."""
+
 from ok import TriggerTask, og
 from ok.feature.Box import Box
 from contextlib import nullcontext
@@ -9,6 +10,8 @@ import time
 from echo_workshop.application.templates import DEFAULT_TEMPLATE
 from echo_workshop.adapters.okww.live_presentation import live_summary
 from echo_workshop.adapters.okww.capture_recovery import CaptureRecoveryMonitor
+from echo_workshop.adapters.okww.capture_device import read_capture_frame
+from echo_workshop.adapters.okww.manual_worker import ManualWorkerMixin
 from echo_workshop.adapters.okww.stat_overlay import (
     ECHO_STAT_PAINTER_KEY,
     EchoStatBoxPainter,
@@ -22,15 +25,21 @@ from echo_workshop.capture.metadata import (
     scan_ocr_regions,
 )
 from echo_workshop.application.live_selection import resolve_live_selection
+from .manual_capture import run_manual_capture
 from echo_workshop.application.compute_protocol import ComputeFailure
 from echo_workshop.application.operations import OperationCancelled
+
 STATUS_PAINTER_KEY = 'echo-workshop-status'
+
+
 def _live_digest(frame):
     try:
         return hash(frame[::32, ::32].tobytes())
     except (AttributeError, TypeError):
         return None
-class EchoWorkshopOverlayTask(TriggerTask):
+
+
+class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = '声骸评分后台识别'
@@ -55,14 +64,15 @@ class EchoWorkshopOverlayTask(TriggerTask):
         self._manual_total_added = 0
         self._manual_parsing = False
         self._manual_stop = threading.Event()
-        threading.Thread(
-            target=self._manual_worker, name='EchoManualParse', daemon=True
-        ).start()
+        threading.Thread(target=self._manual_worker, name='EchoManualParse', daemon=True).start()
         self.default_config['_enabled'] = True
         self._start_score_loop()
+
     def ocr_fun(self, lib):
         from echo_workshop.capture.scan.pipeline import OCR_LOCK
+
         fun = super().ocr_fun(lib)
+
         def infer(*args, **kwargs):
             with OCR_LOCK:
                 return fun(*args, **kwargs)
@@ -76,7 +86,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
             self.config['_enabled'] = True
 
     def _ensure_overlay(self):
-        # Imported scripts must initialize the host overlay lazily.
         try:
             from ok.ui.overlay import win32_gdi
 
@@ -141,29 +150,10 @@ class EchoWorkshopOverlayTask(TriggerTask):
     def _cached_cost(self, rows):
         return self._cost_cache.get(tuple(rows))
 
-    @staticmethod
-    def _read_capture_frame(manager):
-        capture = getattr(manager, 'capture_method', None)
-        window = getattr(manager, 'hwnd_window', None)
-        if (
-            capture is None
-            or window is None
-            or not getattr(window, 'exists', False)
-            or not getattr(window, 'pos_valid', True)
-        ):
-            return None
-        get_frame = getattr(capture, 'get_frame', None)
-        if not callable(get_frame):
-            return None
-        try:
-            return get_frame()
-        except Exception:
-            return None
-
     def _direct_frame(self):
         """Read the current capture directly; the recovery monitor reconnects it."""
         manager = getattr(og, 'device_manager', None)
-        return self._read_capture_frame(manager) if manager is not None else None
+        return read_capture_frame(manager) if manager is not None else None
 
     def post_init(self):
         self._ensure_overlay()
@@ -221,48 +211,6 @@ class EchoWorkshopOverlayTask(TriggerTask):
                 if now - self._loop_error_at >= 30:
                     self._loop_error_at = now
                     self.log_warning(f'独立实时评分失败：{error}')
-
-    def _enqueue_manual(self, snapshot, request, identity, settings, runtime):
-        try:
-            self._manual_queue.put_nowait((snapshot, request, identity, settings, runtime))
-        except queue.Full:
-            return False
-        self._manual_pending.append(request)
-        runtime.capture._queued_requests.append(request)
-        self._manual_total_captures += 1
-        self.log_info(
-            f'手动收录已冻结入队：截图总计={self._manual_total_captures}，'
-            f'队列={self._manual_queue.qsize()}'
-        )
-        return True
-
-    def _manual_worker(self):
-        from .manual_capture import parse_manual_snapshot
-
-        while not self._manual_stop.is_set():
-            try:
-                snapshot, request, identity, settings, runtime = self._manual_queue.get(timeout=0.2)
-            except queue.Empty:
-                continue
-            try:
-                self._manual_parsing = True
-                started = time.monotonic()
-                self.log_info('后台收录解析开始')
-                parse_manual_snapshot(self, settings, runtime, request, snapshot, identity)
-                self.log_info(f'后台收录解析结束：{time.monotonic() - started:.2f}s')
-            except Exception as error:
-                self.log_warning(f'后台收录解析失败：{error}')
-            finally:
-                self._manual_parsing = False
-                self._manual_pending = [
-                    pending for pending in self._manual_pending if pending is not request
-                ]
-                runtime.capture._queued_requests = [
-                    queued
-                    for queued in runtime.capture._queued_requests
-                    if queued is not request
-                ]
-                self._manual_queue.task_done()
 
     def _ensure_recovery(self):
         if (
@@ -373,6 +321,7 @@ class EchoWorkshopOverlayTask(TriggerTask):
             lambda region: self.ocr(frame=frame, box=Box(*region, name='echo-metadata')),
             analyze,
             complete_only=scan,
+            characters=getattr(snapshot, 'characters', None),
         )
 
     def read_record(self, metadata, frame, viewport, profile, snapshot, sonata):
@@ -420,13 +369,18 @@ class EchoWorkshopOverlayTask(TriggerTask):
                     summary_code='capture_failed',
                 )
             return False
-        try:
-            with self._run_lock:
-                if request is not None:
-                    from .manual_capture import run_manual_capture
 
-                    return run_manual_capture(self, settings_task, runtime, request)
-                return self._run_frame()
+        def run_once():
+            if request is not None:
+                return run_manual_capture(self, settings_task, runtime, request)
+            return self._run_frame()
+
+        try:
+            run_lock = getattr(self, '_run_lock', None)
+            if run_lock is None:
+                return run_once()
+            with run_lock:
+                return run_once()
         except OperationCancelled:
             overlay = self.get_overlay_view()
             if overlay is not None:

@@ -10,7 +10,7 @@ import threading
 import http.client
 import zlib
 
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.game_transport import get as conditional_get
 from echo_workshop.resources.game_sources import approve, asset_urls
 

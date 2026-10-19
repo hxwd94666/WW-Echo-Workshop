@@ -17,7 +17,7 @@ import threading
 import time
 from uuid import uuid4
 
-from echo_workshop.application.operations import OperationCancelled, checkpoint
+from echo_workshop.core.cancellation import OperationCancelled, checkpoint
 
 
 @dataclass(frozen=True)
@@ -73,8 +73,10 @@ class ResourceUpdateService:
         clock=time.time,
         defaults=None,
         catalog=None,
+        job_factory=None,
     ):
         self.weights, self.sonata, self.effects, self.avatars = weights, sonata, effects, avatars
+        self._job_factory = job_factory
         self.defaults, self.catalog = defaults, catalog
         self.stop_event, self.clock = stop_event or threading.Event(), clock
         self._lock, self._wake, self._cancel = (
@@ -264,13 +266,12 @@ class ResourceUpdateService:
                 total=len(self._channels()) + 1,
             )
         token = _CancelToken(self.stop_event, self._cancel)
-        # Diagnostics is a small optional adapter for isolated older fixtures.
-        try:
-            from echo_workshop.application.diagnostics import begin_job
-
-            job = begin_job('resource-update', metadata={'auto_enabled': self._auto})
-        except ImportError:
-            job = None
+        # Diagnostics is an optional adapter supplied by the runtime.
+        job = (
+            self._job_factory('resource-update', metadata={'auto_enabled': self._auto})
+            if self._job_factory is not None
+            else None
+        )
         with self._lock:
             self._status = replace(
                 self._status, operation_id=job.operation_id if job else uuid4().hex

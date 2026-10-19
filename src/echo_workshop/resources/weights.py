@@ -21,7 +21,7 @@ import threading
 from types import MappingProxyType
 
 from echo_workshop.resources.weight_control import WeightControl, WeightConflictError, actual
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.core.scoring import ALGORITHM_VERSION as ALGORITHM_VERSION
 
 from echo_workshop.resources.snapshot import CONDITIONS, SOURCE_COMMIT, SOURCE_REPOSITORY, TEMPLATES

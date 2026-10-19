@@ -79,6 +79,10 @@ class CaptureCommands:
             raise ValueError('先在 OKWW 开启并连接游戏捕获')
         self._configure_shortcuts(self.config.get('CaptureHotkeysJSON', ''))
         self.runtime.capture.arm_manual(profile_id)
+        for task in self.get_tasks():
+            if task.__class__.__name__ == 'EchoWorkshopOverlayTask':
+                task._manual_total_captures = 0
+                task._manual_total_added = 0
         if self.manual_progress_overlay is None:
             from echo_workshop.adapters.okww.scan_progress import ManualProgressOverlay
 

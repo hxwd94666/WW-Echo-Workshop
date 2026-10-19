@@ -10,7 +10,7 @@ import time
 import http.client
 from types import MappingProxyType
 
-from echo_workshop.application.operations import checkpoint, OperationCancelled
+from echo_workshop.core.cancellation import checkpoint, OperationCancelled
 from echo_workshop.resources.game_transport import get as conditional_get
 from echo_workshop.resources import game_sources as sources
 

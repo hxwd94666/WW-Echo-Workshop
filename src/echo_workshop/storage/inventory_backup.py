@@ -14,7 +14,7 @@ class InventoryBackupMixin:
         with self._lock, self._db:
             self._db.execute('BEGIN')
             profiles = self.profiles()
-            from echo_workshop.application.operations import checkpoint
+            from echo_workshop.core.cancellation import checkpoint
 
             def decode(text):
                 checkpoint(cancel_event)
@@ -50,7 +50,7 @@ class InventoryBackupMixin:
 
     def restore_new_snapshot(self, backup, *, cancel_event=None, progress=None):
         """Reconstruct revision only in a fresh isolated recovery database."""
-        from echo_workshop.application.operations import checkpoint
+        from echo_workshop.core.cancellation import checkpoint
 
         if type(backup.get('revision')) is not int or not 0 <= backup['revision'] < 2**63:
             raise ValueError('Invalid snapshot revision')
@@ -83,7 +83,7 @@ class InventoryBackupMixin:
                 raise ValueError('Recovered inventory snapshot differs from source')
 
     def import_backup(self, backup, *, expected_revision=None, cancel_event=None, progress=None):
-        from echo_workshop.application.operations import checkpoint, report_progress
+        from echo_workshop.core.cancellation import checkpoint, report_progress
 
         checkpoint(cancel_event)
         if expected_revision is not None and (

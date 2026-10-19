@@ -2,7 +2,7 @@
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-from echo_workshop.application.operations import checkpoint
+from echo_workshop.core.cancellation import checkpoint
 from echo_workshop.resources.game_assets import placeholder_png
 
 

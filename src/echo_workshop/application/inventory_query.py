@@ -136,6 +136,22 @@ class InventoryQueryService:
         checkpoint(cancel_event)
         return selected, counts, details['quality']
 
+    def quality(self, records, *, cancel_event=None):
+        """Return native quality facts for explicit records, without re-evaluating."""
+        require_background()
+        checkpoint(cancel_event)
+        records = tuple(records)
+        if len(records) > 20000:
+            raise ComputeFailure('input_limit', '质量查询超过单批规模限额')
+        rows = tuple((record, 'item', ()) for record in records)
+        _, _, facts = self.review(rows, mode=0, cancel_event=cancel_event)
+        if len(facts) != len(records):
+            raise ComputeFailure('protocol', '质量查询返回数量错误')
+        for record, fact in zip(records, facts):
+            if fact.record is not record:
+                raise ComputeFailure('request_identity', '质量查询返回记录身份错误')
+        return facts
+
     def inspect_pins(self, records, *, usable_only=False, cancel_event=None):
         require_background()
         checkpoint(cancel_event)

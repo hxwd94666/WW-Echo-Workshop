@@ -10,6 +10,7 @@ from echo_workshop.core.loadout import (
     validate_loadouts,
     loadout_issues,
     protected_item_ids,
+    unprotected_loadout,
 )
 from echo_workshop.core.cancellation import checkpoint
 
@@ -355,10 +356,10 @@ class LoadoutRepositoryMixin:
                         raise ValueError('声骸已缺失，请重新计算') from error
                     if (
                         record.profile_id != profile
-                        or not record.usable
+                        or record.review != 'confirmed'
                         or record.fingerprint != fingerprint
                     ):
-                        raise ValueError('声骸内容或可用状态已变化，请重新计算')
+                        raise ValueError('声骸内容或确认状态已变化，请重新计算')
                     if record.locked:
                         raise ValueError('声骸已保护，请修改要求后重新计算')
                     if (
@@ -421,9 +422,7 @@ class LoadoutRepositoryMixin:
                 (profile_id, character_id),
             )
             if action == 'release':
-                self._write_loadout(
-                    dict(row, protected=False, protected_item_ids=[], updated_at=utc_now())
-                )
+                self._write_loadout(unprotected_loadout(row, updated_at=utc_now()))
             self._bump_loadouts()
             if before_commit is not None:
                 before_commit()

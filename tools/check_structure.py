@@ -6,6 +6,7 @@ import ast
 import json
 from pathlib import Path
 import re
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = (
@@ -24,6 +25,16 @@ FORBIDDEN = (
     'http',
 )
 IO_METHODS = {'read_bytes', 'read_text', 'write_bytes', 'write_text', 'unlink', 'mkdir', 'connect'}
+# Remaining shared-boundary utilities are explicit exceptions; new reverse
+# dependencies must be migrated instead of silently added here.
+LOWER_LAYER_APP_ALLOWED = frozenset(
+    {
+        # OpenCC-aware text normalization is an input-boundary utility.
+        'resources/search.py',
+        # OCR metadata uses the same OpenCC-aware text boundary.
+        'capture/record_metadata.py',
+    }
+)
 
 
 def imported_modules(node, path, root):
@@ -36,6 +47,35 @@ def imported_modules(node, path, root):
     package = parts[:-1]
     prefix = package[: len(package) - node.level + 1]
     return ['.'.join(prefix + name.split('.')) if name else '.'.join(prefix)]
+
+
+def check_constant_parity(root, errors):
+    """Keep the Python and native main-stat tables in lockstep."""
+    path = root / 'src/echo_workshop/native/compute/data/constants.json'
+    try:
+        native = json.loads(path.read_text(encoding='utf-8'))
+        sys.path.insert(0, str(root / 'src'))
+        from echo_workshop.core.models import MAINSTAT_VALIDATION_MAXIMA
+        from echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
+    except (OSError, ValueError, ImportError) as error:
+        errors.append(f'constant parity: {error}')
+        return
+    for table_name, expected in (
+        ('max_main', MAX_MAINSTAT_VALUES),
+        ('validation_main', MAINSTAT_VALIDATION_MAXIMA),
+    ):
+        rows = native.get(table_name)
+        if not isinstance(rows, dict):
+            errors.append(f'constant parity: native {table_name} missing')
+            continue
+        for cost, slots in expected.items():
+            actual = rows.get(str(cost))
+            if not isinstance(actual, list) or len(actual) != len(slots):
+                errors.append(f'constant parity: {table_name} COST {cost} shape')
+                continue
+            for index, slot in enumerate(slots):
+                if dict(slot) != actual[index]:
+                    errors.append(f'constant parity: {table_name} COST {cost} slot {index}')
 
 
 def check(root=ROOT, *, core_only=False):
@@ -88,12 +128,24 @@ def check(root=ROOT, *, core_only=False):
                             errors.append(
                                 f'{relative}:{node.lineno}: UI must call an application service, not {name}'
                             )
+                        if (
+                            relative.startswith(('storage/', 'resources/', 'capture/'))
+                            and (
+                                name == 'echo_workshop.application'
+                                or name.startswith('echo_workshop.application.')
+                            )
+                            and relative not in LOWER_LAYER_APP_ALLOWED
+                        ):
+                            errors.append(
+                                f'{relative}:{node.lineno}: lower layer must not depend on {name}'
+                            )
                 if '/core/' in relative and isinstance(node, ast.Call):
                     fun = node.func
                     if isinstance(fun, ast.Name) and fun.id == 'open':
                         errors.append(f'{relative}:{node.lineno}: core file I/O')
                     elif isinstance(fun, ast.Attribute) and fun.attr in IO_METHODS:
                         errors.append(f'{relative}:{node.lineno}: core I/O method {fun.attr}')
+    check_constant_parity(root, errors)
     return {
         'files': len(files),
         'errors': errors,

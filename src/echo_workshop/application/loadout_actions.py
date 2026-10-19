@@ -176,8 +176,12 @@ def persist_loadout(store, repository, kind, arguments, *, cancel_event=None, be
     clone = clone_loadout_payload(
         source, selected, cancel_event=cancel_event, plan_evaluator=store.plan_evaluator
     )
+    # A current save first publishes an immutable generated snapshot. The
+    # current-loadout relationship, committed below, is the only proof that it
+    # is actually active; a failed DB commit must not rewrite this provenance.
     clone['publication'] = dict(
-        kind='backup' if kind == 'backup-loadout' else 'current', source_plan_id=source['plan_id']
+        kind='backup' if kind == 'backup-loadout' else 'generated',
+        source_plan_id=source['plan_id'],
     )
     clone['removed_roles'] = []
     if kind == 'save-loadout':

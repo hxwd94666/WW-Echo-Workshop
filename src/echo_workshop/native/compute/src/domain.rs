@@ -102,8 +102,14 @@ impl Record {
         for (i, stat) in self.main_stats.iter().enumerate() {
             let maximum =
                 constants()["validation_main"][self.cost.to_string()][i][&stat.stat_name].as_f64();
+            // The table is a +25 upper bound; lower-level main stats scale
+            // down and are rejected only for unknown names or non-positive
+            // values.
+            let enforce_upper = self.level == Some(25);
             if !stat.value.is_finite()
-                || maximum.is_none_or(|m| stat.value <= 0.0 || stat.value > m + 0.01)
+                || maximum.is_none()
+                || stat.value <= 0.0
+                || (enforce_upper && maximum.is_some_and(|m| stat.value > m + 0.01))
             {
                 issues.push(format!("main:invalid:{i}"));
             }

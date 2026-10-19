@@ -9,6 +9,7 @@ with the native migration.
 
 from collections.abc import Mapping
 from dataclasses import dataclass
+from functools import lru_cache
 import math
 from types import MappingProxyType
 
@@ -70,3 +71,31 @@ class Rating:
     standard_id: str
     source: str
     tooltip: str
+
+
+@lru_cache(maxsize=512)
+def _rating_tooltip(cost, thresholds):
+    scope = f'单件声骸 · COST {cost} · 50 分制' if cost is not None else '五件声骸总评级 · 250 分制'
+    rows = ' / '.join(f'{label}≥{value:g}' for label, value in zip(LABELS, thresholds))
+    basis = (
+        '按单件当前分及当次模版下限评级；不改变原分数。'
+        if cost is not None
+        else '仅完整五件；按上游卡片近满分修约评级，求解累计分保持原值。'
+    )
+    return f'{scope}\n{rows}\n{basis}'
+
+
+def rating_result(data):
+    if data is None:
+        return None
+    thresholds = tuple(data['thresholds'])
+    return Rating(
+        data['label'],
+        data['score'],
+        data['scale'],
+        thresholds,
+        data['cost'],
+        data['standard_id'],
+        data['source'],
+        _rating_tooltip(data['cost'], thresholds),
+    )

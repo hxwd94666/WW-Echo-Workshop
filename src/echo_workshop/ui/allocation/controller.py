@@ -43,6 +43,24 @@ class _AllocationPayload(tuple):
 
 
 class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX):
+    def lifecycle_busy(self):
+        return bool(
+            self._future is not None
+            or self._io_future is not None
+            or self._pending_current_action is not None
+            or getattr(self, '_pending_precheck', None) is not None
+            or getattr(self, '_pending_role_editor', None) is not None
+        )
+
+    def lifecycle_draft(self):
+        return self._editor is not None or (self._role_draft is not None and self.incoming.count())
+
+    def lifecycle_rule_dirty(self):
+        return getattr(self, '_rule_dirty', False)
+
+    def request_stop(self):
+        self.stop_worker()
+
     def __init__(self, task, parent=None):
         super().__init__(parent)
         self.task, self.runtime = task, task.runtime
@@ -308,6 +326,8 @@ class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX)
         self.checklist.setRowCount(0)
         self.summary.clear()
         self.outcome.clear()
+        if hasattr(self, 'outcome_label'):
+            self.outcome_label.clear()
         self._precheck = None
         self.precheck_text.clear()
         self.precheck_hint.setText('先检查本档案候选；统计不证明配齐或达标。')
@@ -717,7 +737,9 @@ class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX)
             if hasattr(self, 'saved_workspace'):
                 self.saved_workspace.stop_projection()
             if pool is not None:
-                pool.shutdown(wait=True, cancel_futures=True)
+                # Page/host close must not wait for a long search; the worker
+                # observes the cancellation token and the runtime close path.
+                pool.shutdown(wait=False, cancel_futures=True)
             with self._worker_lock:
                 self._pool = None
                 self._future = self._io_future = None
