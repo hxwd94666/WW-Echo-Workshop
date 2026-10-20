@@ -197,7 +197,7 @@ impl<'p, 'b, 'c> Search<'p, 'b, 'c> {
                 return false;
             }
         }
-        true
+        !self.p.energy_max[role].is_some_and(|maximum| self.p.energy_total(role, ids) > maximum)
     }
     fn symmetry(&self, role: usize, slot: usize, item: usize, ids: &[usize]) -> bool {
         let spec = &self.p.roles[role].slots[slot];
@@ -683,6 +683,9 @@ fn run(problem: Problem, cancel: &AtomicBool, started: Instant) -> ComputeResult
                 "item_ids":build.ids.iter().map(|i|&problem.records[*i].item_id).collect::<Vec<_>>(),
                 "scores":scores,
                 "total_cents":build.total,"target_cents":problem.targets[r],"moves":build.moves,
+                "energy_regen":problem.energy_total(r, &build.ids) as f64 / 10.0,
+                "energy_regen_min":problem.roles[r].energy_regen_min,
+                "energy_regen_max":problem.roles[r].energy_regen_max,
                 "rating":rating,"item_ratings":item_ratings,
                 "reasons":reasons(&problem, r, build, budget.stop, computed[r])
             })

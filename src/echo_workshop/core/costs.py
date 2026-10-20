@@ -4,7 +4,6 @@
 MAX_TOTAL_COST = 12
 COST_OPTIONS = (1, 3, 4)
 DEFAULT_COST_LAYOUT = (4, 3, 3, 1, 1)
-COST_PRESETS = ((4, 3, 3, 1, 1), (4, 4, 1, 1, 1))
 
 
 def read_cost_layout(costs):

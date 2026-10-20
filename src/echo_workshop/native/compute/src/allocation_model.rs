@@ -1,5 +1,5 @@
 // 将当前配装请求编译为密集索引、评分矩阵和严格独占候选。
-use crate::domain::{PreparedRule, Record, Rule, normalize, uuid};
+use crate::domain::{PreparedRule, Record, Rule, canonical_stat, normalize, uuid};
 use crate::matching::{Evaluator, Selection};
 use crate::numeric::{ECHO_CENTS_LIMIT, TARGET_CENTS_LIMIT, python_float};
 use crate::{ComputeError, ComputeResult, checkpoint, constants};
@@ -39,6 +39,12 @@ pub struct Role {
     pub cost_budget: u8,
     #[serde(default)]
     pub owner_label: String,
+    #[serde(default = "energy_base")]
+    pub base_energy_regen: f64,
+    #[serde(default = "energy_min")]
+    pub energy_regen_min: f64,
+    #[serde(default)]
+    pub energy_regen_max: Option<f64>,
 }
 impl Role {
     pub fn key(&self) -> [String; 2] {
@@ -75,6 +81,12 @@ fn seconds() -> f64 {
 }
 fn nodes() -> u64 {
     200_000
+}
+fn energy_base() -> f64 {
+    100.0
+}
+fn energy_min() -> f64 {
+    100.0
 }
 #[derive(Deserialize)]
 pub struct Input {
@@ -124,10 +136,24 @@ pub struct Problem {
     pub diagnostics: Vec<[usize; 4]>,
     pub allowed: Vec<Vec<bool>>,
     pub missing_pins: Vec<String>,
+    pub energy: Vec<i64>,
+    pub energy_base: Vec<i64>,
+    pub energy_min: Vec<i64>,
+    pub energy_max: Vec<Option<i64>>,
 }
 
 fn error(message: &str) -> ComputeError {
     ComputeError::new("invalid_request", message)
+}
+
+fn record_energy(record: &Record) -> i64 {
+    record
+        .main_stats
+        .iter()
+        .chain(record.sub_stats.iter())
+        .filter(|stat| canonical_stat(&stat.stat_name) == "共鸣效率")
+        .map(|stat| (stat.value * 10.0).round() as i64)
+        .sum()
 }
 
 pub fn target_cents(target: f64) -> ComputeResult<i64> {
@@ -211,6 +237,9 @@ impl Problem {
         let mut characters = HashSet::new();
         let mut pins = HashMap::new();
         let mut targets = Vec::new();
+        let mut energy_base = Vec::new();
+        let mut energy_min = Vec::new();
+        let mut energy_max = Vec::new();
         for (r, role) in roles.iter().enumerate() {
             role.rule.validate()?;
             targets.push(target_cents(role.target)?);
@@ -233,6 +262,22 @@ impl Problem {
                     "仅支持当前套装不同名称计件规则",
                 ));
             }
+            if !role.base_energy_regen.is_finite()
+                || !(0.0..=1000.0).contains(&role.base_energy_regen)
+                || !role.energy_regen_min.is_finite()
+                || !(0.0..=1000.0).contains(&role.energy_regen_min)
+                || role.energy_regen_max.is_some_and(|value| {
+                    !value.is_finite() || value < role.energy_regen_min || value > 1000.0
+                })
+            {
+                return Err(error("共鸣效率范围错误"));
+            }
+            energy_base.push((role.base_energy_regen * 10.0).round() as i64);
+            energy_min.push((role.energy_regen_min * 10.0).round() as i64);
+            energy_max.push(
+                role.energy_regen_max
+                    .map(|value| (value * 10.0).round() as i64),
+            );
             role_keys.insert(role.key(), r);
             for slot in &role.slots {
                 if ![1, 3, 4].contains(&slot.cost)
@@ -490,6 +535,7 @@ impl Problem {
             diagnostics.push(rejected);
             allowed.push(eligibility);
         }
+        let energy: Vec<i64> = records.iter().map(record_energy).collect();
         let mut ranks: Vec<_> = (0..records.len()).collect();
         ranks.sort_by_key(|i| &records[*i].item_id);
         let mut uuid_rank = vec![0; records.len()];
@@ -523,8 +569,22 @@ impl Problem {
             diagnostics,
             allowed,
             missing_pins,
+            energy,
+            energy_base,
+            energy_min,
+            energy_max,
         })
     }
+    pub fn energy_total(&self, role: usize, ids: &[usize]) -> i64 {
+        self.energy_base[role] + ids.iter().map(|index| self.energy[*index]).sum::<i64>()
+    }
+
+    pub fn energy_ok(&self, role: usize, ids: &[usize]) -> bool {
+        let total = self.energy_total(role, ids);
+        total >= self.energy_min[role]
+            && self.energy_max[role].is_none_or(|maximum| total <= maximum)
+    }
+
     pub fn legal_names_sets(&self, role: usize, ids: &[usize]) -> bool {
         if self.roles[role].distinct_names
             && ids
@@ -543,7 +603,7 @@ impl Problem {
                 .collect::<HashSet<_>>()
                 .len()
                 >= *n
-        })
+        }) && self.energy_ok(role, ids)
     }
     pub fn build(&self, role: usize, ids: Vec<usize>) -> Build {
         let total = ids.iter().map(|i| self.scores[role][*i].unwrap()).sum();

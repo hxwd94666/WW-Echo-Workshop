@@ -14,7 +14,6 @@ class CaptureStatus:
     added: int = 0
     pending: int = 0
     profile_id: str = ''
-    marked: bool = False
     mode: str = 'continuous'
     needs_review: int = 0
     duplicates: int = 0
@@ -347,15 +346,6 @@ class CaptureSession:
             self._reset_stability()
             self._missing = 0
 
-    def mark_current(self):
-        with self._lock:
-            self._status = replace(
-                self._status, marked=True, message='当前项已标记，下次稳定识别将带备注'
-            )
-            # Rearm only by an explicit user gesture, not OCR oscillation.
-            self._committed = None
-            self._reset_stability()
-
     def _upgrade_candidates(self, record):
         if not record.name or not record.sonata or record.level is None:
             return []
@@ -653,7 +643,6 @@ class CaptureSession:
             record,
             screenshot_ref=reference,
             review='pending',
-            note='用户标记' if self._status.marked else record.note,
         )
         duplicate = [item.item_id for item in self.repository.duplicate_candidates(record)]
         upgraded = self._upgrade_candidates(record) if not duplicate else []
@@ -672,7 +661,6 @@ class CaptureSession:
                 duplicates=self._status.duplicates + bool(duplicate),
                 upgrades=self._status.upgrades + bool(upgraded),
                 message=message,
-                marked=False,
             )
         else:
             # Fresh equal observations or a verified frozen multi-frame proof
@@ -687,7 +675,6 @@ class CaptureSession:
                 added=self._status.added + 1,
                 needs_review=self._status.needs_review + bool(issues),
                 message=message,
-                marked=False,
             )
         self._committed = (record.fingerprint, (record.game_equipped,))
         if self._single_request is not None and self._single_request is getattr(

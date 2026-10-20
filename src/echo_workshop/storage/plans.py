@@ -59,9 +59,11 @@ def validate_plan(payload, *, plan_evaluator=None, cancel_event=None, evidence_s
     request = AllocationRequest.from_dict(payload['request'])
     snapshot = WeightSnapshot.from_dict(payload['weight_snapshot'])
     result = payload['result']
+    # Older saved results predate weapon/ER fields; normalize before identity comparison.
+    result_request = AllocationRequest.from_dict(result['request'])
     if (
         result['plan_id'] != payload['plan_id']
-        or canonical_json(result['request']) != canonical_json(request.to_dict())
+        or canonical_json(result_request.to_dict()) != canonical_json(request.to_dict())
         or result['weight_version'] != snapshot.version
         or result['algorithm_version'] != ALGORITHM_VERSION
         or result['policy_version']

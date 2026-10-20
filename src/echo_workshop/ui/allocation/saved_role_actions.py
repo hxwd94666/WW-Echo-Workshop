@@ -93,7 +93,22 @@ class SavedRoleActions:
                 while len(cache) > 96:
                     del cache[next(iter(cache))]
                 self._role_record_projections = cache
-            self.detail_cards.set_role(role, cache[key][1], snapshot=snapshot)
+            context = self.detail_context()
+            request_role = next(
+                (
+                    item
+                    for item in (context or {})
+                    .get('payload', {})
+                    .get('request', {})
+                    .get('roles', [])
+                    if (item.get('character_id'), item.get('modal_id'))
+                    == (role.get('character_id'), role.get('modal_id'))
+                ),
+                None,
+            )
+            self.detail_cards.set_role(
+                role, cache[key][1], snapshot=snapshot, request_role=request_role
+            )
             grid.clearSelection()
             grid.setCurrentIndex(QModelIndex())
             for index in range(self.detail_cards.model.rowCount()):

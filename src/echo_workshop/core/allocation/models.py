@@ -26,6 +26,25 @@ def cents(value):
         raise ValueError('目标分格式错误') from error
 
 
+def normalize_energy_range(minimum=100.0, maximum=None, base=100.0):
+    values = (minimum, maximum, base)
+    if any(
+        value is not None and (isinstance(value, bool) or not isinstance(value, (int, float)))
+        for value in values
+    ):
+        raise ValueError('共鸣效率须为有限数值')
+    minimum, base = float(minimum), float(base)
+    if not math.isfinite(minimum) or not 0 <= minimum <= 1000:
+        raise ValueError('最低共鸣效率须在 0–1000 之间')
+    if not math.isfinite(base) or not 0 <= base <= 1000:
+        raise ValueError('基础共鸣效率须在 0–1000 之间')
+    if maximum is not None:
+        maximum = float(maximum)
+        if not math.isfinite(maximum) or not minimum <= maximum <= 1000:
+            raise ValueError('最高共鸣效率须不小于最低值')
+    return minimum, maximum, base
+
+
 def set_name(value):
     from echo_workshop.core.text import simplify_echo_text
 
@@ -69,6 +88,10 @@ class RoleRequest:
     distinct_names: bool = True
     owner_label: str = ''
     set_unique_names: bool = True
+    weapon_id: str = ''
+    energy_regen_min: float = 100.0
+    energy_regen_max: float | None = None
+    base_energy_regen: float = 100.0
 
     def __post_init__(self):
         if (
@@ -97,6 +120,14 @@ class RoleRequest:
             raise ValueError('同名去重/历史归属标签格式错误')
         if self.set_unique_names is not True:
             raise ValueError('仅支持当前套装不同名称计件规则')
+        if not isinstance(self.weapon_id, str) or any(c < ' ' for c in self.weapon_id):
+            raise ValueError('武器 ID 格式错误')
+        minimum, maximum, base = normalize_energy_range(
+            self.energy_regen_min, self.energy_regen_max, self.base_energy_regen
+        )
+        object.__setattr__(self, 'energy_regen_min', minimum)
+        object.__setattr__(self, 'energy_regen_max', maximum)
+        object.__setattr__(self, 'base_energy_regen', base)
         if not isinstance(self.set_requirements, tuple):
             raise ValueError('套装数量要求须为不可变列表')
         for row in self.set_requirements:
@@ -214,6 +245,7 @@ class RoleAllocation:
     # 评级与分值同源：由 Rust 在产出分值时冻结，界面与方案载荷直接消费。
     rating: dict | None = None
     item_ratings: tuple = ()
+    energy_regen: float | None = None
 
 
 @dataclass(frozen=True)
@@ -240,4 +272,6 @@ class AllocationResult:
                 role.pop('rating', None)
             if not role.get('item_ratings'):
                 role.pop('item_ratings', None)
+            if role.get('energy_regen') is None:
+                role.pop('energy_regen', None)
         return row

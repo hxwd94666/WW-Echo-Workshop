@@ -257,6 +257,12 @@ class LoadoutActionController:
             self.saved_workspace.publish_detail(value, token)
             return True
         if value.kind in ('replacement-candidates', 'preview-replacement'):
+            if arguments.get('result_replacement'):
+                if value.kind == 'replacement-candidates':
+                    self.publish_result_candidates(value.payload)
+                else:
+                    self.publish_result_preview(value.payload)
+                return True
             method = (
                 self.saved_workspace.publish_candidates
                 if value.kind == 'replacement-candidates'

@@ -137,6 +137,15 @@ class TestAllocationSearch(unittest.TestCase):
             **kwargs,
         )
 
+    def test_energy_range_filters_complete_builds(self):
+        records = [search_record(i) for i in range(8)]
+        exact = search_role('1304', energy_regen_min=134, energy_regen_max=134)
+        result = self.solve(records, (exact,), {})
+        self.assertEqual(len(result.roles[0].item_ids), 5)
+        impossible = search_role('1304', energy_regen_min=140, energy_regen_max=150)
+        result = self.solve(records, (impossible,), {})
+        self.assertEqual(result.roles[0].item_ids, ())
+
     def test_six_priority_bounds_match_independent_random_enumeration(self):
         randomizer = random.Random(24007)
         for case in range(12):

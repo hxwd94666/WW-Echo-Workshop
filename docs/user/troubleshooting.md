@@ -4,6 +4,24 @@
 
 请先用 [OKWW Releases](https://github.com/ok-oldking/ok-wuthering-waves/releases) 安装并启动宿主；插件本身不能独立运行。检查完整 `echo-workshop` 文件夹是否位于实际运行目录的 `ok_import/`，不要多嵌套一层，也不要同时保留两份插件。更新后完全退出并重启 OKWW。宿主版本与插件适配版本不匹配时，查看宿主日志的加载阶段。
 
+## 检查更新报 PyAppify 错误
+
+“PyAppify does not support checking for updates for pyappify_version: None” 是 **OKWW 宿主自己的更新卡**报错，不是声骸工坊插件错误，也不是插件 manifest 缺少字段。
+
+原因通常是直接用 `python main.py` 或 `main_debug.py` 启动 OKWW，没有经过 PyAppify 启动器，环境变量 `PYAPPIFY_VERSION` 为空。
+
+处理方式：
+
+1. 优先用 OKWW 官方 PyAppify 启动器运行；
+2. 开发调试必须直接启动时，在启动前设置宿主需要的版本：
+
+~~~powershell
+$env:PYAPPIFY_VERSION = "1.2.3"
+python main.py
+~~~
+
+`1.2.3` 对应当前宿主配置里的 `update_pyappify.to_version`；PyAppify 要求版本不低于 1.2.2。不要通过修改声骸工坊的 manifest 来绕过这个宿主错误。
+
 ## 选择角色后没有结果
 
 选择或改设置不自动计算。明确选择候选后点击“开始计算”；配装需要先确认每个角色的装备要求。

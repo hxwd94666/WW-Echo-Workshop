@@ -1,6 +1,6 @@
 # 管理声骸核对表单待定关联及保存取消流程。
 from dataclasses import replace
-from PySide6.QtWidgets import QHBoxLayout, QMessageBox, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from echo_workshop.ui.widgets.inputs import QComboBox
 from qfluentwidgets import BodyLabel, PushButton
 from echo_workshop.ui.widgets.inputs import ComboBox
@@ -144,44 +144,6 @@ class InventoryReviewController:
             editor.feedback.setText('核对信息后，勾选“已核对”，再保存并确认。')
 
         decision.currentIndexChanged.connect(show_previous)
-
-    def confirm_safe_pending(self):
-        revision = self._mutation_revision()
-        candidates = []
-        for record, kind, _ in self._rows:
-            if kind != 'item' or record.review == 'confirmed':
-                continue
-            quality = self.inventory_model.quality(record)
-            if not quality.issues:
-                candidates.append((record, quality))
-        if not candidates:
-            raise ValueError('没有原生质量无缺失/冲突的待核对项；其余记录请逐项处理')
-        answer = QMessageBox.question(
-            self,
-            '确认无问题项',
-            f'将确认 {len(candidates)} 件原生质量无缺失/冲突的声骸。\n'
-            '重复/升级记录和有问题的记录会保留，不会自动合并或删除。',
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No,
-        )
-        if answer != QMessageBox.Yes:
-            return
-        confirmed = 0
-        try:
-            for record, quality in candidates:
-                self.runtime.inventory.confirm(
-                    record.item_id,
-                    expected_revision=revision,
-                    quality=quality,
-                )
-                revision = self.runtime.inventory.revision
-                confirmed += 1
-        except (ValueError, KeyError, OSError) as error:
-            self.compact_status.setText(f'批量确认中断：{error}；已确认 {confirmed} 件')
-            self.refresh(force=True)
-            return
-        self.compact_status.setText(f'已确认 {confirmed} 件无问题项；其余记录仍需核对')
-        self.refresh(force=True)
 
     def review_next(self):
         if self._editor is not None:

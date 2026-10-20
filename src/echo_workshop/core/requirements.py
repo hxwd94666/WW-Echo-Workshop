@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass
 
-from echo_workshop.core.allocation.models import RoleRequest
+from echo_workshop.core.allocation.models import RoleRequest, normalize_energy_range
 from echo_workshop.core.costs import read_cost_layout
 from echo_workshop.core.models import validate_id
 
@@ -66,6 +66,10 @@ class RoleRequirements:
     allowed_sonatas: tuple[str, ...]
     set_requirements: tuple[tuple[str, int], ...] = ()
     fixed_item_ids: tuple[str, ...] | None = None
+    weapon_id: str = ''
+    energy_regen_min: float = 100.0
+    energy_regen_max: float | None = None
+    base_energy_regen: float = 100.0
 
     def __post_init__(self):
         costs = read_cost_layout(self.costs)
@@ -76,6 +80,14 @@ class RoleRequirements:
         object.__setattr__(self, 'allowed_sonatas', allowed)
         object.__setattr__(self, 'set_requirements', sets)
         object.__setattr__(self, 'fixed_item_ids', normalize_fixed_items(self.fixed_item_ids))
+        if not isinstance(self.weapon_id, str) or any(c < ' ' for c in self.weapon_id):
+            raise ValueError('武器 ID 格式错误')
+        minimum, maximum, base = normalize_energy_range(
+            self.energy_regen_min, self.energy_regen_max, self.base_energy_regen
+        )
+        object.__setattr__(self, 'energy_regen_min', minimum)
+        object.__setattr__(self, 'energy_regen_max', maximum)
+        object.__setattr__(self, 'base_energy_regen', base)
 
     def to_dict(self):
         row = dict(
@@ -83,6 +95,10 @@ class RoleRequirements:
             main_names=[list(names) for names in self.main_names],
             allowed_sonatas=list(self.allowed_sonatas),
             set_requirements=[list(row) for row in self.set_requirements],
+            weapon_id=self.weapon_id,
+            energy_regen_min=self.energy_regen_min,
+            energy_regen_max=self.energy_regen_max,
+            base_energy_regen=self.base_energy_regen,
         )
         if self.fixed_item_ids is not None:
             row['fixed_item_ids'] = list(self.fixed_item_ids)
@@ -96,7 +112,14 @@ class RoleRequirements:
             'allowed_sonatas',
             'set_requirements',
         }
-        if not isinstance(row, dict) or not fields <= set(row) <= fields | {'fixed_item_ids'}:
+        optional = {
+            'fixed_item_ids',
+            'weapon_id',
+            'energy_regen_min',
+            'energy_regen_max',
+            'base_energy_regen',
+        }
+        if not isinstance(row, dict) or not fields <= set(row) <= fields | optional:
             raise ValueError('角色主词条与套装要求配置字段无效；原配置保留。')
         return cls(**row)
 
@@ -112,6 +135,10 @@ class RoleRequirements:
             role.rule.sonatas,
             role.set_requirements,
             tuple(slot.fixed_item_id for slot in role.slots),
+            role.weapon_id,
+            role.energy_regen_min,
+            role.energy_regen_max,
+            role.base_energy_regen,
         )
 
 
@@ -150,7 +177,14 @@ def requirements_from_rows(rows):
         'set_requirements',
     }
     for row in rows:
-        if not isinstance(row, dict) or not fields <= set(row) <= fields | {'fixed_item_ids'}:
+        optional = {
+            'fixed_item_ids',
+            'weapon_id',
+            'energy_regen_min',
+            'energy_regen_max',
+            'base_energy_regen',
+        }
+        if not isinstance(row, dict) or not fields <= set(row) <= fields | optional:
             raise ValueError('角色要求配置字段无效；原配置保留。')
         key = _key((row['character_id'], row['modal_id']))
         if key in values:

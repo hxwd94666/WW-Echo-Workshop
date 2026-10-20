@@ -17,6 +17,9 @@ from echo_workshop.application.pins import PinCheckService
 from echo_workshop.application.requirements_check import RequirementsCheckService
 from echo_workshop.resources.weights import WeightProvider
 from echo_workshop.resources.game_catalog import GameCatalog, GameCatalogUpdates
+from echo_workshop.resources.panel_catalog import PanelCatalog
+from echo_workshop.resources.panel_updates import PanelCatalogUpdates
+from echo_workshop.application.panel import PanelService
 from echo_workshop.resources.game_assets import GameAssets, CatalogAvatarFetcher
 from echo_workshop.resources.game_projection import CatalogSonataClient, CatalogEffectsClient
 from echo_workshop.resources.http import MirrorWeightHttpClient
@@ -84,6 +87,9 @@ class PluginRuntime:
             self.evidence = EvidenceStore(self.data_dir, view_factory=EvidenceViewJobs)
             self.game_catalog = GameCatalog(self.data_dir)
             self.game_updates = GameCatalogUpdates(self.game_catalog, stop_event=self.stop_event)
+            self.panel_catalog = PanelCatalog(self.data_dir)
+            self.panel = PanelService(self.panel_catalog)
+            self.panel_updates = PanelCatalogUpdates(self.panel_catalog, stop_event=self.stop_event)
             self.game_assets = GameAssets(self.data_dir)
             self.weights = WeightProvider(self.data_dir, custom_evaluator=self.custom_weights)
             self.avatars = AvatarCache(
@@ -98,6 +104,7 @@ class PluginRuntime:
                 client=CatalogSonataClient(self.game_catalog, self.game_assets),
             )
             self.sonata_effects = SonataEffectsProvider(self.data_dir)
+            self.panel.effects = self.sonata_effects
             self.sonata_effect_updates = SonataEffectsUpdateService(
                 self.sonata_effects,
                 self.sonata,
@@ -140,6 +147,7 @@ class PluginRuntime:
                 stop_event=self.stop_event,
                 defaults=self.role_default_updates,
                 catalog=self.game_updates,
+                panel=self.panel_updates,
                 job_factory=begin_job,
             )
             self.backups = BackupService(
@@ -156,12 +164,13 @@ class PluginRuntime:
                 ('sonata', self.sonata),
                 ('effects', self.sonata_effects),
                 ('role-defaults', self.role_defaults),
+                ('panel', self.panel_catalog),
             ):
                 init_job.part(channel, 'cached', metadata={'version': provider.active.version[:12]})
             init_job.finish(
                 'completed',
                 counters={
-                    'offline_providers': 5,
+                    'offline_providers': 6,
                     'warnings': int(bool(self.weights.last_error))
                     + int(bool(self.sonata.warning))
                     + int(bool(self.sonata_effects.warning))

@@ -1,4 +1,5 @@
 # 在总期限内按验证过的镜像优先级请求头像，区分暂缓与不可信资料。
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import math
 import re
@@ -105,11 +106,11 @@ def fetch_avatar_resource(
         urls.remove(preferred)
         urls.insert(0, preferred)
     errors = []
-    for url in urls:
-        checkpoint(stop)
+
+    def fetch(url):
         remaining = min(AVATAR_MIRROR_SECONDS, deadline - clock())
         if remaining <= 0:
-            raise AvatarDeferred('deadline', errors)
+            return 'deferred', 'deadline', None
         headers = {}
         if validators.get('source') == url and validators.get('sha256') == previous_hash:
             headers = {
@@ -123,11 +124,11 @@ def fetch_avatar_resource(
             status, body, reply = (transport or _avatar_get)(url, headers, remaining, stop)
             checkpoint(stop)
             if clock() >= deadline:
-                raise AvatarDeferred('deadline', errors)
+                return 'deferred', 'deadline', None
             if status == 304:
                 if previous is None or not headers:
-                    raise ValueError('Avatar 304 has no matching validated cache')
-                return previous, validators, True
+                    return 'fatal', 'Avatar 304 has no matching validated cache', None
+                return 'not-modified', url, None
             if status != 200:
                 if (
                     status == 404
@@ -135,11 +136,11 @@ def fetch_avatar_resource(
                     or status == 429
                     or (type(status) is int and status >= 500)
                 ):
-                    raise AvatarDeferred('http-unavailable')
-                raise ValueError('Avatar HTTP status')
+                    return 'deferred', 'http-unavailable', None
+                return 'fatal', 'Avatar HTTP status', None
             checked_avatar(body)
             if not isinstance(reply, dict):
-                raise ValueError('Invalid avatar response metadata')
+                return 'fatal', 'Invalid avatar response metadata', None
             meta = {
                 key: value
                 for key, value in reply.items()
@@ -147,14 +148,30 @@ def fetch_avatar_resource(
             }
             meta.update(source=url, sha256=hashlib.sha256(body).hexdigest())
             avatar_validators(ident, meta)
-            return body, meta, False
-        except OperationCancelled:
+            return 'ok', url, (body, meta, False)
+        except (OperationCancelled, TimeoutError):
             raise
+        except ValueError as error:
+            return 'fatal', str(error), None
         except OSError as error:
-            # Network/HTTP availability is optional. Validation/unsafe redirect
-            # ValueErrors deliberately escape rather than being downgraded.
-            errors.append(type(error).__name__)
+            return 'deferred', type(error).__name__, None
+
+    fatal = None
+    with ThreadPoolExecutor(max_workers=min(3, len(urls))) as pool:
+        futures = [pool.submit(fetch, url) for url in urls]
+        for future in as_completed(futures):
             checkpoint(stop)
+            kind, value, payload = future.result()
+            if kind == 'not-modified':
+                return previous, validators, True
+            if kind == 'ok':
+                return payload
+            if kind == 'fatal' and fatal is None:
+                fatal = value
+            elif kind == 'deferred':
+                errors.append(value)
+    if fatal is not None:
+        raise ValueError(fatal)
     raise AvatarDeferred('network', errors)
 
 

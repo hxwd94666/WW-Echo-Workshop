@@ -59,9 +59,10 @@ class _FullHeightGrid(EchoCardGrid):
 class RoleResultGroup(QWidget):
     """One frozen role heading and the shared five-card presentation."""
 
-    def __init__(self, key, parent=None):
+    def __init__(self, key, parent=None, *, panel_service=None):
         super().__init__(parent)
         self.key = key
+        self.panel_service = panel_service
         self.signature = None
         self._avatar_label = ''
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -82,11 +83,16 @@ class RoleResultGroup(QWidget):
         font.setBold(True)
         self.heading.setFont(font)
         header.addWidget(self.heading)
-        self.loadout = LoadoutCards(self, grid_type=_FullHeightGrid, summary_layout=header)
+        self.loadout = LoadoutCards(
+            self, grid_type=_FullHeightGrid, summary_layout=header, panel_service=panel_service
+        )
         self.changes_button = PushButton('变动', self.header)
         self.changes_button.setEnabled(False)
         header.addWidget(self.changes_button)
+        self.replace_button = PushButton('替换优化', self.header)
+        self.replace_button.setEnabled(False)
         header.addStretch(1)
+        header.addWidget(self.replace_button)
         from echo_workshop.ui.allocation.action_labels import explain, APPLY_TIP, BACKUP_TIP
 
         self.backup_button = PushButton('备份方案', self.header)
@@ -112,6 +118,10 @@ class RoleResultGroup(QWidget):
 
     def refresh_avatar(self, cache):
         pixmap = lookup_avatar(cache, self.key[0])
+        if pixmap is None and cache is not None:
+            request = getattr(cache, 'request', None)
+            if request is not None:
+                request(self.key[0])
         if pixmap is not None:
             self.avatar.setStyleSheet('')
             self.avatar.setPixmap(
@@ -125,7 +135,7 @@ class RoleResultGroup(QWidget):
                 + ('#454545; color: #eeeeee;' if isDarkTheme() else '#e8e8e8; color: #555555;')
             )
 
-    def set_role(self, row, records, completed, snapshot):
+    def set_role(self, row, records, completed, snapshot, request_role=None):
         signature = (
             _row_identity(row),
             tuple(records),
@@ -137,7 +147,7 @@ class RoleResultGroup(QWidget):
         self.signature = signature
         self._avatar_label = str(row.get('label', ''))
         self.heading.setText(self._avatar_label)
-        self.loadout.set_role(row, records, completed, snapshot=snapshot)
+        self.loadout.set_role(row, records, completed, snapshot=snapshot, request_role=request_role)
 
     def expand_grid(self):
         self.grid._resize_grid()
@@ -159,9 +169,11 @@ class GroupedLoadoutResults(QScrollArea):
     backup_requested = Signal(tuple)
     save_requested = Signal(tuple)
     changes_requested = Signal(tuple)
+    replace_requested = Signal(tuple, str)
 
-    def __init__(self, parent=None, *, avatar_cache=None):
+    def __init__(self, parent=None, *, avatar_cache=None, panel_service=None):
         super().__init__(parent)
+        self._panel_service = panel_service
         self.setWidgetResizable(True)
         self.setFrameShape(QScrollArea.NoFrame)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -253,6 +265,11 @@ class GroupedLoadoutResults(QScrollArea):
         group.changes_button.clicked.connect(
             lambda checked=False, key=group.key: self.changes_requested.emit(key)
         )
+        group.replace_button.clicked.connect(
+            lambda checked=False, key=group.key: self.replace_requested.emit(
+                key, self._selected_id if self._selected_group == key else ''
+            )
+        )
         group.backup_button.clicked.connect(lambda: self.backup_requested.emit(group.key))
         group.save_button.clicked.connect(lambda: self.save_requested.emit(group.key))
         group.loadout.selected.connect(
@@ -288,6 +305,15 @@ class GroupedLoadoutResults(QScrollArea):
         completed = frozenset(completed)
         needed = {identity for row in rows for identity in row.get('item_ids', ())}
         record_map = {record.item_id: record for record in records if record.item_id in needed}
+        request_roles = (
+            {
+                (role.get('character_id'), role.get('modal_id')): role
+                for role in result.get('request', {}).get('roles', [])
+                if isinstance(role, dict)
+            }
+            if result is not None
+            else {}
+        )
         signature = (
             tuple(_row_identity(row) for row in rows),
             tuple(sorted(record_map.items())),
@@ -312,7 +338,7 @@ class GroupedLoadoutResults(QScrollArea):
                 key = _key(row)
                 group = self.groups.get(key)
                 if group is None:
-                    group = RoleResultGroup(key, self.body)
+                    group = RoleResultGroup(key, self.body, panel_service=self._panel_service)
                     self._register_group(group)
                 self.body_layout.removeWidget(group)
                 self.body_layout.insertWidget(index, group)
@@ -321,13 +347,20 @@ class GroupedLoadoutResults(QScrollArea):
                     for identity in row.get('item_ids', ())
                     if identity in record_map
                 )
-                group.set_role(row, role_records, completed, snapshot)
+                group.set_role(
+                    row,
+                    role_records,
+                    completed,
+                    snapshot,
+                    request_role=request_roles.get(key),
+                )
                 group.refresh_avatar(self._avatar_cache)
                 group.grid.avatar_cache = self._avatar_cache
                 ordered[key] = group
             self.groups = ordered
             self.empty_label.setVisible(not rows)
             self._restore_selection(previous)
+            self._sync_replace_buttons()
         finally:
             self._updating = False
         # The controller may have rebuilt its checklist in a different order.
@@ -351,6 +384,7 @@ class GroupedLoadoutResults(QScrollArea):
             self._selected_id, self._selected_group = identity, key
         finally:
             self._updating = False
+        self._sync_replace_buttons()
         self.selected.emit(identity)
         self.role_selected.emit(key)
 
@@ -379,8 +413,13 @@ class GroupedLoadoutResults(QScrollArea):
         for group in self.groups.values():
             self._clear_grid(group.grid)
         self._selected_id, self._selected_group = '', None
+        self._sync_replace_buttons()
         if previous and not self._updating:
             self.selected.emit('')
+
+    def _sync_replace_buttons(self):
+        for key, group in self.groups.items():
+            group.replace_button.setEnabled(bool(self._selected_id) and self._selected_group == key)
 
     def _restore_selection(self, identity):
         self.clear_selection()

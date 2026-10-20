@@ -31,6 +31,7 @@ from echo_workshop.ui.allocation.requirements import MainRequirementsPicker, Son
 from echo_workshop.ui.widgets.role_layout import RoleSettingsSurface
 from echo_workshop.resources.search import search_matches
 from echo_workshop.ui.allocation.pin_model import PinModel, PinSelector
+from echo_workshop.ui.allocation.panel_controls import build_energy_range
 from echo_workshop.ui.widgets.roles import IdentityCombo, RolePicker
 from echo_workshop.core.scoring import ELEMENT_NAMES
 from echo_workshop.ui.widgets.layout import fit_dialog
@@ -202,6 +203,15 @@ class RoleEditorUX:
         self.target.setValue(role.target if role else 0)
         self.target.setToolTip('目标分达成后，会优先将好的声骸给其他同级角色。为0时不启用。')
         form.addRow('目标分', self.target)
+        self._initial_weapon = getattr(role, 'weapon_id', '') if role else ''
+        self._initial_er_min = getattr(role, 'energy_regen_min', 100.0) if role else 100.0
+        self._initial_er_max = getattr(role, 'energy_regen_max', None) if role else None
+        self.weapon = QComboBox(self)
+        self.weapon.setEditable(True)
+        self.weapon.setInsertPolicy(QComboBox.NoInsert)
+        self.weapon.setMinimumHeight(36)
+        self.weapon.lineEdit().setPlaceholderText('搜索武器名称或拼音')
+        form.addRow('武器', self.weapon)
         left.addLayout(form)
         basis = CaptionLabel('目标分达成后，会优先将好的声骸给其他同级角色。为0时不启用。', self)
         basis.setWordWrap(True)
@@ -263,6 +273,10 @@ class RoleEditorUX:
         )
         self.main_requirements_picker.changed.connect(self._main_to_slots)
         right.addWidget(self.main_requirements_picker)
+        self.er_range, self.er_min, self.er_max = build_energy_range(
+            self, self._initial_er_min, self._initial_er_max
+        )
+        right.addWidget(self.er_range)
         self.fixed_disclosure = RoleOptionalSection('固定声骸（可选）', self)
         self.slots = QTableWidget(5, 3, self)
         self.slots.setHorizontalHeaderLabels(
@@ -316,6 +330,7 @@ class RoleEditorUX:
         self.template.currentIndexChanged.connect(self._template_to_picker)
         self.template.currentIndexChanged.connect(self._sync_element)
         self.template.currentIndexChanged.connect(self._refresh_identity)
+        self.template.currentIndexChanged.connect(self._refresh_panel_controls)
         self._avatar_timer = QTimer(self)
         self._avatar_timer.setInterval(500)
         self._avatar_timer.timeout.connect(self._refresh_avatar)
@@ -338,6 +353,7 @@ class RoleEditorUX:
             except (OSError, ValueError, KeyError):
                 pass
         self._refresh_identity()
+        self._refresh_panel_controls()
         self.surface.update_theme()
         self._filter_pins(self.cost_picker.costs())
         self.mark_confirmed_state()
@@ -350,6 +366,9 @@ class RoleEditorUX:
             self.set_controls.allowed(),
             self.requirements.text(),
             self.owner.text(),
+            self.weapon.currentData() or '',
+            self.er_min.value(),
+            self.er_max.value() or None,
             tuple(
                 (
                     self.slots.cellWidget(i, 0).currentData(),
@@ -410,6 +429,33 @@ class RoleEditorUX:
             else {}
             for name in names
         }
+
+    def _refresh_panel_controls(self, *_):
+        if not hasattr(self, 'weapon'):
+            return
+        runtime = getattr(self.parentWidget(), 'runtime', None)
+        catalog = getattr(runtime, 'panel_catalog', None)
+        key = self.template.currentData()
+        character = catalog.character(key[0]) if catalog is not None and key else None
+        current = self.weapon.currentData() or self._initial_weapon
+        self.weapon.blockSignals(True)
+        self.weapon.clear()
+        default = catalog.default_weapon(key[0]) if character is not None else ''
+        default_row = catalog.weapon(default) if default and catalog is not None else None
+        default_name = default_row.get('name', default) if default_row else ''
+        self.weapon.addItem(
+            f'默认推荐（{default_name}）' if default_name else '默认推荐（未配置）', ''
+        )
+        if character is not None and catalog is not None:
+            for ident, row in sorted(catalog.active.weapons.items()):
+                if row.get('type') == character.get('weapon_type'):
+                    self.weapon.addItem(row.get('name', ident), ident)
+            if current and self.weapon.findData(current) < 0:
+                self.weapon.addItem('当前武器（未在目录）', current)
+        index = self.weapon.findData(current) if current else 0
+        self.weapon.setCurrentIndex(index if index >= 0 else 0)
+        self.weapon.setEnabled(character is not None)
+        self.weapon.blockSignals(False)
 
     def _refresh_identity(self, *_):
         key = self.template.currentData()
@@ -687,6 +733,16 @@ class RoleEditorContent(RoleEditorUX):
         super().__init__(parent)
         self.build_role_editor(snapshot, catalog, role, seed_key, seed_rule, evidence)
 
+    def _base_energy(self, character, weapon_id):
+        runtime = getattr(self.parentWidget(), 'runtime', None)
+        service = getattr(runtime, 'panel', None)
+        if service is None:
+            return 100.0
+        try:
+            return service.calculate(character, weapon_id, ())[1].energy_regen
+        except (ValueError, KeyError, TypeError):
+            return 100.0
+
     def _build_role(self):
         self.validate_cost_layout()
         if self.template.currentData() is None:
@@ -720,6 +776,10 @@ class RoleEditorContent(RoleEditorUX):
             False,
             self.owner.text().strip(),
             set_unique_names=True,
+            weapon_id=self.weapon.currentData() or '',
+            energy_regen_min=self.er_min.value(),
+            energy_regen_max=self.er_max.value() or None,
+            base_energy_regen=self._base_energy(character, self.weapon.currentData() or ''),
         )
 
     def save(self):

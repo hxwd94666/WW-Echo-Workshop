@@ -189,16 +189,6 @@ class RecordEditorContent:
         self.cost_edit = QComboBox()
         self.cost_edit.addItems(['1', '3', '4'])
         self.cost_edit.setCurrentText(str(record.cost))
-        from echo_workshop.resources.echo_costs import known_cost
-
-        def cost_hint():
-            value = known_cost(self.name_edit.currentText())
-            self.cost_edit.setToolTip(
-                f'资料登记 COST {value}' if value else '资料尚未登记此声骸 COST'
-            )
-
-        self.name_edit.currentTextChanged.connect(lambda _text: cost_hint())
-        cost_hint()
         self.level_edit = QSpinBox()
         self.level_edit.setRange(-1, 25)
         self.level_edit.setSpecialValueText('未知，请核对')

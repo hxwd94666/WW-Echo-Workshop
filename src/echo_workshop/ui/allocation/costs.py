@@ -3,7 +3,6 @@
 
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import (
-    QBoxLayout,
     QButtonGroup,
     QGridLayout,
     QHBoxLayout,
@@ -12,10 +11,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, PushButton, TogglePushButton
+from qfluentwidgets import BodyLabel, CaptionLabel, TogglePushButton
 from echo_workshop.core.costs import (
     COST_OPTIONS,
-    COST_PRESETS,
     DEFAULT_COST_LAYOUT,
     MAX_TOTAL_COST,
     read_cost_layout,
@@ -43,15 +41,6 @@ class CostLayoutPicker(QWidget):
         self.legacy_warning = CaptionLabel(self)
         self.legacy_warning.setWordWrap(True)
         layout.addWidget(self.legacy_warning)
-        self.presets = QBoxLayout(QBoxLayout.LeftToRight)
-        self.presets.setSpacing(8)
-        self.preset_buttons = {}
-        for costs in COST_PRESETS:
-            button = PushButton(' / '.join(map(str, costs)), self)
-            button.clicked.connect(lambda _checked=False, value=costs: self._preset(value))
-            self.presets.addWidget(button, 1)
-            self.preset_buttons[costs] = button
-        layout.addLayout(self.presets)
         self.grid = QGridLayout()
         self.grid.setContentsMargins(0, 0, 0, 0)
         self.grid.setHorizontalSpacing(8)
@@ -131,12 +120,6 @@ class CostLayoutPicker(QWidget):
             self._sync()
             self.changed.emit(value)
 
-    def _preset(self, costs):
-        self.set_costs(costs)
-        # Reapplying the visible preset is an explicit confirmation of a
-        # fallback/legacy draft, even when the displayed five values match.
-        self.changed.emit(self._costs)
-
     def _reflow(self):
         if not hasattr(self, 'slot_boxes'):
             return
@@ -147,9 +130,6 @@ class CostLayoutPicker(QWidget):
                 self.grid.removeWidget(box)
                 self.grid.addWidget(box, index // count, index % count)
             self._column_count = count
-        self.presets.setDirection(
-            QBoxLayout.LeftToRight if width >= 280 else QBoxLayout.TopToBottom
-        )
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

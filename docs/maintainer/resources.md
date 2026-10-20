@@ -10,14 +10,13 @@
 | 套装图标与角色头像 | static.nanoka.cc/assets/ww | api-v2.encore.moe/resource/Data/Game/Aki/UI；图片缓存 |
 | 评分模版、权重、评级 | XWUID map/character | ww3 → ww1 → ww2；用户自定义优先 |
 | 角色默认套装建议 | XWUID map/1.json | 国内镜像与内置 role_sonatas.json |
-| 声骸 COST 登记 | XWUID 固定提交 register_echo.py 静态提取 | builtin/echo_costs.json；未知保持未确定 |
 | 主副词条数值与算法 | 已验证的本地计算规则 | 不通过效果文本或远程代码热更新 |
 
 游戏源为 https://static.nanoka.cc 和 https://api-v2.encore.moe 。权重和默认套装继续使用 https://ww3.loping151.cn/XutheringWavesUID/resource/ 、ww1.loping151.top、ww2.loping151.top。默认套装来自配装样例，不是官方强制要求。
 
 ## 自动更新合同
 
-- 基础目录接入已有单作业协调器；启动最早30秒，成功24小时检查，失败30分钟退避；自动开关、手动检查与取消共用。目录更新后投影套装与效果。
+- 基础目录接入已有单作业协调器；启动宽限约45秒，成功24小时检查，失败30分钟退避；自动开关、手动检查与取消共用。`catalog` 先完成，`weights`/`sonata`/`panel`/`role-defaults` 随后有界并行，`effects` 等 `sonata` 后再检查。
 - Nanoka 读取 manifest 的 ww.live，不采用测试服 latest。完整主源失败才读取完整备用目录，不拼接两个来源的半份资料。
 - 两站声骸分别保留 nanoka:/encore: 命名空间，不替换玩家 UUID。Encore 列表包含额外历史条目，条目数不等同于当前可装备种类。
 - 验证目录数量、重复 ID、角色属性、套装门槛、引用和图片来源；拒绝已有角色目录缩减及套装 ID 名称错位。Encore 详情 FetterGroupDetails 有关联错位样本，不使用该字段。
@@ -30,17 +29,18 @@
 - 更新状态提供当前通道、已完成步骤与总步骤；数据页独立维持可见时轮询，即使权重编辑页隐藏也持续显示进度。技术诊断只保留显式展开入口。
 - 不覆盖玩家库存、装备者、保护、配置及历史，不自动计算。角色属性从游戏目录投影至评分快照；权重数值仍由 XWUID/用户提供。
 
-## COST 与词条数值核查
+## 角色面板资料
+
+- `builtin/panel_catalog.json` 保存 64 个角色、124 把武器的 90 级基础数据、默认推荐武器和 Forte 属性；内置文件是离线快照。
+- 在线检查先比对 Nanoka release；版本未变不抓取详情，变化后才从 Nanoka 主源、XWUID 双镜像、Encore 备用抓取并原子更新本地快照。
+- 静态面板只合并角色基础、技能树被动、武器基础/副词条、无条件武器被动、简单 2 件套和声骸词条；条件型效果不进入总值。
+- 面板卡按固定顺序显示角色主要属性与伤害词条，点击卡片查看完整明细；已保存方案和当前结果共用同一生成逻辑。
+
+## 词条数值核查
 
 2026-10-16检查 Nanoka 声骸列表、中文详情、页面引用数据及 Encore 声骸列表和详情。已观察到强度分类、品质、技能和套装；Encore 的 MainProp 仅是 RandGroupId/RandNum 引用，未提供完整主词条成长及副词条档位。分类不是明确 COST，技能倍率不是词条值，不据此推算。
 
-XWUID 提交 4c1727580c613ef3034a391dc3156a1570cd5260 的 utils/damage/register_echo.py 明确登记 ID/name/cost。本次以 AST 静态解析字面量及继承生成229条，不执行上游 Python。核对编辑器提示登记 COST，不暗改用户输入。
-
-```powershell
-.\.venv\Scripts\python.exe -B tools/import_echo_costs.py <register_echo.py> --commit <完整提交SHA>
-.\.venv\Scripts\python.exe -B tools/resources.py inventory
-.\.venv\Scripts\python.exe -B tools/resources.py validate
-```
+声骸 COST 提示及其静态资料已移除；编辑器继续由用户手动选择 COST 1/3/4，不从目录推断。
 
 也检查了 XWUID 的 score.py、calculate.py、calc/__init__.py、damage/constants.py、damage/utils.py、ascension/constant.py 与 utils/constants.py。该提交中的评分/计算入口部分转发至下载的 waves_build 模块，未找到可直接替换完整主副词条表的声明式来源；不下载执行二进制提取规则。
 
@@ -48,7 +48,7 @@ XWUID 提交 4c1727580c613ef3034a391dc3156a1570cd5260 的 utils/damage/register_
 
 ## 内置快照与验证
 
-builtin/game_catalog.json 是统一目录；game_sources.json 记录原始URL、版本、hash与规范化图片hash；echo_costs.json 记录固定提交与上游文件hash；sources.json 为逐文件清单。
+builtin/game_catalog.json 是统一目录；game_sources.json 记录原始URL、版本、hash与规范化图片hash；sources.json 为逐文件清单。
 
 ```powershell
 .\.venv\Scripts\python.exe -B tools/resources.py validate

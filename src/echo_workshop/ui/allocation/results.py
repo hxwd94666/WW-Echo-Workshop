@@ -222,7 +222,9 @@ class AllocationUX:
             score_text = (
                 f'{total:.2f} 分' if not target else f'{total:.2f}/{target:.2f} 分 · 差距 {gap:.2f}'
             )
-            lines.append(f'{row["label"]}：{state} · {count}/5 件 · {score_text}')
+            energy = row.get('energy_regen')
+            energy_text = f' · 共鸣效率 {energy:.1f}%' if isinstance(energy, (int, float)) else ''
+            lines.append(f'{row["label"]}：{state} · {count}/5 件 · {score_text}{energy_text}')
         if limited:
             lines.append('搜索已到上限，当前方案未保证最优。')
         else:

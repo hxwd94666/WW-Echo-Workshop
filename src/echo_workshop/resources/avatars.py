@@ -2,6 +2,7 @@
 """Tiny lazy avatar cache; names/IDs stay derived from current score weights."""
 
 from collections import OrderedDict, deque
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, replace
 import json
 import math
@@ -58,7 +59,7 @@ class AvatarCache:
         self.folder = Path(data_dir) / 'avatars'
         self.characters, self.fetch = characters, fetch
         self.clock, self.transport = clock, transport
-        self._network_gate, self._refresh_gate = threading.Lock(), threading.Lock()
+        self._network_gate, self._refresh_gate = threading.Semaphore(4), threading.Lock()
         self._stop = threading.Event()
         self._condition = threading.Condition()
         self._pending, self._queued = deque(), set()
@@ -319,6 +320,7 @@ class AvatarCache:
                 path = self.folder / ('role_head_' + ident + '.png')
                 if ident in loaded or path.exists() or path.is_symlink():
                     existing.append(ident)
+            self._prefetch_missing(known, existing, token, deadline)
             ids = tuple(existing)
             if ids:
                 offset = self._refresh_cursor % len(ids)
@@ -352,7 +354,9 @@ class AvatarCache:
                 old = None
                 try:
                     old = self._cached(ident)
-                    body = self._load(ident, refresh=True, cancel_event=token, deadline=deadline)
+                    body = self._load(
+                        ident, refresh=bool(force), cancel_event=token, deadline=deadline
+                    )
                     if body is not None:
                         checkpoint(token)
                         self._publish(ident, body)
@@ -441,6 +445,44 @@ class AvatarCache:
                 else f'已检查已有头像 {self._status.checked} 件；缺图按需获取',
             )
         return self.status
+
+    def _prefetch_missing(self, known, existing, token, deadline):
+        with self._condition:
+            loaded = set(self._values)
+        missing = [
+            ident
+            for ident in sorted(known)
+            if ident not in loaded
+            and ident not in existing
+            and not (self.folder / ('role_head_' + ident + '.png')).exists()
+        ][:32]
+        if not missing:
+            return
+
+        def fetch(ident):
+            try:
+                return ident, self._load(ident, cancel_event=token, deadline=deadline), None
+            except (OperationCancelled, AvatarDeferred, OSError, ValueError) as error:
+                return ident, None, error
+
+        with ThreadPoolExecutor(max_workers=min(4, len(missing))) as pool:
+            futures = [pool.submit(fetch, ident) for ident in missing]
+            for future in as_completed(futures):
+                ident, body, error = future.result()
+                checkpoint(token)
+                if body is not None:
+                    self._publish(ident, body)
+                    with self._condition:
+                        self._retry.pop(ident, None)
+                        self._retry_counts.pop(ident, None)
+                elif isinstance(error, AvatarDeferred):
+                    self._retry_later(ident, error)
+                elif isinstance(error, (OSError, ValueError)):
+                    self._retry_later(ident, error)
+        try:
+            self._save_validators(token)
+        except (OperationCancelled, OSError, ValueError):
+            raise
 
     def _run(self):
         while not self._stop.is_set():

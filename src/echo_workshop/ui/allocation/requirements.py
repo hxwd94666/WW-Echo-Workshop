@@ -216,12 +216,6 @@ class SonataEffectsPicker(QWidget):
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(8)
-        note = CaptionLabel(
-            '新勾选默认最高件数效果；多套搭配时可调整，合计最多五件。',
-            self,
-        )
-        note.setWordWrap(True)
-        root.addWidget(note)
         self.rows = QWidget(self)
         self.rows_layout = QVBoxLayout(self.rows)
         self.rows_layout.setContentsMargins(0, 0, 0, 0)

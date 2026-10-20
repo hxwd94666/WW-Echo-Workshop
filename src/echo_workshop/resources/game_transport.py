@@ -35,8 +35,9 @@ def get(url, headers, limit, timeout, *, check=lambda: None):
 
     connection._create_connection = connect
     try:
+        target = parsed.path + ('?' + parsed.query if parsed.query else '')
         connection.request(
-            'GET', parsed.path, headers={'User-Agent': 'Echo-Workshop/' + __version__, **headers}
+            'GET', target, headers={'User-Agent': 'Echo-Workshop/' + __version__, **headers}
         )
         if connection.sock:
             connection.sock.settimeout(remaining_time(deadline, check))

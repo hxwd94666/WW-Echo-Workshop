@@ -32,20 +32,46 @@ def approve(url):
     if not isinstance(url, str):
         raise ValueError('资源 URL 无效')
     parts = urlsplit(url)
-    if parts.scheme != 'https' or parts.netloc not in ('static.nanoka.cc', 'api-v2.encore.moe'):
+    if parts.scheme != 'https' or parts.netloc not in (
+        'static.nanoka.cc',
+        'api-v2.encore.moe',
+        'ww1.loping151.top',
+        'ww3.loping151.cn',
+    ):
         raise ValueError('资源来源不在白名单')
-    if parts.query or parts.fragment or '%' in parts.path or '..' in parts.path:
+    if parts.fragment or '%' in parts.path or '..' in parts.path:
         raise ValueError('资源路径无效')
     path = parts.path
     if parts.netloc == 'static.nanoka.cc':
         valid = path == '/manifest.json' or re.fullmatch(
-            r'/ww/[0-9]{1,3}(?:\.[0-9]{1,3}){1,3}/(?:character|echo|zh/sonata)\.json', path
+            r'/ww/[0-9]{1,3}(?:\.[0-9]{1,3}){1,3}/'
+            r'(?:character|weapon|echo|zh/sonata|zh/character/[1-9][0-9]*|zh/weapon/[1-9][0-9]*)\.json',
+            path,
         )
         asset = path.removeprefix('/assets/ww/') if path.startswith('/assets/ww/') else ''
+    elif parts.netloc in ('ww1.loping151.top', 'ww3.loping151.cn'):
+        valid = bool(
+            re.fullmatch(
+                r'/XutheringWavesUID/resource/map/(?:1|detail_json/(?:char|weapon)/[1-9][0-9]*)\.json',
+                path,
+            )
+        )
+        asset = ''
     else:
-        valid = path in ('/api/zh-Hans/character', '/api/zh-Hans/echo')
+        valid = bool(
+            re.fullmatch(
+                r'/api/zh-Hans/(?:character|echo|character/[1-9][0-9]*|weapon/[1-9][0-9]*)',
+                path,
+            )
+        )
         prefix = '/resource/Data/Game/Aki/UI/'
         asset = path.removeprefix(prefix) if path.startswith(prefix) else ''
+    if parts.query and not (
+        parts.netloc == 'api-v2.encore.moe'
+        and parts.query == 'ver=latest'
+        and re.fullmatch(r'/api/zh-Hans/(?:character|weapon)/[1-9][0-9]*', path)
+    ):
+        raise ValueError('资源查询参数无效')
     if not valid and not _ASSET.fullmatch(asset):
         raise ValueError('资源路径不在白名单')
     return url

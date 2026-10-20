@@ -1,0 +1,6474 @@
+{
+  "schema_version": 1,
+  "game_version": "3.7",
+  "retrieved_at": 1792508598.6956875,
+  "characters": {
+    "1102": {
+      "name": "散华",
+      "element": 1,
+      "weapon_type": 2,
+      "hp_90": 10062.5,
+      "atk_90": 275.0,
+      "def_90": 941.1094,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "冷凝伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020044",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1103": {
+      "name": "白芷",
+      "element": 1,
+      "weapon_type": 5,
+      "hp_90": 12812.5,
+      "atk_90": 212.5,
+      "def_90": 1002.2204,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "生命%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050015",
+        "21050024",
+        "21050017"
+      ],
+      "default_weapon_id": "21050015",
+      "source": "nanoka"
+    },
+    "1104": {
+      "name": "凌阳",
+      "element": 1,
+      "weapon_type": 4,
+      "hp_90": 10387.5,
+      "atk_90": 437.5,
+      "def_90": 1209.9978,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "冷凝伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040015",
+        "21040084",
+        "21040064"
+      ],
+      "default_weapon_id": "21040015",
+      "source": "nanoka"
+    },
+    "1105": {
+      "name": "折枝",
+      "element": 1,
+      "weapon_type": 5,
+      "hp_90": 12250.0,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050026",
+        "21050015",
+        "21050074"
+      ],
+      "default_weapon_id": "21050026",
+      "source": "nanoka"
+    },
+    "1106": {
+      "name": "釉瑚",
+      "element": 1,
+      "weapon_type": 4,
+      "hp_90": 9975.0,
+      "atk_90": 262.5,
+      "def_90": 1051.1092,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040015",
+        "21040024",
+        "21040034"
+      ],
+      "default_weapon_id": "21040015",
+      "source": "nanoka"
+    },
+    "1107": {
+      "name": "珂莱塔",
+      "element": 1,
+      "weapon_type": 3,
+      "hp_90": 12450.0,
+      "atk_90": 462.5,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030016",
+        "21030015",
+        "21030074"
+      ],
+      "default_weapon_id": "21030016",
+      "source": "nanoka"
+    },
+    "1108": {
+      "name": "绯雪",
+      "element": 1,
+      "weapon_type": 2,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020086",
+        "21020015",
+        "21020094"
+      ],
+      "default_weapon_id": "21020086",
+      "source": "nanoka"
+    },
+    "1109": {
+      "name": "洛瑟菈",
+      "element": 1,
+      "weapon_type": 5,
+      "hp_90": 12237.5,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050086",
+        "21050015",
+        "21050084"
+      ],
+      "default_weapon_id": "21050086",
+      "source": "nanoka"
+    },
+    "1110": {
+      "name": "穗穗",
+      "element": 1,
+      "weapon_type": 5,
+      "hp_90": 16712.5,
+      "atk_90": 287.5,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "生命%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050096",
+        "21050036",
+        "21050024"
+      ],
+      "default_weapon_id": "21050096",
+      "source": "nanoka"
+    },
+    "1202": {
+      "name": "炽霞",
+      "element": 2,
+      "weapon_type": 3,
+      "hp_90": 9087.5,
+      "atk_90": 300.0,
+      "def_90": 953.3316,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "热熔伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030015",
+        "21030074",
+        "21030084"
+      ],
+      "default_weapon_id": "21030015",
+      "source": "nanoka"
+    },
+    "1203": {
+      "name": "安可",
+      "element": 2,
+      "weapon_type": 5,
+      "hp_90": 10512.5,
+      "atk_90": 425.0,
+      "def_90": 1246.6644,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "热熔伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050015",
+        "21050074",
+        "21050084"
+      ],
+      "default_weapon_id": "21050015",
+      "source": "nanoka"
+    },
+    "1204": {
+      "name": "莫特斐",
+      "element": 2,
+      "weapon_type": 3,
+      "hp_90": 10025.0,
+      "atk_90": 250.0,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "热熔伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030015",
+        "21030024",
+        "21030084"
+      ],
+      "default_weapon_id": "21030015",
+      "source": "nanoka"
+    },
+    "1205": {
+      "name": "长离",
+      "element": 2,
+      "weapon_type": 2,
+      "hp_90": 10387.5,
+      "atk_90": 462.5,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020016",
+        "21020015",
+        "21020074"
+      ],
+      "default_weapon_id": "21020016",
+      "source": "nanoka"
+    },
+    "1206": {
+      "name": "布兰特",
+      "element": 2,
+      "weapon_type": 2,
+      "hp_90": 11675.0,
+      "atk_90": 375.0,
+      "def_90": 1307.7754,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020036",
+        "21020015",
+        "21020024"
+      ],
+      "default_weapon_id": "21020036",
+      "source": "nanoka"
+    },
+    "1207": {
+      "name": "露帕",
+      "element": 2,
+      "weapon_type": 1,
+      "hp_90": 11912.5,
+      "atk_90": 387.5,
+      "def_90": 1185.5534,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010036",
+        "21010015",
+        "21010074"
+      ],
+      "default_weapon_id": "21010036",
+      "source": "nanoka"
+    },
+    "1208": {
+      "name": "嘉贝莉娜",
+      "element": 2,
+      "weapon_type": 3,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030036",
+        "21030015",
+        "21030104"
+      ],
+      "default_weapon_id": "21030036",
+      "source": "nanoka"
+    },
+    "1209": {
+      "name": "莫宁",
+      "element": 2,
+      "weapon_type": 1,
+      "hp_90": 15375.0,
+      "atk_90": 287.5,
+      "def_90": 1356.6642,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "防御%": 15.2
+      },
+      "recommended_weapon_ids": [
+        "21010066",
+        "21010015",
+        "21010024"
+      ],
+      "default_weapon_id": "21010066",
+      "source": "nanoka"
+    },
+    "1210": {
+      "name": "爱弥斯",
+      "element": 2,
+      "weapon_type": 2,
+      "hp_90": 11025.0,
+      "atk_90": 425.0,
+      "def_90": 1148.8868,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020076",
+        "21020015",
+        "21020104"
+      ],
+      "default_weapon_id": "21020076",
+      "source": "nanoka"
+    },
+    "1211": {
+      "name": "达妮娅",
+      "element": 2,
+      "weapon_type": 5,
+      "hp_90": 11025.0,
+      "atk_90": 425.0,
+      "def_90": 1148.8868,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050076",
+        "21050015",
+        "21050074"
+      ],
+      "default_weapon_id": "21050076",
+      "source": "nanoka"
+    },
+    "1212": {
+      "name": "景燃",
+      "element": 2,
+      "weapon_type": 1,
+      "hp_90": 15375.0,
+      "atk_90": 312.5,
+      "def_90": 0.0,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "生命%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010076",
+        "21010045",
+        "21010104"
+      ],
+      "default_weapon_id": "21010076",
+      "source": "nanoka"
+    },
+    "1301": {
+      "name": "卡卡罗",
+      "element": 3,
+      "weapon_type": 1,
+      "hp_90": 10500.0,
+      "atk_90": 437.5,
+      "def_90": 1185.5534,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010015",
+        "21010074",
+        "21010084"
+      ],
+      "default_weapon_id": "21010015",
+      "source": "nanoka"
+    },
+    "1302": {
+      "name": "吟霖",
+      "element": 3,
+      "weapon_type": 5,
+      "hp_90": 11000.0,
+      "atk_90": 400.0,
+      "def_90": 1283.331,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050016",
+        "21050015",
+        "21050074"
+      ],
+      "default_weapon_id": "21050016",
+      "source": "nanoka"
+    },
+    "1303": {
+      "name": "渊武",
+      "element": 3,
+      "weapon_type": 4,
+      "hp_90": 8525.0,
+      "atk_90": 225.0,
+      "def_90": 1637.7748,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "导电伤害加成提升": 12.0,
+        "防御%": 15.2
+      },
+      "recommended_weapon_ids": [
+        "21040015",
+        "21040044",
+        "21040024"
+      ],
+      "default_weapon_id": "21040015",
+      "source": "nanoka"
+    },
+    "1304": {
+      "name": "今汐",
+      "element": 5,
+      "weapon_type": 1,
+      "hp_90": 10825.0,
+      "atk_90": 412.5,
+      "def_90": 1258.8866,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010026",
+        "21010015",
+        "21010074"
+      ],
+      "default_weapon_id": "21010026",
+      "source": "nanoka"
+    },
+    "1305": {
+      "name": "相里要",
+      "element": 3,
+      "weapon_type": 4,
+      "hp_90": 10625.0,
+      "atk_90": 425.0,
+      "def_90": 1222.22,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040016",
+        "21040015",
+        "21040074"
+      ],
+      "default_weapon_id": "21040016",
+      "source": "nanoka"
+    },
+    "1306": {
+      "name": "奥古斯塔",
+      "element": 3,
+      "weapon_type": 1,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010046",
+        "21010015",
+        "21010104"
+      ],
+      "default_weapon_id": "21010046",
+      "source": "nanoka"
+    },
+    "1307": {
+      "name": "卜灵",
+      "element": 3,
+      "weapon_type": 5,
+      "hp_90": 10625.0,
+      "atk_90": 225.0,
+      "def_90": 1258.8866,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050015",
+        "21050024",
+        "21050084"
+      ],
+      "default_weapon_id": "21050015",
+      "source": "nanoka"
+    },
+    "1308": {
+      "name": "丽贝卡",
+      "element": 3,
+      "weapon_type": 3,
+      "hp_90": 11600.0,
+      "atk_90": 400.0,
+      "def_90": 1173.3312,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030066",
+        "21030045",
+        "21030084"
+      ],
+      "default_weapon_id": "21030066",
+      "source": "nanoka"
+    },
+    "1309": {
+      "name": "漂泊者·导电",
+      "element": 3,
+      "weapon_type": 2,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020016",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1310": {
+      "name": "漂泊者·导电",
+      "element": 3,
+      "weapon_type": 2,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020016",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1311": {
+      "name": "心",
+      "element": 3,
+      "weapon_type": 5,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050116",
+        "21050015",
+        "21050084"
+      ],
+      "default_weapon_id": "21050116",
+      "source": "nanoka"
+    },
+    "1312": {
+      "name": "锁暝",
+      "element": 3,
+      "weapon_type": 2,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020107",
+        "21020015",
+        "21020074"
+      ],
+      "default_weapon_id": "21020107",
+      "source": "nanoka"
+    },
+    "1402": {
+      "name": "秧秧",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 10200.0,
+      "atk_90": 250.0,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "气动伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020024",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1403": {
+      "name": "秋水",
+      "element": 4,
+      "weapon_type": 3,
+      "hp_90": 9850.0,
+      "atk_90": 262.5,
+      "def_90": 1075.5536,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "气动伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030015",
+        "21030064",
+        "21030084"
+      ],
+      "default_weapon_id": "21030015",
+      "source": "nanoka"
+    },
+    "1404": {
+      "name": "忌炎",
+      "element": 4,
+      "weapon_type": 1,
+      "hp_90": 10487.5,
+      "atk_90": 437.5,
+      "def_90": 1185.5534,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010016",
+        "21010015",
+        "21010074"
+      ],
+      "default_weapon_id": "21010016",
+      "source": "nanoka"
+    },
+    "1405": {
+      "name": "鉴心",
+      "element": 4,
+      "weapon_type": 4,
+      "hp_90": 14112.5,
+      "atk_90": 337.5,
+      "def_90": 1124.4424,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040015",
+        "21040024",
+        "21040074"
+      ],
+      "default_weapon_id": "21040015",
+      "source": "nanoka"
+    },
+    "1406": {
+      "name": "漂泊者·气动",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020046",
+        "21020015",
+        "21020024"
+      ],
+      "default_weapon_id": "21020046",
+      "source": "nanoka"
+    },
+    "1407": {
+      "name": "夏空",
+      "element": 4,
+      "weapon_type": 3,
+      "hp_90": 12237.5,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030026",
+        "21030015",
+        "21030094"
+      ],
+      "default_weapon_id": "21030026",
+      "source": "nanoka"
+    },
+    "1408": {
+      "name": "漂泊者·气动",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020046",
+        "21020015",
+        "21020024"
+      ],
+      "default_weapon_id": "21020046",
+      "source": "nanoka"
+    },
+    "1409": {
+      "name": "卡提希娅",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 14800.0,
+      "atk_90": 312.5,
+      "def_90": 611.11,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "生命%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020056",
+        "21020015"
+      ],
+      "default_weapon_id": "21020056",
+      "source": "nanoka"
+    },
+    "1410": {
+      "name": "尤诺",
+      "element": 4,
+      "weapon_type": 4,
+      "hp_90": 10525.0,
+      "atk_90": 450.0,
+      "def_90": 1124.4424,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040046",
+        "21040015",
+        "21040104"
+      ],
+      "default_weapon_id": "21040046",
+      "source": "nanoka"
+    },
+    "1411": {
+      "name": "仇远",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 12237.5,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020066",
+        "21020015",
+        "21020104"
+      ],
+      "default_weapon_id": "21020066",
+      "source": "nanoka"
+    },
+    "1412": {
+      "name": "西格莉卡",
+      "element": 4,
+      "weapon_type": 4,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040066",
+        "21040015",
+        "21040084"
+      ],
+      "default_weapon_id": "21040066",
+      "source": "nanoka"
+    },
+    "1413": {
+      "name": "清宵",
+      "element": 4,
+      "weapon_type": 2,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020106",
+        "21020015",
+        "21020104"
+      ],
+      "default_weapon_id": "21020106",
+      "source": "nanoka"
+    },
+    "1501": {
+      "name": "漂泊者·衍射",
+      "element": 5,
+      "weapon_type": 2,
+      "hp_90": 11400.0,
+      "atk_90": 375.0,
+      "def_90": 1368.8864,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "衍射伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020064",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1502": {
+      "name": "漂泊者·衍射",
+      "element": 5,
+      "weapon_type": 2,
+      "hp_90": 11400.0,
+      "atk_90": 375.0,
+      "def_90": 1368.8864,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "衍射伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020064",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1503": {
+      "name": "维里奈",
+      "element": 5,
+      "weapon_type": 5,
+      "hp_90": 14237.5,
+      "atk_90": 337.5,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050015",
+        "21050024",
+        "21050017"
+      ],
+      "default_weapon_id": "21050015",
+      "source": "nanoka"
+    },
+    "1504": {
+      "name": "灯灯",
+      "element": 3,
+      "weapon_type": 1,
+      "hp_90": 8500.0,
+      "atk_90": 337.5,
+      "def_90": 879.9984,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010015",
+        "21010074",
+        "21010084"
+      ],
+      "default_weapon_id": "21010015",
+      "source": "nanoka"
+    },
+    "1505": {
+      "name": "守岸人",
+      "element": 5,
+      "weapon_type": 5,
+      "hp_90": 16712.5,
+      "atk_90": 287.5,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "治疗效果加成提升": 12.0,
+        "生命%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050036",
+        "21050024",
+        "21050017"
+      ],
+      "default_weapon_id": "21050036",
+      "source": "nanoka"
+    },
+    "1506": {
+      "name": "菲比",
+      "element": 5,
+      "weapon_type": 5,
+      "hp_90": 10825.0,
+      "atk_90": 412.5,
+      "def_90": 1258.8866,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050046",
+        "21050015",
+        "21050094"
+      ],
+      "default_weapon_id": "21050046",
+      "source": "nanoka"
+    },
+    "1507": {
+      "name": "赞妮",
+      "element": 5,
+      "weapon_type": 4,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040036",
+        "21040015",
+        "21040094"
+      ],
+      "default_weapon_id": "21040036",
+      "source": "nanoka"
+    },
+    "1508": {
+      "name": "千咲",
+      "element": 6,
+      "weapon_type": 1,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21010056",
+        "21010015",
+        "21010074"
+      ],
+      "default_weapon_id": "21010056",
+      "source": "nanoka"
+    },
+    "1509": {
+      "name": "琳奈",
+      "element": 5,
+      "weapon_type": 3,
+      "hp_90": 12237.5,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030046",
+        "21030015",
+        "21030104"
+      ],
+      "default_weapon_id": "21030046",
+      "source": "nanoka"
+    },
+    "1510": {
+      "name": "陆·赫斯",
+      "element": 5,
+      "weapon_type": 4,
+      "hp_90": 10300.0,
+      "atk_90": 462.5,
+      "def_90": 1112.2202,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040056",
+        "21040045",
+        "21040084"
+      ],
+      "default_weapon_id": "21040056",
+      "source": "nanoka"
+    },
+    "1511": {
+      "name": "露西",
+      "element": 5,
+      "weapon_type": 3,
+      "hp_90": 11025.0,
+      "atk_90": 425.0,
+      "def_90": 1148.8868,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21030056",
+        "21030045",
+        "21030104"
+      ],
+      "default_weapon_id": "21030056",
+      "source": "nanoka"
+    },
+    "1601": {
+      "name": "桃祈",
+      "element": 6,
+      "weapon_type": 1,
+      "hp_90": 8950.0,
+      "atk_90": 225.0,
+      "def_90": 1564.4416,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "湮灭伤害加成提升": 12.0,
+        "防御%": 15.2
+      },
+      "recommended_weapon_ids": [
+        "21010015",
+        "21010044",
+        "21010024"
+      ],
+      "default_weapon_id": "21010015",
+      "source": "nanoka"
+    },
+    "1602": {
+      "name": "丹瑾",
+      "element": 6,
+      "weapon_type": 2,
+      "hp_90": 9437.5,
+      "atk_90": 262.5,
+      "def_90": 1148.8868,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "湮灭伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020044",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1603": {
+      "name": "椿",
+      "element": 6,
+      "weapon_type": 2,
+      "hp_90": 10325.0,
+      "atk_90": 450.0,
+      "def_90": 1161.109,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020026",
+        "21020015",
+        "21020074"
+      ],
+      "default_weapon_id": "21020026",
+      "source": "nanoka"
+    },
+    "1604": {
+      "name": "漂泊者·湮灭",
+      "element": 6,
+      "weapon_type": 2,
+      "hp_90": 10825.0,
+      "atk_90": 412.5,
+      "def_90": 1258.8866,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "湮灭伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020044",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1605": {
+      "name": "漂泊者·湮灭",
+      "element": 6,
+      "weapon_type": 2,
+      "hp_90": 10825.0,
+      "atk_90": 412.5,
+      "def_90": 1258.8866,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "湮灭伤害加成提升": 12.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020015",
+        "21020044",
+        "21020084"
+      ],
+      "default_weapon_id": "21020015",
+      "source": "nanoka"
+    },
+    "1606": {
+      "name": "洛可可",
+      "element": 6,
+      "weapon_type": 4,
+      "hp_90": 12250.0,
+      "atk_90": 375.0,
+      "def_90": 1197.7756,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击伤害提升": 16.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21040026",
+        "21040015",
+        "21040024"
+      ],
+      "default_weapon_id": "21040026",
+      "source": "nanoka"
+    },
+    "1607": {
+      "name": "坎特蕾拉",
+      "element": 6,
+      "weapon_type": 5,
+      "hp_90": 11600.0,
+      "atk_90": 400.0,
+      "def_90": 1099.998,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050056",
+        "21050015",
+        "21050104"
+      ],
+      "default_weapon_id": "21050056",
+      "source": "nanoka"
+    },
+    "1608": {
+      "name": "弗洛洛",
+      "element": 6,
+      "weapon_type": 5,
+      "hp_90": 10775.0,
+      "atk_90": 437.5,
+      "def_90": 1136.6646,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21050066",
+        "21050015",
+        "21050104"
+      ],
+      "default_weapon_id": "21050066",
+      "source": "nanoka"
+    },
+    "1610": {
+      "name": "秧秧·玄翎",
+      "element": 6,
+      "weapon_type": 2,
+      "hp_90": 11025.0,
+      "atk_90": 425.0,
+      "def_90": 1148.8868,
+      "crit_rate": 5.0,
+      "crit_dmg": 150.0,
+      "energy_regen": 100.0,
+      "bonus_stats": {
+        "暴击": 8.0,
+        "攻击%": 12.0
+      },
+      "recommended_weapon_ids": [
+        "21020096",
+        "21020066",
+        "21020044"
+      ],
+      "default_weapon_id": "21020096",
+      "source": "nanoka"
+    }
+  },
+  "weapons": {
+    "21010011": {
+      "name": "教学长刃",
+      "type": 1,
+      "rarity": 1,
+      "atk_90": 250.0,
+      "substat": "攻击",
+      "substat_value": 11.474999785423279,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010012": {
+      "name": "原初长刃·朴石",
+      "type": 1,
+      "rarity": 2,
+      "atk_90": 275.0,
+      "substat": "攻击",
+      "substat_value": 14.84999991953373,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010013": {
+      "name": "暗夜长刃·玄明",
+      "type": 1,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010015": {
+      "name": "浩境粼光",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "共鸣效率提升{0}。施放共鸣技能时，共鸣解放伤害加成提升{1}，可叠加{2}层，持续{3}秒。",
+      "param": [
+        [
+          "12.8%",
+          "16%",
+          "19.2%",
+          "22.4%",
+          "25.6%"
+        ],
+        [
+          "7%",
+          "8.75%",
+          "10.5%",
+          "12.25%",
+          "14%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010016": {
+      "name": "苍鳞千嶂",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。每次施放变奏技能或共鸣解放时，自身重击伤害加成提升{1}，可叠加{2}层，效果持续{3}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010023": {
+      "name": "源能长刃·测壹",
+      "type": 1,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "防御",
+      "substat_value": 38.475000858306885,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复自身{0}生命值，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "3%",
+          "3.75%",
+          "4.5%",
+          "5.25%",
+          "6%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010024": {
+      "name": "异响空灵",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点协奏能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010026": {
+      "name": "时和岁稔",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。施放变奏技能时，自身获得【岁蕴】，使共鸣技能伤害加成提升{1}，持续{2}秒。施放共鸣技能时，自身获得【福泽】，使共鸣技能伤害加成提升{3}，持续{4}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010034": {
+      "name": "重破刃-41型",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "共鸣效率",
+      "substat_value": 32.4,
+      "substat_is_percent": true,
+      "effect": "生命大于{0}时，攻击提升{1}。生命低于{2}时，造成普攻或重击伤害时回复角色{3}生命值，每{4}秒可触发{5}次。",
+      "param": [
+        [
+          "80%",
+          "80%",
+          "80%",
+          "80%",
+          "80%"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "40%",
+          "50%",
+          "60%",
+          "70%",
+          "80%"
+        ],
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010036": {
+      "name": "焰痕",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或共鸣解放时，共鸣解放伤害提升{1}，持续{2}秒；造成重击伤害时，该效果延长{3}秒，最多可延长{4}次。成功延长效果时，使队伍中的角色热熔伤害加成提升{5}，持续{6}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010043": {
+      "name": "远行者长刃·辟路",
+      "type": 1,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "共鸣效率",
+      "substat_value": 32.4,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点共鸣能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010044": {
+      "name": "永夜长明",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "防御",
+      "substat_value": 61.56000271439552,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，自身攻击提升{0}，防御提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "15%",
+          "18.75%",
+          "22.5%",
+          "26.25%",
+          "30%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010045": {
+      "name": "源能机锋",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。对处于【集谐·干涉】状态的敌人造成伤害后，共鸣解放伤害加成提升{1}，持续{2}秒，重复触发时刷新持续时间。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "27%",
+          "30%",
+          "33%",
+          "36%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010046": {
+      "name": "驭冕铸雷之权",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 675.0,
+      "substat": "暴击",
+      "substat_value": 12.15,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或共鸣技能时，重击伤害提升{1}，持续{2}秒；自身获得护盾时，重击伤害无视目标{3}防御，每0.5秒可生效1次，可叠加{4}层，持续{5}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        [
+          "7.2%",
+          "8.4%",
+          "9.6%",
+          "10.8%",
+          "12%"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010053": {
+      "name": "戍关长刃·定军",
+      "type": 1,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "普攻和重击伤害加成提升{0}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010056": {
+      "name": "昙切",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或附加【异常效应】时，自身共鸣解放伤害加成提升{1}，可叠加{2}层，持续{3}秒。\n该效果叠加至满层时，队伍中的角色附加【异常效应】时，该角色全属性伤害加成提升{4}，持续{5}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010063": {
+      "name": "钧天正音",
+      "type": 1,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，回复{0}点协奏能量；施放延奏技能时，回复{1}点共鸣能量。",
+      "param": [
+        [
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ],
+        [
+          "4",
+          "5",
+          "6",
+          "7",
+          "8"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010064": {
+      "name": "东落",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能后{0}秒内，每{1}秒攻击提升{2}，可叠加{3}层。每{4}秒可触发{5}次。当层数达到{6}层后，{7}秒内重置全部层数。",
+      "param": [
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "3%",
+          "3.75%",
+          "4.5%",
+          "5.25%",
+          "6%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010066": {
+      "name": "宙算仪轨",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "共鸣效率",
+      "substat_value": 77.04,
+      "substat_is_percent": true,
+      "effect": "防御提升{0}。施放共鸣技能时，回复自身{1}点协奏能量，每{2}秒可触发{3}次。造成治疗时，使附近队伍中所有角色的暴击伤害提升{4}，持续{5}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "16%",
+          "20%",
+          "24%",
+          "28%",
+          "32%"
+        ],
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010074": {
+      "name": "纹秋",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击",
+      "substat_value": 20.25,
+      "substat_is_percent": true,
+      "effect": "造成普攻或重击伤害时，攻击提升{0}，可叠加{1}层，持续{2}秒，每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "4%",
+          "6.2%",
+          "8.4%",
+          "10.6%",
+          "12.8%"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010076": {
+      "name": "千般渡",
+      "type": 1,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "生命",
+      "substat_value": 72.22500219941139,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。自身为登场角色施放变奏技能或获得护盾时，获得1层【承天】和1层【载物】，每0.5秒可通过获得护盾触发1次，可叠加{1}层，持续{2}秒。\n若切换至其他角色【承天】和【载物】提前结束。\n承天：暴击伤害提升{3}，最多提升{4}。【承天】达到{10}层时，重击伤害的暴击提升{11}。\n载物：施放重击时，消耗最多{5}层【载物】，每消耗{6}层【载物】，重击伤害无视目标{7}防御，最多无视目标{8}防御，持续{9}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
+        ],
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "15%",
+          "17.5%",
+          "20%",
+          "22.5%",
+          "25%"
+        ],
+        [
+          "30%",
+          "35%",
+          "40%",
+          "45%",
+          "50%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010084": {
+      "name": "凋亡频移",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，获得{0}点共鸣能量，且攻击提升{1}，持续{2}秒。该效果每{3}秒可触发1次。",
+      "param": [
+        [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "16",
+          "16",
+          "16",
+          "16",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010094": {
+      "name": "容赦的沉思录",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【异常效应】的怪物造成伤害时，自身攻击提升{0}，持续{1}秒，每秒可触发1次，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21010104": {
+      "name": "金穹",
+      "type": 1,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击伤害",
+      "substat_value": 40.5,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，攻击提升{0}，重击伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "7.2%",
+          "11.1%",
+          "15.1%",
+          "19%",
+          "23%"
+        ],
+        [
+          "10.8%",
+          "16.7%",
+          "22.6%",
+          "28.6%",
+          "34.5%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020011": {
+      "name": "教学迅刀",
+      "type": 2,
+      "rarity": 1,
+      "atk_90": 250.0,
+      "substat": "攻击",
+      "substat_value": 11.474999785423279,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020012": {
+      "name": "原初迅刀·鸣雨",
+      "type": 2,
+      "rarity": 2,
+      "atk_90": 275.0,
+      "substat": "攻击",
+      "substat_value": 14.84999991953373,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020013": {
+      "name": "暗夜迅刀·黑闪",
+      "type": 2,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020015": {
+      "name": "千古洑流",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "共鸣效率提升{0}。施放共鸣技能时，攻击提升{1}，可叠加{2}层，持续{3}秒。",
+      "param": [
+        [
+          "12.8%",
+          "16%",
+          "19.2%",
+          "22.4%",
+          "25.6%"
+        ],
+        [
+          "6%",
+          "7.5%",
+          "9%",
+          "10.5%",
+          "12%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020016": {
+      "name": "赫奕流明",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。造成伤害时获得1层【灼羽】，每0.5秒可获得1层。施放共鸣技能时额外获得5层。每层【灼羽】使共鸣技能伤害加成提升{1}，可叠加14层。【灼羽】达到14层的{2}秒后，清空全部层数。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020017": {
+      "name": "心之锚",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "在场造成伤害时获得{0}层【凶猛】，每{1}秒可获得{2}层。【凶猛】：每1层使自身攻击提升{3}，持续{4}秒，可叠加{5}层，角色离场时，清除所有层数。【凶猛】为{6}层时，自身暴击提升{7}。",
+      "param": [
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "2%",
+          "2.5%",
+          "3%",
+          "3.5%",
+          "4%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "6%",
+          "7.5%",
+          "9%",
+          "10.5%",
+          "12%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020023": {
+      "name": "源能迅刀·测贰",
+      "type": 2,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，回复自身{0}生命值，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020024": {
+      "name": "行进序曲",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点协奏能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020026": {
+      "name": "裁春",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。造成普攻伤害时，自身普攻伤害加成提升{1}，持续{2}秒，每秒可触发1次，可叠加{3}层；\n自身的协奏能量消耗时，自身普攻伤害加成提升{4}，持续{5}秒，每秒可触发1次，若切换至其他角色则该效果提前结束。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "40%",
+          "50%",
+          "60%",
+          "70%",
+          "80%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020034": {
+      "name": "瞬斩刀-18型",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "生命低于{0}时，重击伤害加成提升{1}，造成重击伤害时回复当前角色{2}生命值，每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "40%",
+          "50%",
+          "60%",
+          "70%",
+          "80%"
+        ],
+        [
+          "18%",
+          "22.5%",
+          "27%",
+          "31.5%",
+          "36%"
+        ],
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020036": {
+      "name": "不灭航路",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "共鸣效率",
+      "substat_value": 77.04,
+      "substat_is_percent": true,
+      "effect": "暴击提升{0}。施放共鸣解放后，普攻伤害加成提高{1}，持续{2}秒。造成普攻伤害时，普攻伤害加成提升{3}，持续{4}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020043": {
+      "name": "远行者迅刀·旅迹",
+      "type": 2,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "共鸣效率",
+      "substat_value": 32.4,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点共鸣能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020044": {
+      "name": "不归孤军",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，自身攻击提升{0}。持续{1}秒。",
+      "param": [
+        [
+          "15%",
+          "18.75%",
+          "22.5%",
+          "26.25%",
+          "30%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020045": {
+      "name": "镭射切变",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "共鸣效率",
+      "substat_value": 38.88,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。对处于【集谐·干涉】状态的敌人造成伤害后，共鸣技能伤害加成提升{1}，持续{2}秒，重复触发时刷新持续时间。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "27%",
+          "30%",
+          "33%",
+          "36%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020046": {
+      "name": "血誓盟约",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "共鸣效率",
+      "substat_value": 38.88,
+      "substat_is_percent": true,
+      "effect": "造成治疗时，自身共鸣技能伤害提升{0}，持续{1}秒。漂泊者·气动施放共鸣技能·缥缈无相时，附近队伍中登场角色气动伤害加深{2}，持续{3}秒。",
+      "param": [
+        [
+          "10%",
+          "14%",
+          "18%",
+          "22%",
+          "26%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "10%",
+          "14%",
+          "18%",
+          "22%",
+          "26%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020053": {
+      "name": "戍关迅刀·镇海",
+      "type": 2,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "生命",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "共鸣技能伤害加成提升{0}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020056": {
+      "name": "不屈命定之冠",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "生命",
+      "substat_value": 72.22500219941139,
+      "substat_is_percent": true,
+      "effect": "生命提升{0}。施放变奏技能或普攻后{3}秒内，自身造成伤害无视目标{1}防御，当目标的风蚀效应不少于1层时，对目标造成的伤害加深{2}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020064": {
+      "name": "西升",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "角色登场后获得{0}层【守誓】效果，每层使攻击提升{1}，可叠加{2}层，每{3}秒可触发{4}次。每{5}秒该状态减少{6}层，击败目标时，额外获得{7}层【守誓】效果。",
+      "param": [
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "2%",
+          "2.5%",
+          "3%",
+          "3.5%",
+          "4%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020066": {
+      "name": "裁竹",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或普攻后{1}秒内，施放声骸技能时，获得1层【解竹】，重击伤害加成提升{2}%，同名声骸只可触发一次，最多可叠加2层，持续{3}秒，叠加至2层后施放声骸技能不刷新持续时间。该效果{4}秒内最多生效1次，若切换至其他角色则该效果提前结束。\n施放变奏技能时，队伍中的角色声骸技能伤害加成提升{5}，持续{6}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "30",
+          "37.5",
+          "45",
+          "52.5",
+          "60"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020074": {
+      "name": "飞景",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，自身普攻和重击伤害加成提升{0}，可叠加{1}层，持续{2}秒。每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "20%",
+          "31%",
+          "42%",
+          "53%",
+          "64%"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020076": {
+      "name": "永远的启明星",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。附加震谐·偏移或聚爆效应时，共鸣解放伤害无视目标{1}防御，共鸣解放伤害无视目标{2}热熔抗性，持续{3}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "32%",
+          "40%",
+          "48%",
+          "56%",
+          "64%"
+        ],
+        [
+          "10%",
+          "15%",
+          "20%",
+          "25%",
+          "30%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020084": {
+      "name": "永续坍缩",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，获得{0}点共鸣能量，且攻击提升{1}，持续{2}秒。该效果每{3}秒可触发1次。",
+      "param": [
+        [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "16",
+          "16",
+          "16",
+          "16",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020086": {
+      "name": "灼霜",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。自身附加霜渐效应后，冷凝伤害加深{1}，且共鸣解放伤害无视目标{2}的防御，且自身为队伍中登场角色时，一定范围内的目标受到霜渐效应伤害加深{3}，持续{4}秒，每{5}秒可触发{6}次。同名效果之间取最高值。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "28%",
+          "35%",
+          "42%",
+          "49%",
+          "56%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020094": {
+      "name": "风流的寓言诗",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【异常效应】的怪物造成伤害时，自身攻击提升{0}，持续{1}秒，每秒可触发1次，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020096": {
+      "name": "天之苍苍",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。附加虚湮效应后，重击伤害加深{1}，重击伤害无视目标{2}防御，持续{3}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "36%",
+          "45%",
+          "54%",
+          "63%",
+          "72%"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020104": {
+      "name": "翼锋",
+      "type": 2,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击",
+      "substat_value": 20.25,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，攻击提升{0}，共鸣解放伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "7.2%",
+          "11.1%",
+          "15.1%",
+          "19%",
+          "23%"
+        ],
+        [
+          "10.8%",
+          "16.7%",
+          "22.6%",
+          "28.6%",
+          "34.5%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020106": {
+      "name": "云琅",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。附加集谐偏移后，获得气动伤害加成提升{1}，持续{2}秒，最多叠加{3}层，该效果每{4}秒可触发1次。达到上限后，获得下列效果：\n·该气动伤害加成提升效果持续时间延长至{5}秒。\n·效果持续期间，气动伤害无视目标{6}的防御。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "11.2%",
+          "14%",
+          "16.8%",
+          "19.6%",
+          "22.4%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21020107": {
+      "name": "沉冥",
+      "type": 2,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。获得同奏时，导电伤害提升{1}，持续{3}秒。\n获得同奏时，队伍中角色获得【羁念】效果并移除【怅念】，导电伤害加成提升{2}，持续{3}秒。同名效果之间不可叠加。\n自身的协奏能量消耗时，获得【怅念】效果并移除队伍中角色的【羁念】，自身导电伤害额外提升{4}，持续{5}秒， 切换至其他角色时，该效果提前结束。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "30%",
+          "37.5%",
+          "45%",
+          "52.5%",
+          "60%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ],
+        [
+          "40%",
+          "50%",
+          "60%",
+          "70%",
+          "80%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030011": {
+      "name": "教学佩枪",
+      "type": 3,
+      "rarity": 1,
+      "atk_90": 250.0,
+      "substat": "攻击",
+      "substat_value": 11.474999785423279,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030012": {
+      "name": "原初佩枪·穿林",
+      "type": 3,
+      "rarity": 2,
+      "atk_90": 275.0,
+      "substat": "攻击",
+      "substat_value": 14.84999991953373,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030013": {
+      "name": "暗夜佩枪·暗星",
+      "type": 3,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030015": {
+      "name": "停驻之烟",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "共鸣效率提升{0}。施放延奏技能后，入场角色攻击提升{1}，可叠加{2}层，持续{3}秒。",
+      "param": [
+        [
+          "12.8%",
+          "16%",
+          "19.2%",
+          "22.4%",
+          "25.6%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030016": {
+      "name": "死与舞",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击伤害",
+      "substat_value": 72.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或共鸣解放时，自身共鸣技能伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "48%",
+          "60%",
+          "72%",
+          "84%",
+          "96%"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030023": {
+      "name": "源能佩枪·测叁",
+      "type": 3,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放闪避反击时，回复自身{0}生命值，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "1.6%",
+          "2%",
+          "2.4%",
+          "2.8%",
+          "3.2%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030024": {
+      "name": "华彩乐段",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点协奏能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030026": {
+      "name": "林间的咏叹调",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。为目标添加【风蚀效应】后，自身气动伤害加成提升{1}，持续{2}秒。攻击命中带有【风蚀效应】的敌人时，降低对方{3}的气动抗性，持续{4}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "10%",
+          "11.5%",
+          "13%",
+          "14.5%",
+          "16%"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030034": {
+      "name": "穿击枪-26型",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "角色没有受到伤害时，每{0}秒攻击提升{1}，可叠加{2}层，持续{3}秒。受到伤害时，消耗{4}层状态，并回复角色{5}生命。",
+      "param": [
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "6%",
+          "7.5%",
+          "9%",
+          "10.5%",
+          "12%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030036": {
+      "name": "光影双生",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。造成声骸技能伤害时，重击伤害加深{1}，持续{2}秒；造成重击伤害时，声骸技能伤害加深{3}，持续{4}秒；单次攻击最多享受{5}伤害加深。同时拥有两种效果时，造成伤害时无视目标{6}防御。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030043": {
+      "name": "远行者佩枪·洞察",
+      "type": 3,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点共鸣能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030044": {
+      "name": "无眠烈火",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，自身共鸣技能伤害加成提升{0}。持续{1}秒。",
+      "param": [
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030045": {
+      "name": "相位涟漪",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。队伍中的角色施放【谐度破坏技】后，自身全属性伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "20%",
+          "22.5%",
+          "25%",
+          "27.5%",
+          "30%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030046": {
+      "name": "溢彩荧辉",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或普攻伤害命中时，使自身普攻伤害加成提升{1}，持续{2}秒。每次自身施放普攻技能期间为目标附加【震谐·偏移】或【集谐·偏移】时，使队伍中的角色造成的伤害提升{3}，最多叠加{4}层，持续{5}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "36%",
+          "45%",
+          "54%",
+          "63%",
+          "72%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030053": {
+      "name": "戍关佩枪·平云",
+      "type": 3,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "共鸣技能伤害加成提升{0}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030056": {
+      "name": "蜃影",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放共鸣技能时，自身衍射伤害加成提升{1}，最多叠加{2}层，持续{3}秒。每次为敌方怪物附加【骇破·偏移】后，重击伤害加深{4}，且重击伤害能无视目标{5}%防御，持续{6}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ],
+        [
+          "30%",
+          "37.5%",
+          "45%",
+          "52.5%",
+          "60%"
+        ],
+        [
+          "10",
+          "12.5",
+          "15",
+          "17.5",
+          "20"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030064": {
+      "name": "飞逝",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "角色冲刺或闪避时，攻击提升{0}，持续{1}秒，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030066": {
+      "name": "碎骨",
+      "type": 3,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击伤害",
+      "substat_value": 72.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能时，自身普攻伤害加成提升{1}，持续{2}秒。附加【骇破·偏移】时，自身普攻伤害加成提升{3}，持续{4}秒，队伍中的角色攻击提升{5}，持续{6}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030074": {
+      "name": "奔雷",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "造成普攻或重击伤害时，自身共鸣技能伤害加成提升{0}，可叠加{1}层，持续{2}秒。每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "7%",
+          "11%",
+          "15%",
+          "19%",
+          "23%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030084": {
+      "name": "悖论喷流",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，获得{0}点共鸣能量，且攻击提升{1}，持续{2}秒。该效果每{3}秒可触发1次。",
+      "param": [
+        [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "16",
+          "16",
+          "16",
+          "16",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030094": {
+      "name": "叙别的罗曼史",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【异常效应】的怪物造成伤害时，自身攻击提升{0}，持续{1}秒，每秒可触发1次，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21030104": {
+      "name": "阳焰",
+      "type": 3,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击",
+      "substat_value": 20.25,
+      "substat_is_percent": true,
+      "effect": "造成普攻或重击伤害时，攻击和重击伤害加成提升{0}，可叠加{1}层，持续{2}秒，每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "2.2%",
+          "3.4%",
+          "4.7%",
+          "5.9%",
+          "7.2%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040011": {
+      "name": "教学臂铠",
+      "type": 4,
+      "rarity": 1,
+      "atk_90": 250.0,
+      "substat": "攻击",
+      "substat_value": 11.474999785423279,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040012": {
+      "name": "原初臂铠·磐岩",
+      "type": 4,
+      "rarity": 2,
+      "atk_90": 275.0,
+      "substat": "攻击",
+      "substat_value": 14.84999991953373,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040013": {
+      "name": "暗夜臂铠·夜芒",
+      "type": 4,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040015": {
+      "name": "擎渊怒涛",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "共鸣效率提升{0}。造成共鸣技能伤害时，普攻伤害加成提升{1}，持续{2}秒。造成普攻伤害时，共鸣技能伤害加成提升{3}，持续{4}秒。",
+      "param": [
+        [
+          "12.8%",
+          "16%",
+          "19.2%",
+          "22.4%",
+          "25.6%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040016": {
+      "name": "诸方玄枢",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。施放共鸣解放时，自身共鸣解放伤害加成提升{1}，持续{2}秒；施放共鸣技能时，该效果延长{3}秒，最多可延长{4}次。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "48%",
+          "60%",
+          "72%",
+          "84%",
+          "96%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040023": {
+      "name": "源能臂铠·测肆",
+      "type": 4,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "暴击伤害",
+      "substat_value": 40.5,
+      "substat_is_percent": true,
+      "effect": "造成普攻伤害时，回复自身{0}生命值，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "0.5%",
+          "0.65%",
+          "0.8%",
+          "0.95%",
+          "1.1%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040024": {
+      "name": "呼啸重音",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点协奏能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040026": {
+      "name": "悲喜剧",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放普攻或变奏技能时，自身重击伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "48%",
+          "60%",
+          "72%",
+          "84%",
+          "96%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040034": {
+      "name": "钢影拳-21丁型",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "共鸣效率",
+      "substat_value": 38.88,
+      "substat_is_percent": true,
+      "effect": "闪避或冲刺时，攻击提升{0}，闪避反击造成的伤害提升{1}，持续{2}秒。施放闪避反击时，回复角色{3}生命，每{4}秒可触发{5}次。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "50%",
+          "62.5%",
+          "75%",
+          "87.5%",
+          "100%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040036": {
+      "name": "焰光裁定",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放普攻时，获得以下效果：自身造成伤害无视目标{1}防御，同时自身直接造成的【光噪效应】伤害加深{2}，持续{3}秒。重复获得时刷新持续时间。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "50%",
+          "62.5%",
+          "75%",
+          "87.5%",
+          "100%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040043": {
+      "name": "远行者臂铠·破障",
+      "type": 4,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "防御",
+      "substat_value": 30.78000135719776,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点共鸣能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040044": {
+      "name": "袍泽之固",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "防御",
+      "substat_value": 61.56000271439552,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，自身共鸣解放伤害加成提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040045": {
+      "name": "脉冲协臂",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。对处于【集谐·干涉】状态的敌人造成伤害后，普攻伤害加成提升{1}，持续{2}秒，可叠加{3}层，每{4}秒触发{5}次，重复触发时刷新持续时间。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "6%",
+          "6.7%",
+          "7.5%",
+          "8.2%",
+          "9%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040046": {
+      "name": "万物持存的注释",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。 施放变奏技能或共鸣解放时，共鸣解放伤害提升{1}，持续{2}秒。 自身获得护盾时：共鸣解放伤害无视目标{3}防御，每{4}秒可生效1次，可叠加{5}层，持续{6}秒；施放变奏技能时，无视目标防御的效果视为满层，持续{7}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        [
+          "7.2%",
+          "8.4%",
+          "9.6%",
+          "10.8%",
+          "12.0%"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "7",
+          "7",
+          "7",
+          "7",
+          "7"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040053": {
+      "name": "戍关臂铠·拔山",
+      "type": 4,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "防御",
+      "substat_value": 38.475000858306885,
+      "substat_is_percent": true,
+      "effect": "共鸣解放伤害加成提升{0}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040056": {
+      "name": "白昼之脊",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。造成普攻伤害后，衍射伤害加成提升{1}，持续{2}秒。每次为敌方怪物附加【集谐·偏移】后，普攻伤害加深{3}，且普攻伤害能无视目标{4}防御，持续{5}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040064": {
+      "name": "骇行",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "攻击",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，获得{0}层【铁甲】效果，每层使攻击和防御提升{1}，可叠加{2}层，每次受到伤害时减少{3}层。",
+      "param": [
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "3%",
+          "3.5%",
+          "4%",
+          "4.5%",
+          "5%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040066": {
+      "name": "昭日译注",
+      "type": 4,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击伤害",
+      "substat_value": 48.6,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或声骸技能时，声骸技能伤害加深{1}，持续{2}秒。造成声骸技能伤害时，气动伤害无视目标{3}防御，持续{4}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "32%",
+          "40%",
+          "48%",
+          "56%",
+          "64%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040074": {
+      "name": "金掌",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击",
+      "substat_value": 20.25,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，自身共鸣解放伤害加成提升{0}，效果持续{1}秒。",
+      "param": [
+        [
+          "18%",
+          "27%",
+          "36%",
+          "45%",
+          "54%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040084": {
+      "name": "尘云旋臂",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，获得{0}点共鸣能量，且攻击提升{1}，持续{2}秒。该效果每{3}秒可触发1次。",
+      "param": [
+        [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "16",
+          "16",
+          "16",
+          "16",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040094": {
+      "name": "酩酊的英雄志",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【异常效应】的怪物造成伤害时，自身攻击提升{0}，持续{1}秒，每秒可触发1次，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21040104": {
+      "name": "凌空",
+      "type": 4,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击伤害",
+      "substat_value": 40.5,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，攻击提升{0}，共鸣解放伤害加成提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "7.2%",
+          "11.1%",
+          "15.1%",
+          "19%",
+          "23%"
+        ],
+        [
+          "10.8%",
+          "16.7%",
+          "22.6%",
+          "28.6%",
+          "34.5%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050011": {
+      "name": "教学音感仪",
+      "type": 5,
+      "rarity": 1,
+      "atk_90": 250.0,
+      "substat": "攻击",
+      "substat_value": 11.474999785423279,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050012": {
+      "name": "原初音感仪·听浪",
+      "type": 5,
+      "rarity": 2,
+      "atk_90": 275.0,
+      "substat": "攻击",
+      "substat_value": 14.84999991953373,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050013": {
+      "name": "暗夜矩阵·暝光",
+      "type": 5,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050015": {
+      "name": "漪澜浮录",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "攻击",
+      "substat_value": 53.99999879300594,
+      "substat_is_percent": true,
+      "effect": "共鸣效率提升{0}。造成普攻伤害时，普攻伤害加成提升{1}，可叠加{2}层，持续{3}秒，每{4}秒可触发{5}次。",
+      "param": [
+        [
+          "12.8%",
+          "16%",
+          "19.2%",
+          "22.4%",
+          "25.6%"
+        ],
+        [
+          "3.2%",
+          "4%",
+          "4.8%",
+          "5.6%",
+          "6.4%"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5",
+          "0.5"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050016": {
+      "name": "掣傀之手",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。造成共鸣技能伤害时，自身攻击提升{1}，可叠加{2}层，效果持续{3}秒。自身不在场时，该效果攻击额外提升{4}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050017": {
+      "name": "渊海回声",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，自身治疗效果加成提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "16%",
+          "20%",
+          "24%",
+          "28%",
+          "32%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050023": {
+      "name": "源能音感仪·测五",
+      "type": 5,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "生命",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，回复自身{0}生命值，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050024": {
+      "name": "奇幻变奏",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点协奏能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050026": {
+      "name": "琼枝冰绡",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击伤害",
+      "substat_value": 72.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放共鸣技能时，获得效果：自身在场时普攻伤害加成提升{1}。该效果可叠加{2}层，持续{3}秒。施放延奏技能时，若已累计{4}层效果，则移除全部层数，使自身不在场时普攻伤害加成提升{5}，持续{6}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "52%",
+          "65%",
+          "78%",
+          "91%",
+          "104%"
+        ],
+        [
+          "27",
+          "27",
+          "27",
+          "27",
+          "27"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050027": {
+      "name": "大海的馈赠",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【光噪效应】的敌人造成伤害时获得效果：自身衍射伤害提升{0}，每1秒可获得1层，持续6秒，可叠加4层。",
+      "param": [
+        [
+          "6%",
+          "7%",
+          "8%",
+          "9%",
+          "10%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050034": {
+      "name": "鸣动仪-25型",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 337.5,
+      "substat": "共鸣效率",
+      "substat_value": 51.84,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，若角色生命低于{0}，回复角色{1}生命值，每{2}秒可触发{3}次；若角色生命高于{4}，则攻击提升{5}，持续{6}秒。",
+      "param": [
+        [
+          "60%",
+          "60%",
+          "60%",
+          "60%",
+          "60%"
+        ],
+        [
+          "5%",
+          "6.25%",
+          "7.5%",
+          "8.75%",
+          "10%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "60%",
+          "60%",
+          "60%",
+          "60%",
+          "60%"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050036": {
+      "name": "星序协响",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "共鸣效率",
+      "substat_value": 77.04,
+      "substat_is_percent": true,
+      "effect": "生命提升{0}。施放共鸣解放时，回复自身{1}点协奏能量，每{2}秒可触发{3}次。共鸣技能造成治疗时，使附近队伍中所有角色的攻击提升{4}，持续{5}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "14%",
+          "17.5%",
+          "21%",
+          "24.5%",
+          "28%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050043": {
+      "name": "远行者矩阵·探幽",
+      "type": 5,
+      "rarity": 3,
+      "atk_90": 300.0,
+      "substat": "共鸣效率",
+      "substat_value": 32.4,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，回复{0}点共鸣能量，每{1}秒可触发{2}次。",
+      "param": [
+        [
+          "8",
+          "9",
+          "10",
+          "11",
+          "12"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050044": {
+      "name": "今州守望",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 387.5,
+      "substat": "攻击",
+      "substat_value": 36.45000010728836,
+      "substat_is_percent": true,
+      "effect": "施放变奏技能时，自身攻击提升{0}，生命提升{1}，持续{2}秒。",
+      "param": [
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050045": {
+      "name": "玻色星仪",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 525.0,
+      "substat": "共鸣效率",
+      "substat_value": 38.88,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。队伍中的角色施放【谐度破坏技】后，自身攻击提升{1}，普攻伤害加成提升{2}，持续{3}秒。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "12%",
+          "13.5%",
+          "15%",
+          "16.5%",
+          "18%"
+        ],
+        [
+          "12%",
+          "13.5%",
+          "15%",
+          "16.5%",
+          "18%"
+        ],
+        [
+          "14",
+          "14",
+          "14",
+          "14",
+          "14"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050046": {
+      "name": "和光回唱",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。对附加了【光噪效应】的目标造成伤害时，自身普攻、重击伤害加成提升{1}，可以叠加{2}层，持续{3}秒。施放延奏技能时，使队伍中登场角色周围的目标受到【光噪效应】伤害加深{4}，持续{5}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "14%",
+          "17.5%",
+          "21%",
+          "24.5%",
+          "28%"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "6",
+          "6",
+          "6",
+          "6",
+          "6"
+        ],
+        [
+          "30%",
+          "37.5%",
+          "45%",
+          "52.5%",
+          "60%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050053": {
+      "name": "戍关音感仪·留光",
+      "type": 5,
+      "rarity": 3,
+      "atk_90": 325.0,
+      "substat": "攻击",
+      "substat_value": 24.30000063031912,
+      "substat_is_percent": true,
+      "effect": "普攻和重击伤害加成提升{0}。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050056": {
+      "name": "海的呢喃",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击伤害",
+      "substat_value": 72.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。施放变奏技能或普攻后{1}秒内，施放声骸技能时，获得{2}层【柔软的梦】，同名声骸只可触发一次，最多可叠加{3}层，持续{4}秒，叠加至2层后施放声骸技能不刷新持续时间。该效果10秒内最多生效1次，若切换至其他角色则该效果提前结束。\n第{5}层：普攻伤害加成提升{6}；\n第{7}层：无视目标{8}湮灭属性抗性。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        [
+          "40%",
+          "50%",
+          "60%",
+          "70%",
+          "80%"
+        ],
+        [
+          "2",
+          "2",
+          "2",
+          "2",
+          "2"
+        ],
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050064": {
+      "name": "异度",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "生命",
+      "substat_value": 30.375001206994057,
+      "substat_is_percent": true,
+      "effect": "造成普攻或重击伤害时，治疗效果加成提升{0}，持续{1}秒，可叠加{2}层，每{3}秒可触发{4}次。",
+      "param": [
+        [
+          "3%",
+          "3.75%",
+          "4.5%",
+          "5.25%",
+          "6%"
+        ],
+        [
+          "8",
+          "8",
+          "8",
+          "8",
+          "8"
+        ],
+        [
+          "3",
+          "3",
+          "3",
+          "3",
+          "3"
+        ],
+        [
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6",
+          "0.6"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050066": {
+      "name": "幽冥的忘忧章",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。造成声骸技能伤害后{1}秒内，共鸣技能伤害加成提升{2}，声骸技能伤害加深{3}，且造成伤害时无视目标{4}防御。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "32%",
+          "40%",
+          "48%",
+          "56%",
+          "64%"
+        ],
+        [
+          "32%",
+          "40%",
+          "48%",
+          "56%",
+          "64%"
+        ],
+        [
+          "8%",
+          "10%",
+          "12%",
+          "14%",
+          "16%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050074": {
+      "name": "清音",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击",
+      "substat_value": 20.25,
+      "substat_is_percent": true,
+      "effect": "施放共鸣解放时，自身攻击提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "15%",
+          "23.25%",
+          "31.5%",
+          "39.75%",
+          "48%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050076": {
+      "name": "赝作的矮星",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 500.0,
+      "substat": "暴击",
+      "substat_value": 36.0,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。附加聚爆效应或集谐·偏移后，共鸣解放伤害加成提升{1}，持续{2}秒。该效果生效期间，队伍中的角色附加聚爆效应或集谐·偏移后，该角色攻击提升{3}，持续{4}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "36%",
+          "45%",
+          "54%",
+          "63%",
+          "72%"
+        ],
+        [
+          "5",
+          "5",
+          "5",
+          "5",
+          "5"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "15",
+          "15",
+          "15",
+          "15",
+          "15"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050084": {
+      "name": "核熔星盘",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，获得{0}点共鸣能量，且攻击提升{1}，持续{2}秒。该效果每{3}秒可触发1次。",
+      "param": [
+        [
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ],
+        [
+          "10%",
+          "12.5%",
+          "15%",
+          "17.5%",
+          "20%"
+        ],
+        [
+          "16",
+          "16",
+          "16",
+          "16",
+          "16"
+        ],
+        [
+          "20",
+          "20",
+          "20",
+          "20",
+          "20"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050086": {
+      "name": "存帧",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "攻击提升{0}。附加霜渐效应后，自身冷凝伤害加成提升{1}，持续{2}秒；队伍中的角色攻击提升{3}，持续{4}秒，同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "30%",
+          "37.5%",
+          "45%",
+          "52.5%",
+          "60%"
+        ],
+        [
+          "12",
+          "12",
+          "12",
+          "12",
+          "12"
+        ],
+        [
+          "24%",
+          "30%",
+          "36%",
+          "42%",
+          "48%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050094": {
+      "name": "虚饰的华尔兹",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 462.5,
+      "substat": "攻击",
+      "substat_value": 18.22500005364418,
+      "substat_is_percent": true,
+      "effect": "对带有【异常效应】的怪物造成伤害时，自身攻击提升{0}，持续{1}秒，每秒可触发1次，可叠加{2}层。",
+      "param": [
+        [
+          "4%",
+          "5%",
+          "6%",
+          "7%",
+          "8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ],
+        [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050096": {
+      "name": "栖霞饮露",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 412.5,
+      "substat": "共鸣效率",
+      "substat_value": 77.04,
+      "substat_is_percent": true,
+      "effect": "生命提升{0}。施放共鸣解放时，回复自身{1}点协奏能量，每20秒可触发1次。每次附加霜渐效应时，获得【染雪色】，持续6秒；每次造成治疗时，获得【生漪】，持续6秒。若自身为队伍中登场角色时附加过霜渐效应且造成过治疗，则下次施放延奏技能时获得6秒的【染雪色】与【生漪】。自身同时持有【染雪色】和【生漪】时，附近队伍中所有角色攻击提升{2}。同名效果之间不可叠加。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "8",
+          "10",
+          "12",
+          "14",
+          "16"
+        ],
+        [
+          "20%",
+          "25%",
+          "30%",
+          "35%",
+          "40%"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050104": {
+      "name": "曜光",
+      "type": 5,
+      "rarity": 4,
+      "atk_90": 412.5,
+      "substat": "暴击伤害",
+      "substat_value": 40.5,
+      "substat_is_percent": true,
+      "effect": "施放共鸣技能时，攻击和普攻伤害加成提升{0}，持续{1}秒。",
+      "param": [
+        [
+          "9%",
+          "13.9%",
+          "18.9%",
+          "23.8%",
+          "28.8%"
+        ],
+        [
+          "10",
+          "10",
+          "10",
+          "10",
+          "10"
+        ]
+      ],
+      "source": "nanoka"
+    },
+    "21050116": {
+      "name": "玉阙玄华",
+      "type": 5,
+      "rarity": 5,
+      "atk_90": 587.5,
+      "substat": "暴击",
+      "substat_value": 24.3,
+      "substat_is_percent": true,
+      "effect": "全属性伤害加成提升{0}。附加电磁效应后或响应同奏时，共鸣技能伤害加深{1}，共鸣技能伤害无视目标{2}导电伤害抗性，且自身为队伍中登场角色时，一定范围内的目标受到电磁效应伤害加深{3}，持续{4}秒，每{5}秒可触发{6}次。同名效果之间取最高值。",
+      "param": [
+        [
+          "12%",
+          "15%",
+          "18%",
+          "21%",
+          "24%"
+        ],
+        [
+          "36%",
+          "45%",
+          "54%",
+          "63%",
+          "72%"
+        ],
+        [
+          "10%",
+          "13.5%",
+          "17%",
+          "20.5%",
+          "24%"
+        ],
+        [
+          "30%",
+          "37.5%",
+          "45%",
+          "52.5%",
+          "60%"
+        ],
+        [
+          "30",
+          "30",
+          "30",
+          "30",
+          "30"
+        ],
+        [
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1",
+          "0.1"
+        ],
+        [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ]
+      ],
+      "source": "nanoka"
+    }
+  },
+  "provenance": {
+    "nanoka": "3.7"
+  }
+}

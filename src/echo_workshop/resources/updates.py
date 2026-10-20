@@ -6,6 +6,7 @@ new sets become usable in the same job. Avatars are optional, bounded and lazy;
 their failure never invalidates a scoring snapshot. Opening a page is not a job.
 """
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, replace
 import json
 import logging
@@ -73,11 +74,12 @@ class ResourceUpdateService:
         clock=time.time,
         defaults=None,
         catalog=None,
+        panel=None,
         job_factory=None,
     ):
         self.weights, self.sonata, self.effects, self.avatars = weights, sonata, effects, avatars
         self._job_factory = job_factory
-        self.defaults, self.catalog = defaults, catalog
+        self.defaults, self.catalog, self.panel = defaults, catalog, panel
         self.stop_event, self.clock = stop_event or threading.Event(), clock
         self._lock, self._wake, self._cancel = (
             threading.RLock(),
@@ -121,7 +123,10 @@ class ResourceUpdateService:
             ('sonata', self.sonata),
             ('effects', self.effects),
         )
-        return channels + ((('role-defaults', self.defaults),) if self.defaults is not None else ())
+        channels = channels + (
+            (('role-defaults', self.defaults),) if self.defaults is not None else ()
+        )
+        return channels + ((('panel', self.panel),) if self.panel is not None else ())
 
     def _parts(self):
         parts = []
@@ -172,6 +177,14 @@ class ResourceUpdateService:
     def start(self, *, auto_enabled):
         with self._lock:
             self._auto = bool(auto_enabled)
+            # Do not compete with host/plugin startup for network and CPU.
+            # Manual requests bypass this grace period.
+            if (
+                self._auto
+                and not self._status.last_checked
+                and self._status.next_check <= self.clock()
+            ):
+                self._status = replace(self._status, next_check=self.clock() + 45)
             if self._thread is None and not self.stop_event.is_set():
                 self._thread = threading.Thread(
                     target=self._run, name='echo-resource-updates', daemon=True
@@ -280,9 +293,12 @@ class ResourceUpdateService:
         now = self.clock()
         sonata_changed = False
         catalog_changed = False
+        parallel_names = {'weights', 'sonata', 'role-defaults', 'panel'}
         try:
             for step, (channel, service) in enumerate(self._channels()):
                 checkpoint(token)
+                if channel in parallel_names or channel == 'effects':
+                    continue
                 if (
                     not manual
                     and now < service.status.next_check
@@ -301,6 +317,7 @@ class ResourceUpdateService:
                             'sonata': '正在检查套装名称与图标',
                             'effects': '正在检查套装效果',
                             'role-defaults': '正在检查角色默认套装',
+                            'panel': '正在检查角色与武器 90 级资料',
                         }[channel],
                     )
                 if job:
@@ -360,11 +377,12 @@ class ResourceUpdateService:
                         job.count('role_attributes', len(snapshot.character_elements))
                         job.count('missing_properties', service.status.missing_properties)
                     else:
+                        entries = getattr(
+                            snapshot, 'icons' if channel == 'sonata' else 'entries', {}
+                        )
                         job.count(
                             channel + '_entries',
-                            len(
-                                getattr(snapshot, 'icons' if channel == 'sonata' else 'entries', {})
-                            ),
+                            entries if isinstance(entries, int) else len(entries),
                         )
                     channel_failed = service.status.state in (
                         'failed',
@@ -404,6 +422,113 @@ class ResourceUpdateService:
                     if job and error is not None:
                         job.exception(channel, error, summary_code='resource_failed')
                 checkpoint(token)
+            # Independent channels share one bounded pool; effects still follow sonata.
+            pending = [
+                (channel, service)
+                for channel, service in self._channels()
+                if channel in parallel_names
+                and (
+                    manual
+                    or now >= service.status.next_check
+                    or (catalog_changed and channel in ('weights', 'sonata'))
+                )
+            ]
+            if pending:
+                with self._lock:
+                    self._status = replace(
+                        self._status, channel='parallel', message='正在并行检查独立资料'
+                    )
+                if job:
+                    job.stage('parallel')
+
+                def check_channel(service, channel):
+                    if channel == 'weights':
+                        return service.check_once(allow_removals=allow_removals, cancel_event=token)
+                    return service.check_once(cancel_event=token)
+
+                with ThreadPoolExecutor(max_workers=4) as pool:
+                    futures = {
+                        pool.submit(check_channel, service, channel): (channel, service)
+                        for channel, service in pending
+                    }
+                    for future in as_completed(futures):
+                        channel, service = futures[future]
+                        try:
+                            result = bool(future.result())
+                        except Exception as error:
+                            failures.append(channel)
+                            if job:
+                                job.exception(channel, error, summary_code='resource_failed')
+                            continue
+                        changed += result
+                        if channel == 'sonata':
+                            sonata_changed = bool(result)
+                        completed.append(channel)
+                        state = service.status.state
+                        if state in ('failed', 'conflict', 'busy', 'deferred'):
+                            failures.append(channel)
+                        if job:
+                            snapshot = service.provider.active
+                            source = next(
+                                (
+                                    host
+                                    for host in ('ww3', 'ww1', 'www')
+                                    if '//' + host + '.' in snapshot.source
+                                ),
+                                'nanoka'
+                                if 'nanoka.cc' in snapshot.source
+                                else 'encore'
+                                if 'encore.moe' in snapshot.source
+                                else 'builtin',
+                            )
+                            job.metadata(
+                                {
+                                    'channel': channel,
+                                    'version': snapshot.version[:12],
+                                    'source': source,
+                                }
+                            )
+                            job.part(
+                                channel,
+                                'failed'
+                                if state in ('failed', 'conflict', 'busy', 'deferred')
+                                else 'cached'
+                                if state == 'current'
+                                else 'completed',
+                                metadata={'source': source, 'version': snapshot.version[:12]},
+                            )
+                with self._lock:
+                    self._status = replace(self._status, completed=len(completed))
+            if self.effects is not None and (
+                manual or now >= self.effects.status.next_check or sonata_changed
+            ):
+                with self._lock:
+                    self._status = replace(
+                        self._status,
+                        channel='effects',
+                        message='正在检查套装效果',
+                    )
+                if job:
+                    job.stage('effects')
+                try:
+                    changed += bool(self.effects.check_once(cancel_event=token))
+                    completed.append('effects')
+                    state = self.effects.status.state
+                    if state in ('failed', 'conflict', 'busy', 'deferred'):
+                        failures.append('effects')
+                    if job:
+                        snapshot = self.effects.provider.active
+                        job.part(
+                            'effects',
+                            'failed'
+                            if state in ('failed', 'conflict', 'busy', 'deferred')
+                            else 'completed',
+                            metadata={'version': snapshot.version[:12]},
+                        )
+                except Exception as error:
+                    failures.append('effects')
+                    if job:
+                        job.exception('effects', error, summary_code='resource_failed')
             if manual or now >= self._avatar_due:
                 with self._lock:
                     self._status = replace(

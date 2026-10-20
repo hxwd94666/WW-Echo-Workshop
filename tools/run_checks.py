@@ -17,7 +17,6 @@ SMOKE_MODULES = (
     'tests.contracts.test_compute_chunks',
     'tests.contracts.test_native_package',
     'tests.contracts.test_data_compatibility',
-    'tests.contracts.test_saved_modes',
     'tests.contracts.test_loadout_actions',
     'tests.contracts.test_game_resources',
     'tests.contracts.test_update_fallback',

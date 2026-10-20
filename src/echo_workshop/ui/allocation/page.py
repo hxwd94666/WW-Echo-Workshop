@@ -135,11 +135,16 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.flow_header = QHBoxLayout(self.scope_toolbar)
         self.flow_header.setContentsMargins(0, 0, 0, 0)
         self.flow_header.setSpacing(8)
-        self.result_cards = GroupedLoadoutResults(self, avatar_cache=self.runtime.avatars)
+        self.result_cards = GroupedLoadoutResults(
+            self, avatar_cache=self.runtime.avatars, panel_service=self.runtime.panel
+        )
         self.result_cards.role_selected.connect(self._result_role_changed)
         self.result_cards.selected.connect(self._select_visible_result_card)
         self.result_cards.changes_requested.connect(
             lambda key: self.action(lambda: self.show_loadout_changes(key))
+        )
+        self.result_cards.replace_requested.connect(
+            lambda key, identity: self.action(lambda: self.replace_result(key, identity))
         )
         self.result_cards.backup_requested.connect(
             lambda key: self.action(lambda: self.backup_loadout(key))
@@ -220,7 +225,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.save_button = PushButton('备份全部方案', self)
         explain(self.save_button, BACKUP_TIP)
         self.save_button.clicked.connect(lambda: self.action(self.backup_loadout))
-        self.protect_button = PrimaryPushButton('全部设为当前', self)
+        self.protect_button = PrimaryPushButton('全部设为配装', self)
         explain(self.protect_button, APPLY_TIP)
         self.protect_button.clicked.connect(lambda: self.action(self.save_loadout))
         self._changes_dialog = None
@@ -269,7 +274,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
 
     def _sync_result_actions(self):
         self.save_button.setText('备份全部方案')
-        self.protect_button.setText('全部设为当前')
+        self.protect_button.setText('全部设为配装')
         self.refresh_loadout_actions()
         self.result_cards.set_changes_enabled(
             (change.key for change in getattr(self, '_loadout_changes', ())),

@@ -32,6 +32,7 @@ def metadata(folder=BUILTIN):
     effects = json.loads((folder / 'sonata_effects_catalog.json').read_text(encoding='utf-8'))
     names = json.loads((folder / 'echo_names.json').read_text(encoding='utf-8'))
     defaults = json.loads((folder / 'role_sonatas.json').read_text(encoding='utf-8'))
+    panel = json.loads((folder / 'panel_catalog.json').read_text(encoding='utf-8'))
     return {
         'schema': 1,
         'generator': 'tools/resources.py',
@@ -50,9 +51,12 @@ def metadata(folder=BUILTIN):
         'echo_names': names['source'],
         'role_sonatas': {key: defaults[key] for key in ('source', 'sha256', 'retrieved')},
         'game_catalog': json.loads((folder / 'game_sources.json').read_text(encoding='utf-8')),
-        'echo_costs': {
-            key: json.loads((folder / 'echo_costs.json').read_text(encoding='utf-8'))[key]
-            for key in ('source', 'commit', 'sha256')
+        'panel_catalog': {
+            'schema_version': panel['schema_version'],
+            'game_version': panel['game_version'],
+            'retrieved_at': panel['retrieved_at'],
+            'characters': len(panel['characters']),
+            'weapons': len(panel['weapons']),
         },
         'pinyin': {
             'project': 'pypinyin',
@@ -70,7 +74,6 @@ def validate():
     from echo_workshop.resources.effects import _snapshot
     from echo_workshop.resources.echo_names import builtin_echo_names
     from echo_workshop.resources.game_catalog import GameSnapshot
-    from echo_workshop.resources.echo_costs import known_costs
     from echo_workshop.resources.role_defaults import builtin_snapshot
 
     document = json.loads((BUILTIN / 'sources.json').read_text(encoding='utf-8'))
@@ -87,7 +90,10 @@ def validate():
     if not isinstance(readings, dict) or not readings:
         raise ValueError('Missing offline pinyin readings')
     GameSnapshot.from_data(json.loads((BUILTIN / 'game_catalog.json').read_bytes()))
-    known_costs()
+    panel = json.loads((BUILTIN / 'panel_catalog.json').read_text(encoding='utf-8'))
+    from echo_workshop.resources.panel_catalog import PanelSnapshot
+
+    PanelSnapshot.from_data(panel)
     return {
         'status': 'passed',
         'files': len(document['items']),
@@ -95,6 +101,8 @@ def validate():
         'sonata_icons': len(sonata.icons),
         'echo_names': len(builtin_echo_names()),
         'role_sonatas': len(builtin_snapshot().entries),
+        'panel_characters': len(panel['characters']),
+        'panel_weapons': len(panel['weapons']),
         'weight_version': snapshot.version,
     }
 

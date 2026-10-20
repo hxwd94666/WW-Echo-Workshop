@@ -20,6 +20,7 @@ from echo_workshop.ui.widgets.layout import stat_text
 from qfluentwidgets import isDarkTheme, qconfig
 from echo_workshop.ui.widgets.rating_style import rating_colour
 from echo_workshop.ui.allocation.plans import SavedPlanController
+from echo_workshop.ui.allocation.result_replacement import ResultReplacementMixin
 
 _RATING_ITEM_ROLE = int(Qt.UserRole) + 20
 
@@ -42,7 +43,9 @@ class _AllocationPayload(tuple):
         return value
 
 
-class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX):
+class AllocationContent(
+    ResultReplacementMixin, SavedPlanController, AllocationProjection, AllocationUX
+):
     def lifecycle_busy(self):
         return bool(
             self._future is not None
@@ -556,6 +559,28 @@ class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX)
                     QColor(rating_colour(item.data(_RATING_ITEM_ROLE), isDarkTheme()))
                 )
 
+    def _panel_line(self, row, request_role):
+        service = getattr(self.runtime, 'panel', None)
+        if service is None or len(row.get('item_ids', ())) != 5 or request_role is None:
+            return ''
+        records = {record.item_id: record for record in self._records}
+        echoes = tuple(records[item] for item in row['item_ids'] if item in records)
+        if len(echoes) != 5:
+            return ''
+        try:
+            _, detail = service.breakdown(
+                row['character_id'], request_role.get('weapon_id', ''), echoes
+            )
+        except (ValueError, KeyError, TypeError):
+            return ''
+        totals = detail.totals
+        suffix = service.describe(detail)
+        return (
+            f'静态面板：生命 {totals.hp:.0f} / 攻击 {totals.atk:.0f} / 防御 {totals.defense:.0f}'
+            f' / 暴击 {totals.crit_rate:.1f}% / 暴伤 {totals.crit_dmg:.1f}%'
+            f' / 共鸣效率 {totals.energy_regen:.1f}%{suffix}'
+        )
+
     def render_result(self, result, completed):
         from echo_workshop.application.compute_bridge import rating_result
 
@@ -569,6 +594,16 @@ class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX)
         text = '插件目标分 = 五件单件当前分之和（+25 主词条口径，不标称官方整套分）\n'
         text += '目标为 0 不启用门槛；达标后的增益优先让给其他同级角色。\n'
         text += f'库存修订 {result["inventory_revision"]}；策略 {result["policy_version"]}\n'
+        request_roles = {
+            (role.get('character_id'), role.get('modal_id')): role
+            for role in result.get('request', {}).get('roles', [])
+            if isinstance(role, dict)
+        }
+        request_roles = {
+            (role.get('character_id'), role.get('modal_id')): role
+            for role in result.get('request', {}).get('roles', [])
+            if isinstance(role, dict)
+        }
         summary_ratings = []
         for row in rows:
             total = row['total_cents'] / 100
@@ -576,6 +611,11 @@ class AllocationContent(SavedPlanController, AllocationProjection, AllocationUX)
             grade = f'；声骸评级 {rating.label}' if rating is not None else ''
             score_line = f'{row["label"]}：{total:.2f}；{len(row["item_ids"])} 件' + grade
             text += score_line + '\n'
+            panel_line = self._panel_line(
+                row, request_roles.get((row['character_id'], row['modal_id']))
+            )
+            if panel_line:
+                text += panel_line + '\n'
             if rating is not None:
                 summary_ratings.append((score_line, rating))
             text += '\n'.join(row['reasons']) + '\n'

@@ -16,7 +16,6 @@ class SavedListProjection:
             id(summaries),
             getattr(p, '_saved_summaries_profile', None),
             p.saved.count(),
-            self.show_versions.isChecked(),
             getattr(self, '_details_revision', 0) if self.mode == 'current' else 0,
         )
         if key != getattr(self, '_rows_source_key', None):
@@ -67,7 +66,7 @@ class SavedListProjection:
             plan = p.saved.itemData(i)
             summary = summaries.get(plan, {})
             origin = (summary.get('publication') or {}).get('kind', 'legacy')
-            if origin != 'backup' and not self.show_versions.isChecked():
+            if origin != 'backup':
                 continue
             removed = {tuple(key) for key in summary.get('removed_roles', [])}
             for role in summary.get('roles', ()):

@@ -9,6 +9,12 @@ from echo_workshop.ui.widgets.rating import (
     FOOTER_RATING_ROLE,
     apply_rating_colour,
 )
+from echo_workshop.ui.allocation.panel_view import (
+    PANEL_ROLE,
+    PanelDetailsDialog,
+    build_panel_data,
+    paint_panel_card,
+)
 from PySide6.QtCore import QModelIndex, Qt, Signal, Slot
 from PySide6.QtGui import QColor, QPalette, QStandardItem, QStandardItemModel
 from PySide6.QtWidgets import QVBoxLayout, QWidget
@@ -79,14 +85,33 @@ class BriefStatus(CaptionLabel):
         self.setWordWrap(not bool(count))
 
 
+class LoadoutCardDelegate(RatedCardDelegate):
+    def paint(self, painter, option, index):
+        panel = index.data(PANEL_ROLE)
+        if panel is None:
+            super().paint(painter, option, index)
+            return
+        from PySide6.QtWidgets import QStyle
+
+        paint_panel_card(
+            painter,
+            option.rect.adjusted(5, 5, -5, -5),
+            panel,
+            option.font,
+            bool(option.state & QStyle.State_Selected),
+        )
+
+
 class LoadoutCards(QWidget):
     """Fixed-role frozen cards, shared by grouped live and historical results."""
 
     selected = Signal(str)
 
-    def __init__(self, parent=None, *, grid_type=None, summary_layout=None):
+    def __init__(self, parent=None, *, grid_type=None, summary_layout=None, panel_service=None):
         super().__init__(parent)
         from echo_workshop.ui.inventory.cards import EchoCardGrid
+
+        self.panel_service = panel_service
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -110,7 +135,7 @@ class LoadoutCards(QWidget):
         self.cards = (grid_type or EchoCardGrid)(
             self, show_score_footer=True, show_owner_avatar=False
         )
-        self.cards.delegate = RatedCardDelegate(self.cards)
+        self.cards.delegate = LoadoutCardDelegate(self.cards)
         self.cards.setItemDelegate(self.cards.delegate)
         self.model = QStandardItemModel(self)
         self.cards.setModel(self.model)
@@ -122,6 +147,7 @@ class LoadoutCards(QWidget):
         self._records = {}
         self._completed = frozenset()
         self.cards.selectionModel().currentChanged.connect(self.select_card)
+        self.cards.pressed.connect(self._card_clicked)
         qconfig.themeChanged.connect(self.update_theme)
         qconfig.themeChangedFinished.connect(self.update_theme)
         self.update_theme()
@@ -141,12 +167,13 @@ class LoadoutCards(QWidget):
         self.cards.viewport().update()
         apply_rating_colour(self.result_hint, self.rating)
 
-    def set_role(self, row, records=(), completed=(), *, snapshot=None):
+    def set_role(self, row, records=(), completed=(), *, snapshot=None, request_role=None):
         """Render this row's original cents/slots, without scoring or live lookups."""
         self._row = dict(row) if row is not None else None
         self._rating_snapshot = snapshot
         self._records = {record.item_id: record for record in records}
         self._completed = frozenset(completed)
+        self._request_role = request_role or {}
         previous = self.cards.currentIndex().data(Qt.UserRole)
         selection = self.cards.selectionModel()
         blocked = selection.blockSignals(True)
@@ -156,9 +183,19 @@ class LoadoutCards(QWidget):
             selection.blockSignals(blocked)
         self.select_card(self.cards.currentIndex(), QModelIndex())
 
+    def _card_clicked(self, index):
+        data = index.data(PANEL_ROLE)
+        if data is not None:
+            PanelDetailsDialog(self, data).exec()
+
     def _render_role(self, previous):
         from echo_workshop.application.compute_bridge import rating_result
-        from echo_workshop.ui.inventory.cards import RECORD_ROLE, FOOTER_ROLE
+        from echo_workshop.ui.inventory.cards import (
+            RECORD_ROLE,
+            FOOTER_ROLE,
+            SEARCH_ROLE,
+            SORT_ROLE,
+        )
 
         self._protection_source = None
         self.model.clear()
@@ -172,6 +209,21 @@ class LoadoutCards(QWidget):
         if row is None:
             self.result_hint.clear()
             return
+        panel_item = QStandardItem('')
+        panel_item.setData(
+            build_panel_data(
+                row,
+                getattr(self, '_request_role', {}),
+                tuple(self._records.values()),
+                self.panel_service,
+            ),
+            PANEL_ROLE,
+        )
+        panel_item.setData(('', 'panel', ()), RECORD_ROLE)
+        panel_item.setData('角色面板', SEARCH_ROLE)
+        panel_item.setData('0', SORT_ROLE)
+        panel_item.setFlags(Qt.ItemIsEnabled)
+        self.model.appendRow(panel_item)
         identities, scores = tuple(row.get('item_ids', ())), tuple(row.get('scores', ()))
         missing = [
             slot for slot, identity in enumerate(identities, 1) if identity not in self._records
@@ -233,6 +285,8 @@ class LoadoutCards(QWidget):
         for row in range(self.model.rowCount()):
             index = self.model.index(row, 0)
             identity = index.data(Qt.UserRole)
+            if identity is None:
+                continue
             frozen = self._records[identity]
             current = live.get(identity)
             projected = (

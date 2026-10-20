@@ -315,28 +315,24 @@ class InventoryContent:
 
     def _refresh_pending_summary(self):
         rows = getattr(self, '_rows', ())
-        safe = issue = linked = 0
+        pending = issue = linked = 0
         for record, kind, _ in rows:
             if kind != 'item':
                 linked += 1
                 continue
             if record.review == 'confirmed':
                 continue
-            quality = self.inventory_model.quality(record)
-            if quality.issues:
+            pending += 1
+            if self.inventory_model.quality(record).issues:
                 issue += 1
-            else:
-                safe += 1
         if not hasattr(self, 'pending_summary'):
             return
         self.pending_summary.setText(
-            f'待核对：可安全确认 {safe} 件 · 需修正 {issue} 件 · 重复/升级 {linked} 件'
-            if safe or issue or linked
+            f'待核对 {pending} 件 · 需修正 {issue} 件 · 重复/升级 {linked} 件'
+            if pending or linked
             else ''
         )
-        self.pending_summary.setVisible(bool(safe or issue or linked))
-        self.confirm_safe_button.setText(f'确认无问题项（{safe}）')
-        self.confirm_safe_button.setVisible(bool(safe))
+        self.pending_summary.setVisible(bool(pending or linked))
 
     def refresh(self, *, force=False):
         try:

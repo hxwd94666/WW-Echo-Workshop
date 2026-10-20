@@ -90,9 +90,7 @@ class ShortcutContent:
         self.setWindowTitle('收录快捷键')
         self.resize(800, 390)
         layout = QVBoxLayout(self)
-        self.notice = QLabel(
-            '点击输入框录入快捷键，再保存。逐件收录需先点击“开始收录”；连续浏览收录会自动保存稳定识别的声骸。'
-        )
+        self.notice = QLabel('点击输入框录入快捷键，再保存。收录需先点击“开始收录”。')
         self.notice.setToolTip(
             '支持 F8、K、Ctrl+K 等；Delete/Backspace 清除。仅在鸣潮窗口中生效，建议使用组合键避开游戏按键。'
         )

@@ -18,7 +18,6 @@ from PySide6.QtWidgets import (
 from qfluentwidgets import (
     BodyLabel,
     CaptionLabel,
-    CheckBox,
     LineEdit,
     PrimaryPushButton,
     PushButton,
@@ -98,13 +97,6 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             self.tabs.addItem(key, label, onClick=lambda checked, key=key: self.set_mode(key))
         self.tabs.setCurrentItem(self.mode)
         left.addWidget(self.tabs)
-        self.show_versions = CheckBox('显示保存版本与旧快照', self.sidebar)
-        self.show_versions.setToolTip(
-            '默认仅显示明确备份的方案；勾选后也显示设为当前时生成的版本和旧版快照，并标明来源。'
-        )
-        self.show_versions.toggled.connect(lambda _: self.project(force=True))
-        self.show_versions.hide()
-        left.addWidget(self.show_versions)
         self.search = LineEdit(self.sidebar)
         self.search.setPlaceholderText('搜索角色、模版或日期')
         self.search.textChanged.connect(lambda: self.project(force=True))
@@ -143,7 +135,10 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         empty.addStretch()
         self.stack.addWidget(self.empty)
         self.detail_cards = LoadoutCards(
-            self.stack, grid_type=SavedLoadoutGrid, summary_layout=title
+            self.stack,
+            grid_type=SavedLoadoutGrid,
+            summary_layout=title,
+            panel_service=self.page.runtime.panel,
         )
         title.addStretch(1)
         self.detail_cards.cards.avatar_cache = self.page.runtime.avatars
@@ -154,9 +149,9 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.stack.addWidget(self.detail_cards)
         right.addWidget(self.stack, 1)
         self.action_note = CaptionLabel(self.detail)
-        self.action_note.setWordWrap(True)
-        right.addWidget(self.action_note)
+        self.action_note.setWordWrap(False)
         actions = QHBoxLayout()
+        actions.addWidget(self.action_note, 1)
         actions.addLayout(header)
         self.replace_button = PushButton('替换优化', self.detail)
         self.replace_button.clicked.connect(self._replace)
@@ -244,7 +239,6 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             profile,
             self._rows_revision,
             self.search.text(),
-            self.show_versions.isChecked(),
         )
         if force or signature != self._signature:
             self._signature = signature
@@ -464,6 +458,10 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             return
         self.title.setText(row['label'])
         pixmap = lookup_avatar(self.page.runtime.avatars, row['character_id'])
+        if pixmap is None:
+            request = getattr(self.page.runtime.avatars, 'request', None)
+            if request is not None:
+                request(row['character_id'])
         self.avatar.setPixmap(
             pixmap.scaled(self.avatar.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             if pixmap is not None
@@ -692,8 +690,6 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             and (self.mode == 'history' or draft is not None)
         )
         current = self.mode == 'current' and row is not None
-        self.show_versions.setVisible(self.mode == 'history')
-        self.show_versions.setEnabled(not busy and not dialog)
         self.save_button.setText('更新当前配装' if self.mode == 'current' else '设为当前配装')
         self.backup_button.setVisible(self.mode == 'history' and draft is not None)
         self.backup_button.setEnabled(

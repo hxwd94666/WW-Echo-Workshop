@@ -5,9 +5,7 @@ import json
 
 ACTIONS = {
     'capture': '收录当前声骸',
-    'toggle': '连续浏览收录：开始 / 暂停 / 继续',
     'stop': '停止收录',
-    'mark': '标记当前项',
 }
 
 MODIFIERS = {'Ctrl': 0x11, 'Alt': 0x12, 'Shift': 0x10}

@@ -307,10 +307,12 @@
       }
     }
   },
-  "echo_costs": {
-    "source": "https://github.com/Loping151/XutheringWavesUID/blob/4c1727580c613ef3034a391dc3156a1570cd5260/XutheringWavesUID/utils/damage/register_echo.py",
-    "commit": "4c1727580c613ef3034a391dc3156a1570cd5260",
-    "sha256": "a81a6eb54a01fd5a7bfd6516fcd80c38e5afd46b1a04643a02df357960c65e73"
+  "panel_catalog": {
+    "schema_version": 1,
+    "game_version": "3.7",
+    "retrieved_at": 1792508598.6956875,
+    "characters": 64,
+    "weapons": 124
   },
   "pinyin": {
     "project": "pypinyin",
@@ -319,10 +321,6 @@
     "notice": "THIRD_PARTY_NOTICES.md"
   },
   "items": {
-    "echo_costs.json": {
-      "sha256": "8f7e7cce253bfbbf49082eda6c035ac1bd3b1e7c4217d7a399303ce4a336f8ba",
-      "bytes": 17982
-    },
     "echo_names.json": {
       "sha256": "ea3d47cea48471c28a166b5c782c4f8e1975fe6175342d00e151d4ceac5d276b",
       "bytes": 5471
@@ -338,6 +336,10 @@
     "game_status_templates.json": {
       "sha256": "de66dbdacd5777980053e200f8b43c3bfdb455f3b409e3ba068d180d78922af4",
       "bytes": 207241
+    },
+    "panel_catalog.json": {
+      "sha256": "2e7d4ba479073868db0090dd06b34f1d070d3ee28ebab8df578933d8f01817da",
+      "bytes": 141888
     },
     "pinyin_table.json": {
       "sha256": "d04923220493091da87f2f3f7d64eeb4f5efd017b9232cad8d562b2cdfb5b37e",

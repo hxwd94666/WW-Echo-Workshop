@@ -58,16 +58,6 @@ class CaptureCommands:
         self.config['CaptureHotkeysJSON'] = raw
         self._configure_shortcuts(raw)
 
-    def start_capture(self, profile_id):
-        if self.runtime.backups.restoring:
-            raise ValueError('库存恢复作业进行中；核对完成后再明确开启收录')
-        if profile_id not in self.runtime.repository.profiles():
-            raise ValueError('请先选择有效本地档案')
-        self.runtime.capture.start(profile_id)
-        for task in self.get_tasks():
-            if task.__class__.__name__ == 'EchoWorkshopOverlayTask' and not task.enabled:
-                task.enable()
-
     def arm_capture(self, profile_id):
         from echo_workshop.application.hotkeys import parse_bindings
 
@@ -255,38 +245,16 @@ class CaptureCommands:
             profile = self.config.get('InventoryProfileID', '')
             if self.runtime.backups.restoring and action != 'stop':
                 raise ValueError('库存恢复作业进行中，快捷操作暂缓')
-            if (
-                status.mode == 'automatic'
-                and status.state != 'stopped'
-                and action not in ('stop', 'toggle')
-            ):
+            if status.mode == 'automatic' and status.state != 'stopped' and action != 'stop':
                 raise ValueError('自动扫描中，请先暂停或停止扫描')
             if action == 'capture':
                 if not self.capture_once(profile):
                     raise ValueError('已有收录正在进行，请等待或先停止')
-            elif action == 'toggle':
-                if status.mode == 'automatic' and status.state != 'stopped':
-                    self.pause_scan()
-                elif status.state == 'active':
-                    capture.pause()
-                else:
-                    if not self._capture_ready():
-                        raise ValueError('先在 OKWW 开启并连接游戏捕获，且宿主未暂停')
-                    if status.state == 'paused':
-                        if status.profile_id != profile:
-                            raise ValueError('档案已变，请先停止再明确开始新档案')
-                        capture.resume()
-                    else:
-                        self.start_capture(profile)
             elif action == 'stop':
                 if status.mode == 'automatic':
                     self.stop_scan()
                 else:
                     capture.stop()
-            elif action == 'mark':
-                if status.state != 'active':
-                    raise ValueError('请先开始/继续收录再标记当前项')
-                capture.mark_current()
             else:
                 raise ValueError('未知快捷操作')
             self.shortcut_message = capture.status.message

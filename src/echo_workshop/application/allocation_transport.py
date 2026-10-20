@@ -100,6 +100,7 @@ def allocation_result(data, request, inventory_revision, snapshot):
                 tuple(row['reasons']),
                 row.get('rating'),
                 tuple(row.get('item_ratings') or ()),
+                row.get('energy_regen'),
             )
         )
     policy = PRIORITY_POLICY_VERSION if request.priority_groups else POLICY_VERSION

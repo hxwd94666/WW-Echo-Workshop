@@ -50,9 +50,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
         self._echo_owned_cleanup = True
         self._destroyed = False
         self._run_lock = threading.RLock()
-        self._score_thread = None
-        self._score_stop = None
-        self._loop_error_at = 0.0
         self._last_live_digest = None
         self._live_layout = ''
         self._live_full_at = 0.0
@@ -66,7 +63,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
         self._manual_stop = threading.Event()
         threading.Thread(target=self._manual_worker, name='EchoManualParse', daemon=True).start()
         self.default_config['_enabled'] = True
-        self._start_score_loop()
 
     def ocr_fun(self, lib):
         from echo_workshop.capture.scan.pipeline import OCR_LOCK
@@ -142,11 +138,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             return overlay
         return app.get_overlay_view()
 
-    def _score_active(self):
-        if self._destroyed:
-            return False
-        return bool(self._settings().get('启用声骸评分', True))
-
     def _cached_cost(self, rows):
         return self._cost_cache.get(tuple(rows))
 
@@ -158,59 +149,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
     def post_init(self):
         self._ensure_overlay()
         self._ensure_recovery()
-        self._start_score_loop()
-
-    def _start_score_loop(self):
-        if self._score_thread is not None:
-            return
-        self._score_stop = threading.Event()
-        self._score_thread = threading.Thread(
-            target=self._score_loop, name='EchoScoreLoop', daemon=True
-        )
-        self._score_thread.start()
-        self.log_info('实时评分独立线程已启动')
-
-    def _stop_score_loop(self):
-        stop = self._score_stop
-        if stop is not None:
-            stop.set()
-        thread = self._score_thread
-        if thread is not None and thread is not threading.current_thread():
-            thread.join(timeout=1)
-        self._score_thread = None
-        self._score_stop = None
-
-    def _score_loop(self):
-        while not self._score_stop.wait(0.15):
-            try:
-                if self._destroyed or not self._score_active():
-                    continue
-            except Exception as error:
-                now = time.monotonic()
-                if now - getattr(self, '_active_error_at', 0.0) >= 30:
-                    self._active_error_at = now
-                    self.log_warning(f'实时评分开关检查失败：{error}')
-                continue
-            executor = getattr(self, 'executor', None)
-            if executor is None or not getattr(executor, 'paused', False):
-                continue
-            settings_task = self._settings_task()
-            runtime = getattr(settings_task, 'runtime', None)
-            if runtime is not None:
-                status = runtime.capture.status
-                if status.mode == 'manual' and status.state in ('armed', 'single'):
-                    continue
-            try:
-                recovery = getattr(self, 'capture_recovery', None)
-                if recovery is not None:
-                    recovery.poll()
-                with self._run_lock:
-                    self._run_frame(direct_only=True)
-            except Exception as error:
-                now = time.monotonic()
-                if now - self._loop_error_at >= 30:
-                    self._loop_error_at = now
-                    self.log_warning(f'独立实时评分失败：{error}')
 
     def _ensure_recovery(self):
         if (
@@ -220,7 +158,7 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             self.capture_recovery = CaptureRecoveryMonitor(
                 og.device_manager,
                 self.executor.exit_event,
-                allow_paused=self._score_active,
+                allow_paused=False,
             )
             self.capture_recovery.start()
 
@@ -435,7 +373,7 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             return False
         return True
 
-    def _run_frame(self, direct_only=False):
+    def _run_frame(self):
         if self._destroyed:
             return False
         started = time.monotonic()
@@ -485,18 +423,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             frame = self._direct_frame()
             token = captured_at if frame is not None else None
             if frame is None:
-                if direct_only:
-                    now = time.monotonic()
-                    if now - getattr(self, '_loop_noframe_at', 0.0) >= 10:
-                        self._loop_noframe_at = now
-                        window = getattr(getattr(og, 'device_manager', None), 'hwnd_window', None)
-                        self.log_warning(
-                            '独立实时评分取不到游戏帧：capture 未连接或窗口不可见'
-                            f'（exists={getattr(window, "exists", None)}, '
-                            f'visible={getattr(window, "visible", None)}, '
-                            f'pos_valid={getattr(window, "pos_valid", None)}）'
-                        )
-                    return False
                 frame = self.next_frame()
                 token = getattr(self.executor, '_last_frame_time', None)
             if frame is None:
@@ -741,7 +667,6 @@ class EchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             return
         self._destroyed = True
         self._manual_stop.set()
-        self._stop_score_loop()
         settings = self._settings_task()
         runtime = getattr(settings, 'runtime', None)
         if runtime is not None and not runtime._closed:
