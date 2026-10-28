@@ -29,15 +29,15 @@ class HostLoadingContract(unittest.TestCase):
 
     def test_real_host_discovery_is_canonical_and_keeps_old_config_identity(self):
         from ok import BaseTask
-        from echo_workshop.core.models import EchoRecord
-        from echo_workshop.core.compatibility import CompatibilityRule
-        from echo_workshop.capture.scan.pipeline import OCR_LOCK
+        from ww_echo_workshop.core.models import EchoRecord
+        from ww_echo_workshop.core.compatibility import CompatibilityRule
+        from ww_echo_workshop.capture.scan.pipeline import OCR_LOCK
         from ok.util.config import Config
 
         entry_names = {
-            'echo_workshop_settings.py': 'EchoWorkshopSettingsTask',
-            'echo_workshop_overlay.py': 'EchoWorkshopOverlayTask',
-            'echo_workshop_scan.py': 'EchoWorkshopScanTask',
+            'ww_echo_workshop_settings.py': 'WWEchoWorkshopSettingsTask',
+            'ww_echo_workshop_overlay.py': 'WWEchoWorkshopOverlayTask',
+            'ww_echo_workshop_scan.py': 'WWEchoWorkshopScanTask',
         }
         self.assertEqual(set(entry_names), {path.name for path in self.entries.glob('*.py')})
         retained = []
@@ -49,24 +49,24 @@ class HostLoadingContract(unittest.TestCase):
                 self.assertEqual(name, type(task).__name__)
                 self.assertIsNone(getattr(task, 'runtime', None))
                 retained.append(task)
-        self.assertIs(EchoRecord, importlib.import_module('echo_workshop.core.models').EchoRecord)
+        self.assertIs(EchoRecord, importlib.import_module('ww_echo_workshop.core.models').EchoRecord)
         self.assertIs(
             CompatibilityRule,
-            importlib.import_module('echo_workshop.core.compatibility').CompatibilityRule,
+            importlib.import_module('ww_echo_workshop.core.compatibility').CompatibilityRule,
         )
         self.assertIs(
-            OCR_LOCK, importlib.import_module('echo_workshop.capture.scan.pipeline').OCR_LOCK
+            OCR_LOCK, importlib.import_module('ww_echo_workshop.capture.scan.pipeline').OCR_LOCK
         )
         with tempfile.TemporaryDirectory() as folder, patch.object(Config, 'config_folder', folder):
             retained[0].load_config()
             self.assertEqual(
-                'EchoWorkshopSettingsTask.json', Path(retained[0].config.config_file).name
+                'WWEchoWorkshopSettingsTask.json', Path(retained[0].config.config_file).name
             )
             self.assertEqual(
                 Path(folder).resolve(), Path(retained[0].config.config_file).resolve().parent
             )
         # Retired icon detection has no API/pixel access; historical model fields still roundtrip.
-        from echo_workshop.capture import game_status
+        from ww_echo_workshop.capture import game_status
 
         self.assertFalse(hasattr(game_status, 'observe_game_icons'))
         record = EchoRecord(
@@ -79,7 +79,7 @@ class HostLoadingContract(unittest.TestCase):
         self.assertEqual((True, False), (restored.game_discarded, restored.game_locked))
         from ok import Box
         import numpy as np
-        from echo_workshop.capture.scan.crop import read_fields, field_regions
+        from ww_echo_workshop.capture.scan.crop import read_fields, field_regions
 
         frame = np.zeros((720, 1280, 3), dtype=np.uint8)
         viewport = (0, 0, 1280, 720)
@@ -98,12 +98,12 @@ class HostLoadingContract(unittest.TestCase):
 
     def test_actual_unload_hook_closes_owned_runtime_once(self):
         from ok import BaseTask
-        from echo_workshop.adapters.okww.lifecycle import install_unload_cleanup
+        from ww_echo_workshop.adapters.okww.lifecycle import install_unload_cleanup
         from ok.core import task_manager
 
         manager = self.manager()
         task = manager.find_and_instantiate_class(
-            str(self.entries / 'echo_workshop_settings.py'), BaseTask
+            str(self.entries / 'ww_echo_workshop_settings.py'), BaseTask
         )
         stop = threading.Event()
         runtime = SimpleNamespace(
@@ -111,7 +111,7 @@ class HostLoadingContract(unittest.TestCase):
         )
         task.runtime = runtime
         task.disable = Mock()
-        manager.task_map = {task: [str(self.entries / 'echo_workshop_settings.py'), 'fixture-hash']}
+        manager.task_map = {task: [str(self.entries / 'ww_echo_workshop_settings.py'), 'fixture-hash']}
         manager.task_executor.onetime_tasks.append(task)
         communicate = SimpleNamespace(task_list_updated=SimpleNamespace(emit=Mock()))
         install_unload_cleanup()

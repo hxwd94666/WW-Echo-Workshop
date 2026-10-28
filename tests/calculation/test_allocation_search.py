@@ -8,7 +8,7 @@ import threading
 import unittest
 from dataclasses import asdict, replace
 from tests.native_runtime import ScoreService
-from echo_workshop.core.allocation.models import (
+from ww_echo_workshop.core.allocation.models import (
     AllocationCancelled,
     AllocationRequest,
     POLICY_VERSION,
@@ -20,9 +20,9 @@ from echo_workshop.core.allocation.models import (
     set_name,
 )
 from tests.native_runtime import AllocationHarness
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.models import EchoRecord, StatValue, canonical_json
-from echo_workshop.resources.weights import WeightProvider
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.models import EchoRecord, StatValue, canonical_json
+from ww_echo_workshop.resources.weights import WeightProvider
 from pathlib import Path
 from tests.calculation.helpers import FakeScores, role, tuned
 from types import SimpleNamespace

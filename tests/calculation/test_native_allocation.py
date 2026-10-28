@@ -6,14 +6,14 @@ import random
 from pathlib import Path
 import unittest
 
-from echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
-from echo_workshop.core.allocation.models import AllocationRequest, SlotRule, cents
-from echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
+from ww_echo_workshop.core.allocation.models import AllocationRequest, SlotRule, cents
+from ww_echo_workshop.core.compatibility import CompatibilityRule
 from tests.calculation.test_allocation_search import PROFILE, search_record, search_role
 from tests.calculation.helpers import tuned
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def independent_rank(rows, targets):

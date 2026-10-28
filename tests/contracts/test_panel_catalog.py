@@ -4,9 +4,9 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from echo_workshop.resources import panel_sources
-from echo_workshop.resources.panel_catalog import PanelCatalog, PanelSnapshot
-from echo_workshop.resources.panel_updates import PanelCatalogUpdates
+from ww_echo_workshop.resources import panel_sources
+from ww_echo_workshop.resources.panel_catalog import PanelCatalog, PanelSnapshot
+from ww_echo_workshop.resources.panel_updates import PanelCatalogUpdates
 
 
 def snapshot_data():

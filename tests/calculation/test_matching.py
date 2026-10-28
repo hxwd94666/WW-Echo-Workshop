@@ -6,25 +6,25 @@ import unittest
 from dataclasses import replace
 from datetime import datetime, timezone
 from tests.native_runtime import filter_records
-from echo_workshop.application.matching.inventory import (
+from ww_echo_workshop.application.matching.inventory import (
     InventoryViewState,
     MatchInventorySession,
     selectable_inventory_ids,
 )
-from echo_workshop.application.matching.scope import match_view, select_match_records
+from ww_echo_workshop.application.matching.scope import match_view, select_match_records
 from tests.native_runtime import prepare_pin_catalog
 from tests.native_runtime import RecommendationService
-from echo_workshop.core.cancellation import ComparisonCancelled
+from ww_echo_workshop.core.cancellation import ComparisonCancelled
 from tests.native_runtime import InventoryFilters, ScoreService
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.compatibility import CompatibilityRule, compatibility
-from echo_workshop.core.filters import (
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.compatibility import CompatibilityRule, compatibility
+from ww_echo_workshop.core.filters import (
     MAIN_STAT_KEYS,
     SUB_STAT_KEYS,
     sonata_options,
 )
-from echo_workshop.core.models import EchoRecord, StatValue
-from echo_workshop.resources.weights import WeightProvider, WeightSnapshot
+from ww_echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.resources.weights import WeightProvider, WeightSnapshot
 from tests.calculation.helpers import changed_snapshot, sample, sample_cost4, tuned
 from types import SimpleNamespace
 from uuid import uuid4

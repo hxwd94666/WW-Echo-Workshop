@@ -4,12 +4,12 @@ import threading
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.allocation import AllocationService
-from echo_workshop.application.plan_jobs import PlanCommands
+from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.plan_jobs import PlanCommands
 from tests.native_runtime import ScoreService
-from echo_workshop.core.allocation.models import AllocationRequest, SlotRule
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.resources.weights import WeightProvider
+from ww_echo_workshop.core.allocation.models import AllocationRequest, SlotRule
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.resources.weights import WeightProvider
 from tests.native_runtime import EchoRepository
 from tests.native_runtime import AllocationStore
 from tests.calculation.helpers import role, tuned
@@ -67,7 +67,7 @@ class LoadoutActionsContract(unittest.TestCase):
                         raise cause
 
                     with self.assertLogs(
-                        'echo_workshop.application.plan_jobs', level='INFO'
+                        'ww_echo_workshop.application.plan_jobs', level='INFO'
                     ) as logs:
                         partial = commands.execute(
                             'save-loadout',

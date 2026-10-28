@@ -2,46 +2,46 @@
 import atexit
 from pathlib import Path
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.scoring import ScoreService as ProductionScoreService
-from echo_workshop.application.recommendations import (
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.scoring import ScoreService as ProductionScoreService
+from ww_echo_workshop.application.recommendations import (
     RecommendationService as ProductionRecommendations,
 )
-from echo_workshop.application.allocation import AllocationService
-from echo_workshop.application.observations import ObservationService as ProductionObservations
-from echo_workshop.application.custom_weights import CustomWeightService
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.pins import PinCheckService, pin_error_text
-from echo_workshop.resources.weights import WeightProvider as ProductionWeights
-from echo_workshop.core.allocation.models import cents
-from echo_workshop.core.filters import InventoryFilters as ProductionInventoryFilters
+from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.observations import ObservationService as ProductionObservations
+from ww_echo_workshop.application.custom_weights import CustomWeightService
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.pins import PinCheckService, pin_error_text
+from ww_echo_workshop.resources.weights import WeightProvider as ProductionWeights
+from ww_echo_workshop.core.allocation.models import cents
+from ww_echo_workshop.core.filters import InventoryFilters as ProductionInventoryFilters
 
 # Storage tests explicitly use the same native test process owner as score fixtures.
 from functools import partial
-from echo_workshop.storage.inventory import EchoRepository as ProductionRepository
-from echo_workshop.storage.plans import (
+from ww_echo_workshop.storage.inventory import EchoRepository as ProductionRepository
+from ww_echo_workshop.storage.plans import (
     AllocationStore as ProductionStore,
     validate_plan as production_validate_plan,
 )
-from echo_workshop.storage.workspaces import WorkspaceManager as ProductionWorkspaces
-from echo_workshop.storage.control_repair import ControlRepair as ProductionRepair
-from echo_workshop.application.repair import RepairService as ProductionRepairService
-from echo_workshop.storage.workspace_bundle import (
+from ww_echo_workshop.storage.workspaces import WorkspaceManager as ProductionWorkspaces
+from ww_echo_workshop.storage.control_repair import ControlRepair as ProductionRepair
+from ww_echo_workshop.application.repair import RepairService as ProductionRepairService
+from ww_echo_workshop.storage.workspace_bundle import (
     _plan as production_plan,
 )
-from echo_workshop.storage.profile_transfer import inspect_profile_archive as production_inspect
-from echo_workshop.storage.loadouts import validate_current_plan_references as production_references
-from echo_workshop.application.loadout_actions import (
+from ww_echo_workshop.storage.profile_transfer import inspect_profile_archive as production_inspect
+from ww_echo_workshop.storage.loadouts import validate_current_plan_references as production_references
+from ww_echo_workshop.application.loadout_actions import (
     source_payload as production_source,
     clone_loadout_payload as production_clone,
 )
-from echo_workshop.application.replacement import (
+from ww_echo_workshop.application.replacement import (
     replacement_candidates as production_candidates,
     replacement_preview as production_preview,
 )
 
 
-ENGINE = Path(__file__).resolve().parents[1] / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = Path(__file__).resolve().parents[1] / 'build/native/release/ww-echo-workshop-compute.exe'
 _jobs = ComputeJobs(ENGINE)
 _matrix_jobs = ComputeJobs(ENGINE, fault_tests=True)
 
@@ -87,7 +87,7 @@ def validate_fixed_items(requirements, records):
 
 
 def prepare_pin_catalog(records, **kwargs):
-    from echo_workshop.application.pins import prepare_pin_catalog as prepare
+    from ww_echo_workshop.application.pins import prepare_pin_catalog as prepare
 
     return prepare(records, queries=_inventory_queries, **kwargs)
 
@@ -98,7 +98,7 @@ def filter_records(records, **kwargs):
 
 def calculate_echo_score(template, cost, cost_key, main_rows, sub_rows):
     """Test-only raw native entry; no Python scoring or prepared backend."""
-    from echo_workshop.application.compute_bridge import plain, score_result
+    from ww_echo_workshop.application.compute_bridge import plain, score_result
 
     if template is None:
         raise ValueError('评分需要明确的冻结模版')
@@ -119,7 +119,7 @@ def calculate_echo_score(template, cost, cost_key, main_rows, sub_rows):
 
 
 def substat_tier_label(stat_name, value):
-    from echo_workshop.core.models import StatValue
+    from ww_echo_workshop.core.models import StatValue
 
     result = _observations.evaluate(
         (), (StatValue(stat_name, value),), selections=(), weight_version='tier-fixture', cost=1
@@ -149,7 +149,7 @@ def _rateable(template):
     """Reject malformed or NaN tables before they reach the JSON transport."""
     from collections.abc import Mapping
 
-    from echo_workshop.core.rating import validate_rating_tables
+    from ww_echo_workshop.core.rating import validate_rating_tables
 
     if not isinstance(template, Mapping):
         return False
@@ -164,7 +164,7 @@ def single_rating(result_or_points, template, *, cost=None):
     """Test-only native single rating; validates inputs the engine rejects."""
     import math
 
-    from echo_workshop.application.compute_bridge import plain, rating_result
+    from ww_echo_workshop.application.compute_bridge import plain, rating_result
 
     points = getattr(result_or_points, 'current_score', result_or_points)
     cost = getattr(result_or_points, 'cost', None) if cost is None else cost
@@ -179,7 +179,7 @@ def single_rating(result_or_points, template, *, cost=None):
 
 def loadout_rating(scores_cents, template):
     """Test-only native five-piece rating over frozen cent scores."""
-    from echo_workshop.application.compute_bridge import plain, rating_result
+    from ww_echo_workshop.application.compute_bridge import plain, rating_result
 
     if (
         not isinstance(scores_cents, (tuple, list))
@@ -218,7 +218,7 @@ def single_standard(template, cost):
 
 def rating_template(snapshot_or_payload_snapshot, character, modal='default'):
     """Test-only frozen template resolution; grading still runs natively."""
-    from echo_workshop.core.rating import project_grade_fields
+    from ww_echo_workshop.core.rating import project_grade_fields
 
     method = getattr(snapshot_or_payload_snapshot, 'scoring_template', None)
     if callable(method):
@@ -243,7 +243,7 @@ def rating_template(snapshot_or_payload_snapshot, character, modal='default'):
 
 def filter_accepts(rule, record, kind='item', reserved=False):
     """Test-only native single-row filter decision through the shared engine."""
-    from echo_workshop.application.inventory_view import ViewMetadata
+    from ww_echo_workshop.application.inventory_view import ViewMetadata
 
     metadata = ViewMetadata('', '1' if reserved else '')
     indices = _inventory_queries.filter_view(((record, kind, metadata),), rule)
@@ -258,10 +258,10 @@ class InventoryFilters(ProductionInventoryFilters):
 
 
 def analyze_echo_stats(*args, **kwargs):
-    from echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats as analyze
-    from echo_workshop.application.live_selection import LiveSelection
-    from echo_workshop.application.templates import DEFAULT_TEMPLATE
-    from echo_workshop.resources.weights import WeightSnapshot
+    from ww_echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats as analyze
+    from ww_echo_workshop.application.live_selection import LiveSelection
+    from ww_echo_workshop.application.templates import DEFAULT_TEMPLATE
+    from ww_echo_workshop.resources.weights import WeightSnapshot
 
     snapshot = WeightSnapshot.builtin()
 
@@ -282,8 +282,8 @@ def analyze_echo_stats(*args, **kwargs):
 
 
 def score_selected_template(label, cost, cost_key, main_rows, sub_rows):
-    from echo_workshop.application.templates import TEMPLATE_OPTIONS
-    from echo_workshop.resources.weights import WeightSnapshot
+    from ww_echo_workshop.application.templates import TEMPLATE_OPTIONS
+    from ww_echo_workshop.resources.weights import WeightSnapshot
 
     character, modal, template = TEMPLATE_OPTIONS[label]
     return _observations.evaluate(

@@ -8,8 +8,8 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_messages import (
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_messages import (
     CHUNK_BYTES,
     MAX_CHUNKS,
     MAX_FRAME,
@@ -21,10 +21,10 @@ from echo_workshop.application.compute_messages import (
     encode_messages,
     read_frame,
 )
-from echo_workshop.application.compute_protocol import ComputeWorker
+from ww_echo_workshop.application.compute_protocol import ComputeWorker
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def chunk():
@@ -157,7 +157,7 @@ class TestComputeChunks(unittest.TestCase):
             worker.call('ping', {})
             pid = worker.pid
             # Exercise pre-send failure at a tiny synthetic cap without allocating 64 MiB here.
-            with patch('echo_workshop.application.compute_messages.MAX_MESSAGE', 128):
+            with patch('ww_echo_workshop.application.compute_messages.MAX_MESSAGE', 128):
                 with self.assertRaises(ComputeFailure) as error:
                     worker.call('ping', {'text': 'x' * 256})
             self.assertEqual('message_limit', error.exception.kind)
@@ -233,7 +233,7 @@ class TestComputeChunks(unittest.TestCase):
                     cancel.wait(2)
 
         try:
-            with patch('echo_workshop.application.compute_protocol.encode_messages', interrupted):
+            with patch('ww_echo_workshop.application.compute_protocol.encode_messages', interrupted):
                 work = jobs.submit(
                     'ping', lambda: {'text': 'x' * (MAX_FRAME + 100)}, cancel_event=cancel
                 )

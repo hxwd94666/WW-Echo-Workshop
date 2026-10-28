@@ -2,9 +2,9 @@
 import unittest
 from uuid import uuid4
 
-from echo_workshop.application.panel import PanelService
-from echo_workshop.core.models import EchoRecord, StatValue
-from echo_workshop.core.panel import calculate_panel
+from ww_echo_workshop.application.panel import PanelService
+from ww_echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.core.panel import calculate_panel
 
 
 class PanelCalculationTest(unittest.TestCase):

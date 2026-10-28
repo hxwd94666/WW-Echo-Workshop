@@ -78,11 +78,11 @@
 
 | 当前源码位置（仓库根下） | 本次确认的状态 | 后续动作 |
 | --- | --- | --- |
-| `src/echo_workshop/native/compute/src/` | 已有 scoring、rating、matching、allocation、objective、allocation_checks、difference、replacement、recommendations、observations、custom_weights 等 Rust 模块 | 复用现有实现，核对合同，补齐筛选、实时/收录和页面残留求值 |
-| `src/echo_workshop/application/compute_jobs.py`、`compute_protocol.py`、`compute_messages.py`、`compute_windows.py` | 已有作业、启动取消、v2 双向分块与 Windows 进程限额基础 | 继续端到端效率、临时内存、生命周期及真实 GUI 非阻塞验收；存在文件不算验收通过 |
-| `src/echo_workshop/application/runtime.py`、`scoring.py`、`allocation.py`、`plan_jobs.py` | 评分/匹配、搜索、预检均使用 runtime 的 Rust 作业服务，loadout_diff 已切换；原 Python solver/precheck 已删除 | 替换与子集目标已切换；继续其余业务入口与残留审计 |
-| `src/echo_workshop/core/allocation/models.py` | 生产 Python 目标求值全部删除，保留输入/结果模型及待审计约束政策 | 继续核对剩余约束调用；小型穷举 oracle 只留在测试 |
-| `src/echo_workshop/application/inventory_query.py`、Rust `inventory_query.rs`、`ui/inventory/filters.py` | 库存后台筛选/复核统计已通过 33 个静态样例及取消、行序/身份验证，复用 runtime；页面分类筛选等仍有 Python 实现 | 当前查询新增端到端开销，继续 W4；W3 收口页面谓词、排序与评级，不把后台查询迁移视为整页完成 |
+| `src/ww_echo_workshop/native/compute/src/` | 已有 scoring、rating、matching、allocation、objective、allocation_checks、difference、replacement、recommendations、observations、custom_weights 等 Rust 模块 | 复用现有实现，核对合同，补齐筛选、实时/收录和页面残留求值 |
+| `src/ww_echo_workshop/application/compute_jobs.py`、`compute_protocol.py`、`compute_messages.py`、`compute_windows.py` | 已有作业、启动取消、v2 双向分块与 Windows 进程限额基础 | 继续端到端效率、临时内存、生命周期及真实 GUI 非阻塞验收；存在文件不算验收通过 |
+| `src/ww_echo_workshop/application/runtime.py`、`scoring.py`、`allocation.py`、`plan_jobs.py` | 评分/匹配、搜索、预检均使用 runtime 的 Rust 作业服务，loadout_diff 已切换；原 Python solver/precheck 已删除 | 替换与子集目标已切换；继续其余业务入口与残留审计 |
+| `src/ww_echo_workshop/core/allocation/models.py` | 生产 Python 目标求值全部删除，保留输入/结果模型及待审计约束政策 | 继续核对剩余约束调用；小型穷举 oracle 只留在测试 |
+| `src/ww_echo_workshop/application/inventory_query.py`、Rust `inventory_query.rs`、`ui/inventory/filters.py` | 库存后台筛选/复核统计已通过 33 个静态样例及取消、行序/身份验证，复用 runtime；页面分类筛选等仍有 Python 实现 | 当前查询新增端到端开销，继续 W4；W3 收口页面谓词、排序与评级，不把后台查询迁移视为整页完成 |
 
 本表只记录源码路径和调用关系核查；阶段测试数量、性能与宿主存活需以对应执行记录确认。文档中的最终规范可能领先当前实现，以第 9 节阶段出口推进，避免把现状误写成完成状态。
 
@@ -131,7 +131,7 @@ Qt 页面 / OKWW 薄入口
           │ 显式动作，主线程仅提交和展示
 Python application：快照、任务、异步协议、版本检查、故障处理
           │ 有界管道；不传数据库连接或宿主对象
-echo-workshop-compute.exe
+ww-echo-workshop-compute.exe
           ├─ 交互计算 lane：批量评分、匹配、筛选、替换与验证
           └─ 搜索 lane：配装、邻域改善、最优性搜索
           │ UUID / 分数 / 评级 / 原因 / 统计 / 终止状态
@@ -144,11 +144,11 @@ Rust 求值函数不依赖 Qt、OK Script、网络或玩家数据库；通信入
 
 目标源码位置（已有路径复用，其余按职责补齐）：
 
-- `F:/WW/Echo-Workshop/src/echo_workshop/native/compute/`：Cargo 配置、协议入口和计算库；业务源码仍集中在唯一源码根下。
-- `F:/WW/Echo-Workshop/src/echo_workshop/application/compute_jobs.py`：任务和 runtime 生命周期。
-- `F:/WW/Echo-Workshop/src/echo_workshop/application/compute_protocol.py`：有界通信与版本校验。
-- `F:/WW/Echo-Workshop/tests/calculation/`：数值、约束、目标、穷举与质量基准。
-- `F:/WW/Echo-Workshop/tests/contracts/`：仅保留必要的进程故障、宿主加载和发布契约。
+- `F:/WW/WW-Echo-Workshop/src/ww_echo_workshop/native/compute/`：Cargo 配置、协议入口和计算库；业务源码仍集中在唯一源码根下。
+- `F:/WW/WW-Echo-Workshop/src/ww_echo_workshop/application/compute_jobs.py`：任务和 runtime 生命周期。
+- `F:/WW/WW-Echo-Workshop/src/ww_echo_workshop/application/compute_protocol.py`：有界通信与版本校验。
+- `F:/WW/WW-Echo-Workshop/tests/calculation/`：数值、约束、目标、穷举与质量基准。
+- `F:/WW/WW-Echo-Workshop/tests/contracts/`：仅保留必要的进程故障、宿主加载和发布契约。
 
 Rust 按评分/评级、匹配/过滤、约束/目标、搜索/邻域、协议分工，不建立泛化远程调用框架。手写 Python 继续遵循中文首注、800 行上限及现有格式规范；Rust 按职责拆分并执行 fmt/clippy。
 

@@ -9,17 +9,17 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.recommendations import RecommendationService
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, StatValue, canonical_json
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.recommendations import RecommendationService
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, StatValue, canonical_json
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import _jobs
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_recommendations.json'
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def run_case(service, case, data, snapshot):
@@ -54,10 +54,10 @@ class NativeRecommendations(unittest.TestCase):
         self.assertEqual(self.data['weight_version'], self.snapshot.version)
         with ExitStack() as stack:
             for name in (
-                'echo_workshop.core.scoring.calculate_echo_score',
-                'echo_workshop.core.scoring.score_prepared',
-                'echo_workshop.core.compatibility.compatibility',
-                'echo_workshop.core.rating.single_rating',
+                'ww_echo_workshop.core.scoring.calculate_echo_score',
+                'ww_echo_workshop.core.scoring.score_prepared',
+                'ww_echo_workshop.core.compatibility.compatibility',
+                'ww_echo_workshop.core.rating.single_rating',
             ):
                 stack.enter_context(patch(name, side_effect=AssertionError(name), create=True))
             stack.enter_context(

@@ -5,22 +5,22 @@ import unittest
 from dataclasses import replace
 from tests.native_runtime import ScoreService
 from tests.native_runtime import score_selected_template
-from echo_workshop.core.allocation.models import AllocationRequest, RoleRequest, SlotRule
+from ww_echo_workshop.core.allocation.models import AllocationRequest, RoleRequest, SlotRule
 from tests.native_runtime import AllocationHarness
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.requirements_check import RequirementsCheckService
-from echo_workshop.core.costs import cost_layouts_from_rows, cost_layouts_to_rows, read_cost_layout
-from echo_workshop.core.models import EchoRecord, StatValue
-from echo_workshop.core.requirements import (
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.requirements_check import RequirementsCheckService
+from ww_echo_workshop.core.costs import cost_layouts_from_rows, cost_layouts_to_rows, read_cost_layout
+from ww_echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.core.requirements import (
     RoleRequirements,
     normalize_main_requirements,
     normalize_set_requirements,
     requirements_from_rows,
     requirements_to_rows,
 )
-from echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
-from echo_workshop.resources.weights import WeightProvider
+from ww_echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
+from ww_echo_workshop.resources.weights import WeightProvider
 from tests.calculation.helpers import (
     FakeScores,
     role,
@@ -44,7 +44,7 @@ def item(profile, name, value, **kwargs):
 
 
 ROOT = __import__('pathlib').Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def native_rejects(test, *, costs=(4, 3, 3, 1, 1), main=None, allowed=(), sets=()):
@@ -62,7 +62,7 @@ def native_rejects(test, *, costs=(4, 3, 3, 1, 1), main=None, allowed=(), sets=(
 
 class TestMainStatValidation(unittest.TestCase):
     def test_validation_limits_are_independent_and_immutable(self):
-        import echo_workshop.core.models as models
+        import ww_echo_workshop.core.models as models
 
         limits = models.MAINSTAT_VALIDATION_MAXIMA
         self.assertEqual(41.8, limits[4][0]['防御%'])

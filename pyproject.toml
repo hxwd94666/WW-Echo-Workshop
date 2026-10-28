@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "echo-workshop"
+name = "ww-echo-workshop"
 dynamic = ["version"]
 description = "鸣潮声骸收录、评分、匹配与配装工具"
 readme = "README.md"
@@ -25,11 +25,11 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools.dynamic]
-version = {attr = "echo_workshop.__version__"}
+version = {attr = "ww_echo_workshop.__version__"}
 
 [tool.setuptools.package-data]
-"echo_workshop.resources" = ["builtin/*.json", "builtin/*.png"]
-"echo_workshop.ui.widgets" = ["assets/*.png"]
+"ww_echo_workshop.resources" = ["builtin/*.json", "builtin/*.png"]
+"ww_echo_workshop.ui.widgets" = ["assets/*.png"]
 
 [tool.ruff]
 target-version = "py311"
@@ -43,7 +43,7 @@ select = ["E4", "E7", "E9", "F"]
 quote-style = "single"
 line-ending = "lf"
 
-[tool.echo_workshop]
+[tool.ww_echo_workshop]
 maximum-python-lines = 800
-plugin-install-id = "echo-workshop"
-data-namespace = "echo-workshop"
+plugin-install-id = "ww-echo-workshop"
+data-namespace = "ww-echo-workshop"

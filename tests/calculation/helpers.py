@@ -1,13 +1,13 @@
 # 构造固定计算候选、请求和可控评分服务。
 from dataclasses import replace
-from echo_workshop.core.allocation.models import RoleRequest, SlotRule
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.allocation.models import set_name
-from echo_workshop.core.costs import MAX_TOTAL_COST, read_cost_layout
-from echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
-from echo_workshop.core.models import EchoRecord, StatValue
-from echo_workshop.core.requirements import RoleRequirements
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.core.allocation.models import RoleRequest, SlotRule
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.allocation.models import set_name
+from ww_echo_workshop.core.costs import MAX_TOTAL_COST, read_cost_layout
+from ww_echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
+from ww_echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.core.requirements import RoleRequirements
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from types import SimpleNamespace
 from uuid import uuid4
 

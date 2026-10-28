@@ -6,9 +6,9 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.compute_bridge import plain, record_payload
-from echo_workshop.application.compute_protocol import ComputeWorker, ComputeFailure
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.compute_bridge import plain, record_payload
+from ww_echo_workshop.application.compute_protocol import ComputeWorker, ComputeFailure
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import ENGINE, ScoreService, _jobs
 from tests.calculation.helpers import tuned
 

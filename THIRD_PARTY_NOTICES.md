@@ -8,6 +8,33 @@
 
 宿主是 https://github.com/ok-oldking/ok-wuthering-waves 和 OK Script；宿主代码未包含在本插件归档中，使用者另行取得并遵守其许可。
 
+## Echo Studio 策略内核
+
+强化/重抽策略求解使用 vendored 的 `echo_policy` crate：
+
+- 项目：Echo Studio / echo-policy，https://github.com/2-07665/echo-policy
+- 组件：`echo_policy` crate，固定副本位于 `src/ww_echo_workshop/native/compute/vendor/echo_policy/`，来源提交 `72ec29f7346640ba3d660eb9fb48dc82bfa0d9b9`。
+- 许可：MIT，Copyright (c) 2025 2-07665；完整文本见该目录 `LICENSE`。
+- 用途：强化/重抽策略的状态、概率档位与资源成本模型；本项目仅做 XWUID 评分适配和界面，不复制其 Web/Tauri/服务端/OCR 代码。
+
+## 五套策略评分起始数据
+
+随包 `src/ww_echo_workshop/resources/policy/echo-data.json` 为起始快照，来源为 Echo Studio 计算器：
+
+- 数据版本：`2026.10.19.1`
+- 来源：`https://github.com/2-07665/ww-echo-policy-calculator/blob/main/data/echo-data.json`
+- 文件 SHA-256：`8c809bdab2077d394724df44f508eccfccf4c44ef7738c50945ab7af88130bcd`
+- 更新策略：上游已停止维护；本插件不自动更新该快照，玩家可通过代理地址或手动导入替换。
+
+五套评分的来源与许可状态：
+
+- XWUID / qq_bot：GPL-3.0，来源 `IceHe/okww-xwuid-echo-score`，保留上游 `LICENSE-XWUID`。
+- Wuwa Echo Tool：当前源码参考 `GQin404/WuwaEchoTool`（历史快照来自 `2-07665/WuwaEchoTool`）；权重内嵌 `js/base.js`，没有独立数据仓库/release。上游快照未发现 license 文件，本包仅作起始数据并保留署名，不主张额外再分发授权。
+- 漂泊者强化助手（mc_boost_assistant）：来源为微信小程序，无公开仓库/数据 API；本包使用上游转存快照。
+- linear / fixed：通用手动评分默认值，无独立第三方数据源。
+
+如相关权利人提出异议，应移除或替换对应预设；玩家导入/代理数据由玩家自行确认来源。
+
 ## 评分与游戏资料
 
 声明式权重、评级表、套装资料与部分展示资源来自 XutheringWavesUID 及其资源目录：
@@ -15,7 +42,7 @@
 - https://github.com/Loping151/XutheringWavesUID
 - https://cnb.cool/loping151/XutheringWavesUID-Resources
 
-内置资源及派生版本记录见 `src/echo_workshop/resources/builtin/sources.json`。在线资料另存来源URL、时间、内容hash与schema；HTTP快照不冒称固定Git提交。
+内置资源及派生版本记录见 `src/ww_echo_workshop/resources/builtin/sources.json`。在线资料另存来源URL、时间、内容hash与schema；HTTP快照不冒称固定Git提交。
 
 套装图标随包；角色头像按需获取并缓存。游戏名称、图标和头像的权利属于相应权利人。资料中的描述用于展示，不作为可执行公式或官方推荐。
 

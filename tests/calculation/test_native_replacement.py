@@ -11,19 +11,19 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from echo_workshop.application.allocation import AllocationService
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.loadout_actions import clone_loadout_payload, source_payload
-from echo_workshop.application.replacement import replacement_candidates, replacement_preview
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.allocation.models import RoleAllocation, PRIORITY_POLICY_VERSION
-from echo_workshop.core.loadout import LoadoutSnapshot
-from echo_workshop.core.models import EchoRecord, canonical_json
-from echo_workshop.storage.plans import validate_plan
+from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.loadout_actions import clone_loadout_payload, source_payload
+from ww_echo_workshop.application.replacement import replacement_candidates, replacement_preview
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.allocation.models import RoleAllocation, PRIORITY_POLICY_VERSION
+from ww_echo_workshop.core.loadout import LoadoutSnapshot
+from ww_echo_workshop.core.models import EchoRecord, canonical_json
+from ww_echo_workshop.storage.plans import validate_plan
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def options_value(options):
@@ -88,12 +88,12 @@ class TestNativeReplacement(unittest.TestCase):
 
     def test_seven_frozen_option_and_preview_outputs_without_python_business_evaluation(self):
         forbidden = (
-            'echo_workshop.core.scoring.calculate_echo_score',
-            'echo_workshop.core.scoring.prepare_score',
-            'echo_workshop.core.scoring.score_prepared',
-            'echo_workshop.core.rating.single_rating',
-            'echo_workshop.core.rating.loadout_rating',
-            'echo_workshop.core.compatibility.compatibility',
+            'ww_echo_workshop.core.scoring.calculate_echo_score',
+            'ww_echo_workshop.core.scoring.prepare_score',
+            'ww_echo_workshop.core.scoring.score_prepared',
+            'ww_echo_workshop.core.rating.single_rating',
+            'ww_echo_workshop.core.rating.loadout_rating',
+            'ww_echo_workshop.core.compatibility.compatibility',
         )
         with ExitStack() as stack:
             mocks = [
@@ -248,7 +248,7 @@ class TestNativeReplacement(unittest.TestCase):
         clone = clone_loadout_payload(payload, ('1304',), plan_evaluator=self.service)
         self.assertEqual(1, len(clone['result']['roles']))
         self.assertEqual(clone, validate_plan(clone, plan_evaluator=self.service))
-        from echo_workshop.core.allocation import models
+        from ww_echo_workshop.core.allocation import models
 
         self.assertFalse(hasattr(models, 'objective'))
         self.assertFalse(hasattr(models, 'target_objective'))

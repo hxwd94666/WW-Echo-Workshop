@@ -11,18 +11,18 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID, uuid4
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.scoring import ScoreService
-from echo_workshop.application.runtime import PluginRuntime
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.cancellation import ComparisonCancelled
-from echo_workshop.core.models import EchoRecord
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.scoring import ScoreService
+from ww_echo_workshop.application.runtime import PluginRuntime
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.cancellation import ComparisonCancelled
+from ww_echo_workshop.core.models import EchoRecord
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.calculation.helpers import tuned
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class TestNativeScoreService(unittest.TestCase):
@@ -85,25 +85,25 @@ class TestNativeScoreService(unittest.TestCase):
         }
         with (
             patch(
-                'echo_workshop.core.scoring.prepare_score',
+                'ww_echo_workshop.core.scoring.prepare_score',
                 side_effect=AssertionError('Python'),
                 create=True,
             ),
             patch(
-                'echo_workshop.core.scoring.score_prepared',
+                'ww_echo_workshop.core.scoring.score_prepared',
                 side_effect=AssertionError('Python'),
                 create=True,
             ),
             patch(
-                'echo_workshop.core.compatibility.compatibility',
+                'ww_echo_workshop.core.compatibility.compatibility',
                 side_effect=AssertionError('Python'),
             ),
         ):
             actual = self.service.compare(records, selected, rules=rules, inventory_revision=19)
         expected = fixture['expected']
         standards = expected['standards']
-        from echo_workshop.application.compute_bridge import compact_score
-        from echo_workshop.application.scoring import (
+        from ww_echo_workshop.application.compute_bridge import compact_score
+        from ww_echo_workshop.application.scoring import (
             _COMPATIBILITY,
             _REASON,
             _RECOMMENDATION,
@@ -201,7 +201,7 @@ class TestNativeScoreService(unittest.TestCase):
         with (
             tempfile.TemporaryDirectory() as folder,
             patch(
-                'echo_workshop.application.runtime.WeightProvider', side_effect=ValueError('init')
+                'ww_echo_workshop.application.runtime.WeightProvider', side_effect=ValueError('init')
             ),
             self.assertRaisesRegex(ValueError, 'init'),
         ):
@@ -215,7 +215,7 @@ class TestNativeScoreService(unittest.TestCase):
         with (
             tempfile.TemporaryDirectory() as folder,
             patch(
-                'echo_workshop.application.runtime.WorkspaceManager',
+                'ww_echo_workshop.application.runtime.WorkspaceManager',
                 side_effect=ValueError('startup'),
             ),
             self.assertRaisesRegex(ValueError, 'startup'),

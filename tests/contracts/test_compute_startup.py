@@ -7,10 +7,10 @@ import time
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
 
-ENGINE = Path(__file__).resolve().parents[2] / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = Path(__file__).resolve().parents[2] / 'build/native/release/ww-echo-workshop-compute.exe'
 REAL_POPEN = subprocess.Popen
 
 
@@ -27,7 +27,7 @@ class TestComputeStartup(unittest.TestCase):
 
         with (
             ComputeWorker(ENGINE, fault_tests=True) as worker,
-            patch('echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start),
+            patch('ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start),
             patch.object(worker, '_send', wraps=worker._send) as send,
             ThreadPoolExecutor(max_workers=1) as calls,
         ):
@@ -58,7 +58,7 @@ class TestComputeStartup(unittest.TestCase):
             with (
                 self.subTest(flag=flag),
                 patch(
-                    'echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
+                    'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
                 ),
                 ComputeWorker(ENGINE, fault_tests=True) as worker,
                 patch.object(worker, '_send', wraps=worker._send) as send,
@@ -75,7 +75,7 @@ class TestComputeStartup(unittest.TestCase):
 
         with (
             patch(
-                'echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=unarmed
+                'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=unarmed
             ),
             ComputeWorker(ENGINE) as worker,
         ):
@@ -95,7 +95,7 @@ class TestComputeStartup(unittest.TestCase):
         jobs = ComputeJobs(ENGINE, fault_tests=True)
         try:
             with patch(
-                'echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
+                'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
             ):
                 work = jobs.submit('ping', dict, lane='search', cancel_event=cancel)
                 self.assertTrue(launched.wait(2))
@@ -132,7 +132,7 @@ class TestComputeStartup(unittest.TestCase):
                 with (
                     self.subTest(reason=reason),
                     patch(
-                        'echo_workshop.application.compute_protocol.subprocess.Popen',
+                        'ww_echo_workshop.application.compute_protocol.subprocess.Popen',
                         side_effect=late,
                     ),
                     patch.object(ComputeWorker, '_send', autospec=True) as send,

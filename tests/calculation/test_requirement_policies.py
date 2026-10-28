@@ -5,19 +5,19 @@ from dataclasses import replace
 from types import SimpleNamespace
 from uuid import uuid4
 
-from echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.compatibility import CompatibilityRule
 from tests.native_runtime import ScoreService
 from tests.native_runtime import validate_fixed_items
-from echo_workshop.core.allocation.models import AllocationRequest, SlotRule
+from ww_echo_workshop.core.allocation.models import AllocationRequest, SlotRule
 from tests.native_runtime import allocation_precheck
 from tests.native_runtime import AllocationHarness
-from echo_workshop.core.models import canonical_json
-from echo_workshop.core.requirements import (
+from ww_echo_workshop.core.models import canonical_json
+from ww_echo_workshop.core.requirements import (
     RoleRequirements,
     requirements_from_rows,
     requirements_to_rows,
 )
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.calculation.helpers import (
     FakeScores,
     role,
@@ -54,8 +54,8 @@ class TestRequirementPolicies(unittest.TestCase):
         print('SET_POLICY: current distinct-name contract; omitted/retired policy rejected')
 
     def test_real_solver_precheck_and_replacement_share_name_policy(self):
-        from echo_workshop.application.allocation import AllocationService
-        from echo_workshop.core.loadout import LoadoutSnapshot
+        from ww_echo_workshop.application.allocation import AllocationService
+        from ww_echo_workshop.core.loadout import LoadoutSnapshot
         from tests.native_runtime import source_payload, replacement_candidates
 
         profile = str(uuid4())

@@ -5,14 +5,14 @@ import tempfile
 import unittest
 from unittest.mock import Mock
 
-from echo_workshop.resources.game_catalog import GameCatalog, GameCatalogClient
-from echo_workshop.resources.game_assets import GameAssets, placeholder_png
-from echo_workshop.resources.game_sources import NANOKA, ENCORE
-from echo_workshop.resources.avatar_download import AvatarDeferred
-from echo_workshop.resources.role_defaults import RoleDefaultsProvider, SOURCES
-from echo_workshop.resources.role_default_updates import RoleDefaultsHttpClient
-from echo_workshop.resources.http import MirrorWeightHttpClient, FetchResult, MirrorFetchError
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.resources.game_catalog import GameCatalog, GameCatalogClient
+from ww_echo_workshop.resources.game_assets import GameAssets, placeholder_png
+from ww_echo_workshop.resources.game_sources import NANOKA, ENCORE
+from ww_echo_workshop.resources.avatar_download import AvatarDeferred
+from ww_echo_workshop.resources.role_defaults import RoleDefaultsProvider, SOURCES
+from ww_echo_workshop.resources.role_default_updates import RoleDefaultsHttpClient
+from ww_echo_workshop.resources.http import MirrorWeightHttpClient, FetchResult, MirrorFetchError
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.contracts.test_game_resources import fixtures
 import json
 

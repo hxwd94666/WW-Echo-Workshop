@@ -1,10 +1,10 @@
-# Agent Instructions — Echo Workshop
+# Agent Instructions — WW-Echo-Workshop
 
 
 ## 项目定位与唯一源码
 
 - 本项目是鸣潮声骸收录、评分、匹配与配装工具，OKWW仅是宿主适配。
-- 唯一业务源码位于 `src/echo_workshop/`。`plugin/okww/`只保存manifest模板和薄任务入口。
+- 唯一业务源码位于 `src/ww_echo_workshop/`。`plugin/okww/`只保存manifest模板和薄任务入口。
 - `dist/`、构建目录、发行ZIP都是生成产物，不作为源码修改；不维护新旧两套实现。
 - 先读现行README和相关维护文档。历史交付记录不作为现行需求，最新用户指令优先。
 
@@ -60,7 +60,7 @@
 ## 数据、迁移与兼容
 
 - 不把玩家库存、截图、设置、历史和缓存放在会被升级覆盖的安装目录。
-- 未发布版本统一使用 Echo Workshop / echo_workshop / echo-workshop；无需迁移旧开发数据，但不删除玩家数据。安装时旧插件移到宿主扫描目录之外，避免重复加载。
+- 未发布版本统一使用 WW-Echo-Workshop / ww_echo_workshop / ww-echo-workshop；无需迁移旧开发数据，但不删除玩家数据。安装时旧插件移到宿主扫描目录之外，避免重复加载。
 - 兼容入口/读取器应薄且集中，不维持重复业务实现；旧字段往返保留，不因停用识别清零。
 - 删除代码前核查生产调用、外部接口、存量数据关联和替代路径；恢复台账/文件锁/事务意图不属于普通缓存。
 - 迁移先在合成或脱敏副本验证；保留原件、幂等标记和可运行回退。真实玩家数据不用于破坏测试。

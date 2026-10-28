@@ -11,19 +11,19 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats
-from echo_workshop.application.observations import ObservationService
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.live_selection import LiveSelection
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import StatValue, canonical_json
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats
+from ww_echo_workshop.application.observations import ObservationService
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.live_selection import LiveSelection
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import StatValue, canonical_json
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import _jobs
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_observations.json'
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def numeric_value(service, case, snapshot):
@@ -55,7 +55,7 @@ def ocr_value(service, case, snapshot):
         if invalid:
             raise ValueError('指定模版已删除')
         if actual:
-            from echo_workshop.application.live_selection import resolve_live_selection
+            from ww_echo_workshop.application.live_selection import resolve_live_selection
 
             return resolve_live_selection(
                 snapshot, boxes, fixed=('1304', 'default'), page_kind=kind
@@ -97,7 +97,7 @@ class NativeObservations(unittest.TestCase):
             ):
                 stack.enter_context(
                     patch(
-                        'echo_workshop.core.scoring.' + name,
+                        'ww_echo_workshop.core.scoring.' + name,
                         side_effect=AssertionError(name),
                         create=True,
                     )
@@ -250,8 +250,8 @@ class NativeObservations(unittest.TestCase):
             self.assertTrue(jobs.wait_closed())
 
     def test_retired_template_adapters_and_python_observation_math_are_deleted(self):
-        from echo_workshop.application import templates
-        from echo_workshop.adapters.okww import stat_overlay
+        from ww_echo_workshop.application import templates
+        from ww_echo_workshop.adapters.okww import stat_overlay
 
         for name in (
             'calculate_echo_score',
@@ -272,7 +272,7 @@ class NativeObservations(unittest.TestCase):
     def test_scan_pipeline_cancel_reaches_live_child_without_error_diagnostics_or_partial_result(
         self,
     ):
-        from echo_workshop.capture.scan.pipeline import ScanPipeline, ScanTimings
+        from ww_echo_workshop.capture.scan.pipeline import ScanPipeline, ScanTimings
 
         jobs = ComputeJobs(ENGINE, fault_tests=True)
         self.assertEqual(
@@ -333,10 +333,10 @@ class NativeObservations(unittest.TestCase):
         self.assertIsNotNone(child.poll())
 
     def test_actual_metadata_method_uses_shared_service_and_reuses_only_numeric_evidence(self):
-        from echo_workshop.capture.viewport import EchoViewport
-        from echo_workshop.capture.metadata import MetadataPass, refine_echo_metadata
-        from echo_workshop.application.live_selection import resolve_live_selection
-        from echo_workshop.application.templates import DEFAULT_TEMPLATE
+        from ww_echo_workshop.capture.viewport import EchoViewport
+        from ww_echo_workshop.capture.metadata import MetadataPass, refine_echo_metadata
+        from ww_echo_workshop.application.live_selection import resolve_live_selection
+        from ww_echo_workshop.application.templates import DEFAULT_TEMPLATE
 
         namespace = dict(
             EchoViewport=EchoViewport,
@@ -394,7 +394,7 @@ class NativeObservations(unittest.TestCase):
             'adapters/okww/manual_capture.py',
             'adapters/okww/scan_observation.py',
         ]:
-            source = ROOT / 'src/echo_workshop' / relative
+            source = ROOT / 'src/ww_echo_workshop' / relative
             for node in ast.walk(ast.parse(source.read_text(encoding='utf-8'))):
                 if (
                     isinstance(node, ast.Call)
@@ -449,12 +449,12 @@ class NativeObservations(unittest.TestCase):
 
     @staticmethod
     def _overlay_method(name, namespace):
-        source = ROOT / 'src/echo_workshop/adapters/okww/overlay_task.py'
+        source = ROOT / 'src/ww_echo_workshop/adapters/okww/overlay_task.py'
         tree = ast.parse(source.read_text(encoding='utf-8'), filename=str(source))
         cls = next(
             n
             for n in tree.body
-            if isinstance(n, ast.ClassDef) and n.name == 'EchoWorkshopOverlayTask'
+            if isinstance(n, ast.ClassDef) and n.name == 'WWEchoWorkshopOverlayTask'
         )
         method = next(n for n in cls.body if isinstance(n, ast.FunctionDef) and n.name == name)
         exec(compile(ast.Module(body=[method], type_ignores=[]), str(source), 'exec'), namespace)

@@ -3,15 +3,15 @@ import json
 from pathlib import Path
 import unittest
 
-from echo_workshop.application.compute_protocol import ComputeWorker
+from ww_echo_workshop.application.compute_protocol import ComputeWorker
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class TestNativeScoring(unittest.TestCase):
     def test_retired_python_backend_and_helpers_are_deleted(self):
-        from echo_workshop.core import scoring
+        from ww_echo_workshop.core import scoring
 
         for name in (
             'calculate_echo_score',
@@ -121,7 +121,7 @@ class TestNativeScoring(unittest.TestCase):
         print(f'RUST_GOLDEN_SCORING_OK: {len(data["items"])} rows/current/potential/grade/id cases')
 
     def test_invalid_template_and_numeric_input_are_typed_errors(self):
-        from echo_workshop.application.compute_protocol import ComputeFailure
+        from ww_echo_workshop.application.compute_protocol import ComputeFailure
 
         with ComputeWorker(ENGINE) as worker:
             with self.assertRaises(ComputeFailure) as error:

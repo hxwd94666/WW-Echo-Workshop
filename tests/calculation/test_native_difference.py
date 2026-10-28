@@ -8,17 +8,17 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.loadout_actions import result_from_payload
-from echo_workshop.application.loadout_diff import plan_changes
-from echo_workshop.application.scoring import ScoreService
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.loadout import LoadoutSnapshot
-from echo_workshop.core.models import EchoRecord
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.loadout_actions import result_from_payload
+from ww_echo_workshop.application.loadout_diff import plan_changes
+from ww_echo_workshop.application.scoring import ScoreService
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.loadout import LoadoutSnapshot
+from ww_echo_workshop.core.models import EchoRecord
+from ww_echo_workshop.resources.weights import WeightSnapshot
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def models(case, snapshot):
@@ -98,7 +98,7 @@ class TestNativeDifference(unittest.TestCase):
         with (
             patch.object(self.scores, 'compare', side_effect=AssertionError('Python comparison')),
             patch(
-                'echo_workshop.core.scoring.calculate_echo_score',
+                'ww_echo_workshop.core.scoring.calculate_echo_score',
                 side_effect=AssertionError('Python score'),
                 create=True,
             ),

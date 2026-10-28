@@ -8,15 +8,15 @@ import unittest
 from tests.calculation.allocation_oracle import objective
 
 from tests.native_runtime import ScoreService
-from echo_workshop.core.allocation.models import (
+from ww_echo_workshop.core.allocation.models import (
     AllocationRequest,
     POLICY_VERSION,
     PRIORITY_POLICY_VERSION,
 )
 from tests.native_runtime import AllocationHarness
-from echo_workshop.core.models import canonical_json
-from echo_workshop.resources.weights import WeightProvider
-from echo_workshop.resources.role_defaults import default_sets, default_rule
+from ww_echo_workshop.core.models import canonical_json
+from ww_echo_workshop.resources.weights import WeightProvider
+from ww_echo_workshop.resources.role_defaults import default_sets, default_rule
 from tests.native_runtime import AllocationStore, validate_plan
 from tests.calculation.helpers import FakeScores, tuned, role
 from tests.calculation.test_allocation_search import PROFILE, search_record, search_role

@@ -8,11 +8,11 @@ from unittest.mock import Mock, patch
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtTest import QTest
 
-from echo_workshop.application.pins import PinCheckService
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.requirements import RoleRequirements
-from echo_workshop.resources.weights import WeightSnapshot
-from echo_workshop.ui.matching.settings import MatchingRoleSettingsController
+from ww_echo_workshop.application.pins import PinCheckService
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.requirements import RoleRequirements
+from ww_echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.ui.matching.settings import MatchingRoleSettingsController
 from tests.calculation.helpers import tuned
 from tests.native_runtime import pin_checks
 

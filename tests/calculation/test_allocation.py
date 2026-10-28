@@ -6,8 +6,8 @@ import threading
 import unittest
 from dataclasses import replace
 from tests.native_runtime import ScoreService
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.core.allocation.models import (
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.core.allocation.models import (
     AllocationCancelled,
     AllocationRequest,
     RoleAllocation,
@@ -16,10 +16,10 @@ from echo_workshop.core.allocation.models import (
 )
 from tests.native_runtime import allocation_precheck
 from tests.native_runtime import AllocationHarness
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.models import StatValue
-from echo_workshop.resources.weights import WeightProvider, WeightSnapshot
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.models import StatValue
+from ww_echo_workshop.resources.weights import WeightProvider, WeightSnapshot
 from tests.calculation.helpers import FakeScores, role, tuned
 from uuid import uuid4
 from tests.calculation.allocation_oracle import objective

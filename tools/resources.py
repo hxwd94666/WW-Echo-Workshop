@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
-BUILTIN = ROOT / 'src/echo_workshop/resources/builtin'
+BUILTIN = ROOT / 'src/ww_echo_workshop/resources/builtin'
 
 
 def source_inventory(folder=BUILTIN):
@@ -69,12 +69,12 @@ def metadata(folder=BUILTIN):
 
 
 def validate():
-    from echo_workshop.resources.weights import WeightSnapshot
-    from echo_workshop.resources.sonata import SonataSnapshot
-    from echo_workshop.resources.effects import _snapshot
-    from echo_workshop.resources.echo_names import builtin_echo_names
-    from echo_workshop.resources.game_catalog import GameSnapshot
-    from echo_workshop.resources.role_defaults import builtin_snapshot
+    from ww_echo_workshop.resources.weights import WeightSnapshot
+    from ww_echo_workshop.resources.sonata import SonataSnapshot
+    from ww_echo_workshop.resources.effects import _snapshot
+    from ww_echo_workshop.resources.echo_names import builtin_echo_names
+    from ww_echo_workshop.resources.game_catalog import GameSnapshot
+    from ww_echo_workshop.resources.role_defaults import builtin_snapshot
 
     document = json.loads((BUILTIN / 'sources.json').read_text(encoding='utf-8'))
     if document != metadata():
@@ -91,7 +91,7 @@ def validate():
         raise ValueError('Missing offline pinyin readings')
     GameSnapshot.from_data(json.loads((BUILTIN / 'game_catalog.json').read_bytes()))
     panel = json.loads((BUILTIN / 'panel_catalog.json').read_text(encoding='utf-8'))
-    from echo_workshop.resources.panel_catalog import PanelSnapshot
+    from ww_echo_workshop.resources.panel_catalog import PanelSnapshot
 
     PanelSnapshot.from_data(panel)
     return {
@@ -108,8 +108,8 @@ def validate():
 
 
 def snapshot(source, output):
-    from echo_workshop.resources.http import strict_json
-    from echo_workshop.resources.weights import WeightSnapshot
+    from ww_echo_workshop.resources.http import strict_json
+    from ww_echo_workshop.resources.weights import WeightSnapshot
 
     if source.stat().st_size > 16 * 1024 * 1024:
         raise ValueError('Snapshot input exceeds limit')
@@ -139,7 +139,7 @@ def snapshot(source, output):
 def role_defaults(source, retrieved):
     from collections import Counter
     from datetime import date
-    from echo_workshop.resources.http import strict_json
+    from ww_echo_workshop.resources.http import strict_json
 
     date.fromisoformat(retrieved)
     if source.stat().st_size > 4 * 1024 * 1024:

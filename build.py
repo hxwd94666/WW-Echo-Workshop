@@ -18,11 +18,11 @@ sys.path.insert(0, str(ROOT / 'tools'))
 
 from check_structure import check  # noqa: E402
 from resources import validate as validate_resources  # noqa: E402
-INSTALL_ID = 'echo-workshop'
+INSTALL_ID = 'ww-echo-workshop'
 
 
 def version():
-    tree = ast.parse((ROOT / 'src/echo_workshop/__init__.py').read_text(encoding='utf-8'))
+    tree = ast.parse((ROOT / 'src/ww_echo_workshop/__init__.py').read_text(encoding='utf-8'))
     for node in tree.body:
         if isinstance(node, ast.Assign) and any(
             isinstance(t, ast.Name) and t.id == '__version__' for t in node.targets
@@ -34,7 +34,7 @@ def version():
 
 
 def native_members():
-    source = ROOT / 'src/echo_workshop/native/compute'
+    source = ROOT / 'src/ww_echo_workshop/native/compute'
     allowed = {
         'Cargo.toml',
         'Cargo.lock',
@@ -49,8 +49,19 @@ def native_members():
         if not path.is_file():
             continue
         relative = path.relative_to(source).as_posix()
+        vendor_source = relative.startswith('vendor/echo_policy/') and (
+            path.suffix == '.rs'
+            or relative
+            in (
+                'vendor/echo_policy/Cargo.toml',
+                'vendor/echo_policy/LICENSE',
+                'vendor/echo_policy/README.md',
+            )
+        )
         if path.is_symlink() or not (
-            relative in allowed or relative.startswith('src/') and path.suffix == '.rs'
+            relative in allowed
+            or relative.startswith('src/') and path.suffix == '.rs'
+            or vendor_source
         ):
             raise ValueError('Unexpected native source member: ' + relative)
         members[relative] = path.read_bytes()
@@ -68,7 +79,7 @@ def native_members():
     )
     if result.returncode:
         raise RuntimeError('Rust build failed: ' + result.stdout + result.stderr)
-    executable = ROOT / 'build/native/release/echo-workshop-compute.exe'
+    executable = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
     description = subprocess.run(
         [str(executable), '--describe'],
         capture_output=True,
@@ -84,8 +95,8 @@ def native_members():
     metadata['sha256'] = hashlib.sha256(body).hexdigest()
     metadata['sources'] = {name: hashlib.sha256(data).hexdigest() for name, data in members.items()}
     return {
-        'echo_workshop/native/bin/echo-workshop-compute.exe': body,
-        'echo_workshop/native/manifest.json': (
+        'ww_echo_workshop/native/bin/ww-echo-workshop-compute.exe': body,
+        'ww_echo_workshop/native/manifest.json': (
             json.dumps(metadata, sort_keys=True, indent=2) + '\n'
         ).encode(),
     }
@@ -94,13 +105,13 @@ def native_members():
 def contents(native):
     result = {}
     for folder, prefix in (
-        (ROOT / 'src/echo_workshop', 'echo_workshop'),
+        (ROOT / 'src/ww_echo_workshop', 'ww_echo_workshop'),
         (ROOT / 'plugin/okww', ''),
     ):
         for path in sorted(folder.rglob('*')):
             if not path.is_file() or '__pycache__' in path.parts or path.name == 'manifest.json':
                 continue
-            if folder == ROOT / 'src/echo_workshop' and path.is_relative_to(
+            if folder == ROOT / 'src/ww_echo_workshop' and path.is_relative_to(
                 folder / 'native/compute'
             ):
                 continue  # Native sources are validated and represented by the compiled-source manifest.
@@ -126,9 +137,9 @@ def contents(native):
     ):
         result[target] = (ROOT / source).read_bytes()
     expected_tasks = {
-        'echo_workshop_settings.py',
-        'echo_workshop_overlay.py',
-        'echo_workshop_scan.py',
+        'ww_echo_workshop_settings.py',
+        'ww_echo_workshop_overlay.py',
+        'ww_echo_workshop_scan.py',
     }
     root_tasks = {key for key in result if '/' not in key and key.endswith('.py')}
     if root_tasks != expected_tasks:
@@ -177,8 +188,8 @@ def build(output=None):
         path = folder / name
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(body)
-    target = output / f'echo-workshop-{version()}.zip'
-    fd, temporary = tempfile.mkstemp(prefix='.echo_workshop-', suffix='.zip', dir=output)
+    target = output / f'ww-echo-workshop-{version()}.zip'
+    fd, temporary = tempfile.mkstemp(prefix='.ww_echo_workshop-', suffix='.zip', dir=output)
     os.close(fd)
     try:
         with zipfile.ZipFile(temporary, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as package:

@@ -13,19 +13,19 @@ from types import MethodType, SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from echo_workshop.application.custom_weights import CustomWeightService
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import canonical_json
+from ww_echo_workshop.application.custom_weights import CustomWeightService
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import canonical_json
 from tests.calculation.helpers import set_custom_template
-from echo_workshop.resources.weights import WeightProvider, WeightSnapshot
-from echo_workshop.resources.weight_updates import WeightUpdateService
+from ww_echo_workshop.resources.weights import WeightProvider, WeightSnapshot
+from ww_echo_workshop.resources.weight_updates import WeightUpdateService
 from tests.native_runtime import _jobs
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_custom_weights.json'
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class NativeCustomWeights(unittest.TestCase):
@@ -43,7 +43,7 @@ class NativeCustomWeights(unittest.TestCase):
             for name in ('_entry_weight', '_main_name', '_score_entry', 'calculate_echo_score'):
                 stack.enter_context(
                     patch(
-                        'echo_workshop.core.scoring.' + name,
+                        'ww_echo_workshop.core.scoring.' + name,
                         side_effect=AssertionError(name),
                         create=True,
                     )
@@ -64,7 +64,7 @@ class NativeCustomWeights(unittest.TestCase):
     def test_invalid_numeric_fields_do_not_restart_a_healthy_worker(self):
         self.service.editable_values(self.case['original'], **self.args)
         child = _jobs._workers['interactive']._process
-        with self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'):
+        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'):
             for value in (-1, True, 1e6 + 1, float('nan'), float('inf')):
                 with self.assertRaises(ValueError):
                     self.service.build(
@@ -113,7 +113,7 @@ class NativeCustomWeights(unittest.TestCase):
             template['score_max'][0] += 1
             with (
                 self.assertRaises(ValueError),
-                self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'),
+                self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'),
             ):
                 set_custom_template(
                     provider, '1304', 'default', template, expected_version=current.version
@@ -288,7 +288,7 @@ class NativeCustomWeights(unittest.TestCase):
                 dict(identity=['wrong', 'default'], weight_version=self.data['weight_version']),
                 **self.args,
             )
-        from echo_workshop.resources import custom_weights
+        from ww_echo_workshop.resources import custom_weights
 
         for name in (
             'editable_values',
@@ -350,7 +350,7 @@ class NativeCustomWeights(unittest.TestCase):
 
     @staticmethod
     def editor_method(name):
-        source = ROOT / 'src/echo_workshop/ui/settings/weights.py'
+        source = ROOT / 'src/ww_echo_workshop/ui/settings/weights.py'
         tree = ast.parse(source.read_text(encoding='utf-8'))
         cls = next(
             n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'CustomWeightEditor'

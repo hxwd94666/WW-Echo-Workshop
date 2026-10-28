@@ -6,12 +6,12 @@ import json
 from pathlib import Path
 from dataclasses import asdict, replace
 from tests.native_runtime import filter_records
-from echo_workshop.core.cancellation import ComparisonCancelled
+from ww_echo_workshop.core.cancellation import ComparisonCancelled
 from tests.native_runtime import ScoreService
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, StatValue, canonical_json
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, StatValue, canonical_json
 from tests.native_runtime import calculate_echo_score, substat_tier_label
-from echo_workshop.resources.weights import WeightProvider
+from ww_echo_workshop.resources.weights import WeightProvider
 from tests.calculation.helpers import sample
 from types import SimpleNamespace
 from unittest.mock import patch

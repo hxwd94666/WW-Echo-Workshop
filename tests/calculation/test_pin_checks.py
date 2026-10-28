@@ -6,15 +6,15 @@ from pathlib import Path
 import threading
 import unittest
 
-from echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
-from echo_workshop.application.pins import PinCheck, PinCheckService, pin_error_text
-from echo_workshop.application.matching.feedback import (
+from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
+from ww_echo_workshop.application.pins import PinCheck, PinCheckService, pin_error_text
+from ww_echo_workshop.application.matching.feedback import (
     validate_match_requirements,
     MatchRequirementsError,
 )
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.requirements import RoleRequirements
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.requirements import RoleRequirements
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import ENGINE, pin_checks
 from tests.calculation.helpers import tuned
 

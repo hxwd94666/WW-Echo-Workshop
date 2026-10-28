@@ -7,11 +7,11 @@ from pathlib import Path
 import threading
 import unittest
 
-from echo_workshop.application.compute_protocol import ComputeWorker, ComputeFailure
-from echo_workshop.application.match_projection import MatchProjectionService
-from echo_workshop.application.scoring import ComparisonScore
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.scoring import EchoScoreResult, ALGORITHM_VERSION
+from ww_echo_workshop.application.compute_protocol import ComputeWorker, ComputeFailure
+from ww_echo_workshop.application.match_projection import MatchProjectionService
+from ww_echo_workshop.application.scoring import ComparisonScore
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.scoring import EchoScoreResult, ALGORITHM_VERSION
 from tests.calculation.helpers import tuned
 from tests.native_runtime import ENGINE, _jobs
 

@@ -14,18 +14,18 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from echo_workshop.application.allocation import AllocationService
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import canonical_json
-from echo_workshop.storage.archives import export_archive, import_archive
-from echo_workshop.storage.inventory import EchoRepository
-from echo_workshop.storage.plans import AllocationStore, validate_plan
+from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import canonical_json
+from ww_echo_workshop.storage.archives import export_archive, import_archive
+from ww_echo_workshop.storage.inventory import EchoRepository
+from ww_echo_workshop.storage.plans import AllocationStore, validate_plan
 from tests.calculation.test_native_allocation_service import target_fixture
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class TestNativeStorage(unittest.TestCase):
@@ -71,12 +71,12 @@ class TestNativeStorage(unittest.TestCase):
 
     def test_save_load_summary_and_progress_use_native_without_python_evaluators(self):
         forbidden = (
-            'echo_workshop.core.scoring.calculate_echo_score',
-            'echo_workshop.core.scoring.prepare_score',
-            'echo_workshop.core.scoring.score_prepared',
-            'echo_workshop.core.rating.single_rating',
-            'echo_workshop.core.rating.loadout_rating',
-            'echo_workshop.core.compatibility.compatibility',
+            'ww_echo_workshop.core.scoring.calculate_echo_score',
+            'ww_echo_workshop.core.scoring.prepare_score',
+            'ww_echo_workshop.core.scoring.score_prepared',
+            'ww_echo_workshop.core.rating.single_rating',
+            'ww_echo_workshop.core.rating.loadout_rating',
+            'ww_echo_workshop.core.compatibility.compatibility',
         )
         with ExitStack() as stack:
             mocks = [
@@ -219,7 +219,7 @@ class TestNativeStorage(unittest.TestCase):
             evaluator = AllocationService(None, compute=missing)
             store = AllocationStore(self.directory, plan_evaluator=evaluator)
             with patch(
-                'echo_workshop.core.scoring.calculate_echo_score',
+                'ww_echo_workshop.core.scoring.calculate_echo_score',
                 side_effect=AssertionError('fallback'),
                 create=True,
             ):

@@ -8,17 +8,17 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.matching.feedback import (
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.matching.feedback import (
     feedback_from_code,
     MatchRequirementsError,
     validate_match_requirements,
 )
-from echo_workshop.application.operations import OperationCancelled
-from echo_workshop.application.pins import prepare_pin_catalog
-from echo_workshop.core.models import EchoRecord, StatValue
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.operations import OperationCancelled
+from ww_echo_workshop.application.pins import prepare_pin_catalog
+from ww_echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import _jobs
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -105,7 +105,7 @@ class TestMatchingScopeQuery(unittest.TestCase):
 
     def test_actual_candidate_worker_publishes_native_feedback_without_rescoring(self):
         # Execute the actual catalogue-only worker body; this is not a real Qt/host gate.
-        source = ROOT / 'src/echo_workshop/ui/matching/controller.py'
+        source = ROOT / 'src/ww_echo_workshop/ui/matching/controller.py'
         tree = ast.parse(source.read_text('utf-8'))
         controller = next(
             n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'ComparisonContent'

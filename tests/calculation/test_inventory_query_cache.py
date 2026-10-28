@@ -7,15 +7,15 @@ import threading
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.inventory_query_inputs import CACHE_BYTES, InventoryQueryInputs
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, StatValue
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.inventory_query_inputs import CACHE_BYTES, InventoryQueryInputs
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, StatValue
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_inventory_query.json'
 
 

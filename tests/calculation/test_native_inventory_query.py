@@ -11,18 +11,18 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, PropertyMock, patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.inventory import InventoryReader
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.plan_jobs import PlanCommands
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, canonical_json
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.inventory import InventoryReader
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.plan_jobs import PlanCommands
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, canonical_json
 from tests.native_runtime import _jobs
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_inventory_query.json'
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class ShiftTimezone(tzinfo):
@@ -65,7 +65,7 @@ class NativeInventoryQuery(unittest.TestCase):
                 )
             stack.enter_context(
                 patch(
-                    'echo_workshop.resources.search.search_matches',
+                    'ww_echo_workshop.resources.search.search_matches',
                     side_effect=AssertionError('Python selected records'),
                 )
             )
@@ -108,7 +108,7 @@ class NativeInventoryQuery(unittest.TestCase):
         self.service.filter_records((), now=self.now)
         child = _jobs._workers['interactive']._process
         unknown = replace(self.records[0], level=None)
-        with self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'):
+        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'):
             with self.assertRaises(TypeError):
                 self.service.filter_records((unknown,), now=self.now, cost=4)
             for now, age in ((self.now, 1e9), (datetime.min.replace(tzinfo=timezone.utc), 1)):
@@ -176,7 +176,7 @@ class NativeInventoryQuery(unittest.TestCase):
             lambda value: value.update(counts=dict(saved=1, pending=1, confirmed=1, eligible=1)),
             lambda value: value.update(counts=dict(saved=1, pending=1, confirmed=0, eligible=1)),
         )
-        with self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'):
+        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'):
             for damage in damages:
                 with self.subTest(damage=damage), self.assertRaises(ComputeFailure):
                     InventoryQueryService(compute=Replies(damage)).filter_records(
@@ -285,14 +285,14 @@ class NativeInventoryQuery(unittest.TestCase):
             [r.item_id for r in selected],
         )
         self.assertEqual(17, result.payload[-1]['scope_generation'])
-        with self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'), self.assertRaises(ValueError):
+        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'), self.assertRaises(ValueError):
             PlanCommands(None, repository, allocation=allocation).execute(
                 'precheck', dict(request=request, snapshot=snapshot), candidate_filters={}
             )
 
     def test_retired_python_backend_functions_are_deleted(self):
-        from echo_workshop.application import inventory, view_state
-        from echo_workshop.application.matching import filtering
+        from ww_echo_workshop.application import inventory, view_state
+        from ww_echo_workshop.application.matching import filtering
 
         self.assertFalse(hasattr(filtering, 'filter_records'))
         self.assertFalse(hasattr(inventory, 'filter_review_rows'))

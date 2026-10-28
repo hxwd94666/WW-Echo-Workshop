@@ -72,7 +72,7 @@ def fixture(items, roles, varied):
 
 
 def main():
-    from echo_workshop.application.compute_protocol import ComputeWorker
+    from ww_echo_workshop.application.compute_protocol import ComputeWorker
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--items', type=int, default=300)
@@ -95,7 +95,7 @@ def main():
     payload['seconds'] = 5
     runs = []
     with ComputeWorker(
-        ROOT / 'build/native/release/echo-workshop-compute.exe', fault_tests=True
+        ROOT / 'build/native/release/ww-echo-workshop-compute.exe', fault_tests=True
     ) as worker:
         for _ in range(args.repeats):
             start = time.perf_counter()

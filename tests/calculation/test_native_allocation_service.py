@@ -10,21 +10,21 @@ import unittest
 from unittest.mock import patch
 from uuid import UUID
 
-from echo_workshop.application.allocation import AllocationService
-from echo_workshop.application.compute_bridge import plain
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.plan_jobs import PlanCommands
-from echo_workshop.application.scoring import ScoreService
-from echo_workshop.core.allocation.models import AllocationCancelled, AllocationRequest, SlotRule
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import StatValue
-from echo_workshop.resources.weights import WeightSnapshot
+from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.compute_bridge import plain
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.plan_jobs import PlanCommands
+from ww_echo_workshop.application.scoring import ScoreService
+from ww_echo_workshop.core.allocation.models import AllocationCancelled, AllocationRequest, SlotRule
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import StatValue
+from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import EchoRepository
 from tests.native_runtime import AllocationStore
 from tests.calculation.helpers import role, tuned
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def target_fixture():

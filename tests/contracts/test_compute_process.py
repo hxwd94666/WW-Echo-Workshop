@@ -8,10 +8,10 @@ import time
 import unittest
 from unittest.mock import patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker, encode_frame
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker, encode_frame
 
-ENGINE = Path(__file__).resolve().parents[2] / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = Path(__file__).resolve().parents[2] / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class TestComputeProcess(unittest.TestCase):
@@ -160,7 +160,7 @@ class TestComputeProcess(unittest.TestCase):
         code = (
             'import sys,threading; '
             f'sys.path.insert(0,{str(source)!r}); '
-            'from echo_workshop.application.compute_jobs import ComputeJobs; '
+            'from ww_echo_workshop.application.compute_jobs import ComputeJobs; '
             'entered=threading.Event(); release=threading.Event(); '
             'jobs=ComputeJobs(); '
             'jobs.submit("ping",lambda:(entered.set(),release.wait(),{})[-1]); '

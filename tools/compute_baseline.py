@@ -22,7 +22,7 @@ DOMAINS = (
 
 def inventory():
     modules, callers = [], []
-    for path in sorted((ROOT / 'src/echo_workshop').rglob('*.py')):
+    for path in sorted((ROOT / 'src/ww_echo_workshop').rglob('*.py')):
         source = path.read_text(encoding='utf-8')
         tree = ast.parse(source)
         relative = path.relative_to(ROOT).as_posix()
@@ -44,7 +44,7 @@ def inventory():
             for node in ast.walk(tree)
             if isinstance(node, ast.ImportFrom)
             and node.module
-            and node.module.startswith('echo_workshop.core.')
+            and node.module.startswith('ww_echo_workshop.core.')
             and any(node.module.split('.')[2] == name for name in DOMAINS)
         ]
         if imports:

@@ -9,18 +9,18 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, PropertyMock, patch
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.pins import prepare_pin_catalog
-from echo_workshop.application.plan_jobs import PlanCommands
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, canonical_json
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.pins import prepare_pin_catalog
+from ww_echo_workshop.application.plan_jobs import PlanCommands
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, canonical_json
 from tests.native_runtime import _inventory_queries
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'native_pin_catalog.json'
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def catalog_json(catalog):
@@ -113,7 +113,7 @@ class NativePinCatalog(unittest.TestCase):
         records = tuple(EchoRecord.from_dict(row) for row in self.cases[0]['records'])
         try:
             with (
-                self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'),
+                self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'),
                 self.assertRaises(ComputeFailure),
             ):
                 prepare_pin_catalog(records, queries=queries)
@@ -159,7 +159,7 @@ class NativePinCatalog(unittest.TestCase):
             lambda value: value['cost_positions'].update({'1': [0]}),
             lambda value: value['cost_positions'].update({'1': [0, 2]}),
         )
-        with self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'):
+        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'):
             for damage in damages:
                 with self.subTest(damage=damage), self.assertRaises(ComputeFailure):
                     prepare_pin_catalog(
@@ -167,7 +167,7 @@ class NativePinCatalog(unittest.TestCase):
                     )
 
     def test_widgets_project_prepared_catalog_and_native_cost_membership_only(self):
-        path = ROOT / 'src/echo_workshop/ui/allocation/pin_model.py'
+        path = ROOT / 'src/ww_echo_workshop/ui/allocation/pin_model.py'
         tree = ast.parse(path.read_text(encoding='utf-8'))
         cost_class = next(
             node
@@ -204,7 +204,7 @@ class NativePinCatalog(unittest.TestCase):
             if isinstance(node, ast.Name):
                 self.assertNotEqual('prepare_pin_catalog', node.id)
         editor = ast.parse(
-            (ROOT / 'src/echo_workshop/ui/allocation/editor.py').read_text(encoding='utf-8')
+            (ROOT / 'src/ww_echo_workshop/ui/allocation/editor.py').read_text(encoding='utf-8')
         )
         self.assertFalse(
             any(

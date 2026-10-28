@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="src/echo_workshop/ui/widgets/assets/workshop.png" alt="Echo Workshop 声骸工坊兽面标志" width="108">
+<img src="src/ww_echo_workshop/ui/widgets/assets/workshop.png" alt="WW-Echo-Workshop 声骸工坊兽面标志" width="108">
 
 # 声骸工坊
 
-**Echo Workshop · 鸣潮实时评分、声骸收录与配装**
+**WW-Echo-Workshop · 鸣潮实时评分、声骸收录与配装**
 
 ![平台](https://img.shields.io/badge/平台-Windows-0078d4)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776ab)
@@ -99,35 +99,35 @@
 
 ## 如何安装
 
-**Echo Workshop 是 [OKWW](https://github.com/ok-oldking/ok-wuthering-waves) 的插件，不能脱离 OKWW 单独运行，请先下载安装好 [OKWW](https://github.com/ok-oldking/ok-wuthering-waves/releases)。**
+**WW-Echo-Workshop 是 [OKWW](https://github.com/ok-oldking/ok-wuthering-waves) 的插件，不能脱离 OKWW 单独运行，请先下载安装好 [OKWW](https://github.com/ok-oldking/ok-wuthering-waves/releases)。**
 
-1. 首先，点击下载本项目的 [echo-workshop-版本号.zip](https://github.com/hxwd94666/Echo-Workshop/releases)。
+1. 首先，点击下载本项目的 [ww-echo-workshop-版本号.zip](https://github.com/hxwd94666/WW-Echo-Workshop/releases)。
 
-2. 解压发行包，把 echo-workshop 文件夹放入 OKWW 的 ok_import 目录：
+2. 解压发行包，把 ww-echo-workshop 文件夹放入 OKWW 的 ok_import 目录：
    ```text
-   data/apps/ok-ww/working/ok_import/echo-score
+   data/apps/ok-ww/working/ok_import/ww-echo-workshop
    ```
 
    例如：
    ```text
-   D:\ok-ww\data\apps\ok-ww\working\ok_import\echo-score
+   D:\ok-ww\data\apps\ok-ww\working\ok_import\ww-echo-workshop
    ```
 3. 启动 OKWW，选择开始运行，然后打开左侧 **声骸工坊**。
 
 安装后的目录结构：
 
     OKWW 运行目录/
-    └─ ok_import/echo-workshop/
+    └─ ok_import/ww-echo-workshop/
 
-**数据位置**：玩家数据在宿主配置目录的 plugin_data/echo-workshop 下，不在插件安装文件夹。替换或重装插件不会覆盖库存与配装。
+**数据位置**：玩家数据在宿主配置目录的 plugin_data/ww-echo-workshop 下，不在插件安装文件夹。替换或重装插件不会覆盖库存与配装。
 
 ## Windows 安全提示
 
-插件包含未签名的本地 Rust 计算程序（native/bin/echo-workshop-compute.exe），Windows 或 Defender 可能提示“打开这些文件可能会对你的计算机有害”或“Windows 已保护你的电脑”。它只在本机计算，不下载或执行远程代码。
+插件包含未签名的本地 Rust 计算程序（native/bin/ww-echo-workshop-compute.exe），Windows 或 Defender 可能提示“打开这些文件可能会对你的计算机有害”或“Windows 已保护你的电脑”。它只在本机计算，不下载或执行远程代码。
 
 - 右键 ZIP → **属性** → 勾选 **解除锁定** → 确定；
-- 或解压后在 PowerShell 对 ok_import/echo-workshop 目录执行 Unblock-File；
-- 若 Defender 实际隔离了该 exe，确认来源后把 ok_import/echo-workshop 加入排除项，不要关闭 Defender。
+- 或解压后在 PowerShell 对 ok_import/ww-echo-workshop 目录执行 Unblock-File；
+- 若 Defender 实际隔离了该 exe，确认来源后把 ok_import/ww-echo-workshop 加入排除项，不要关闭 Defender。
 
 <a id="quick-start"></a>
 
@@ -148,14 +148,14 @@
 
 | 目录 | 职责 |
 | --- | --- |
-| src/echo_workshop/native/compute/ | Rust 计算引擎 |
-| src/echo_workshop/application/ | 用例、异步作业、运行时组合 |
-| src/echo_workshop/storage/、resources/、capture/ | 本地数据、资料更新、收录识别 |
-| src/echo_workshop/ui/ | 声骸库、匹配、配装、设置界面 |
+| src/ww_echo_workshop/native/compute/ | Rust 计算引擎 |
+| src/ww_echo_workshop/application/ | 用例、异步作业、运行时组合 |
+| src/ww_echo_workshop/storage/、resources/、capture/ | 本地数据、资料更新、收录识别 |
+| src/ww_echo_workshop/ui/ | 声骸库、匹配、配装、设置界面 |
 | plugin/okww/ | 三个薄宿主入口与 manifest |
 | tests/calculation/、tests/contracts/ | 计算验证、强路径契约 |
 
-版本唯一来源是 src/echo_workshop/__init__.py；不要编辑 dist/ 中的生成代码。更多细节见[维护文档](docs/README.md)与[贡献指南](CONTRIBUTING.md)。
+版本唯一来源是 src/ww_echo_workshop/__init__.py；不要编辑 dist/ 中的生成代码。更多细节见[维护文档](docs/README.md)与[贡献指南](CONTRIBUTING.md)。
 
 ## 致谢
 

@@ -5,12 +5,12 @@ from concurrent.futures import Future
 from pathlib import Path
 from types import SimpleNamespace
 
-from echo_workshop.application.compute_jobs import ComputeJobs
-from echo_workshop.application.requirements_check import RequirementsCheckService
-from echo_workshop.storage.profile_transfer import _validate_imported_requirements
+from ww_echo_workshop.application.compute_jobs import ComputeJobs
+from ww_echo_workshop.application.requirements_check import RequirementsCheckService
+from ww_echo_workshop.storage.profile_transfer import _validate_imported_requirements
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 def settings_with(requirements):

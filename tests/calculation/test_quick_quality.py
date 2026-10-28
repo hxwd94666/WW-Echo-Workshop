@@ -8,14 +8,14 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, PropertyMock, patch
 
-from echo_workshop.application.quick_score import (
+from ww_echo_workshop.application.quick_score import (
     QuickScoreStale,
     refresh_record,
     score_one,
     validate_context,
 )
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord
 from tests.native_runtime import ScoreService, WeightProvider, inventory_queries
 
 FIXTURE = Path(__file__).with_name('fixtures') / 'review_quality.json'

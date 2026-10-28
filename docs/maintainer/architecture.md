@@ -2,7 +2,7 @@
 
 ## 唯一实现
 
-`src/echo_workshop/` 是唯一业务源码。发行时递归打入插件根的 `echo_workshop/`；安装根只放三个薄宿主入口和manifest。没有另一份flat业务源码，也没有构建旧页面再隐藏重排的入口。
+`src/ww_echo_workshop/` 是唯一业务源码。发行时递归打入插件根的 `ww_echo_workshop/`；安装根只放三个薄宿主入口和manifest。没有另一份flat业务源码，也没有构建旧页面再隐藏重排的入口。
 
 | 目录 | 职责 |
 | --- | --- |
@@ -12,7 +12,7 @@
 | storage | SQLite库存、冻结计划、归档、事务意图和兼容恢复 |
 | resources | 来源适配、内置快照、校验、缓存与更新 |
 | capture | 冻结帧、词条/元数据、视口、遍历状态和网格识别 |
-| ui | 库存、匹配、配装、设置及真正复用的组件 |
+| ui | 库存、匹配、配装、工作台、设置及真正复用的组件 |
 | adapters/okww | 宿主任务、设备、输入、浮层和生命周期 |
 
 核心层不导入上层或执行IO。应用层不导入页面；页面通过运行时提供的应用服务提交动作，不持有SQLite连接。目录化不是每个类一个文件，规则内聚且单文件最多800行。实时评分/收录的区域、场景和回退见[实时评分与收录链路](capture.md)。
@@ -67,7 +67,7 @@ v1 求值和兼容读取已删除；不支持的政策、缺失当前计件标�
 
 当前验收依赖：Python3.12、ok-script2.0.8、PySide6 6.11.1、Fluent Widgets1.11.3。源码要求Python3.11+；未运行的组合不冒称已验证。
 
-宿主仅扫描安装根的Python真实class：`echo_workshop_settings.py`、`echo_workshop_overlay.py`、`echo_workshop_scan.py`。它们保留原任务类名，用于旧Config身份；所有业务通过canonical `echo_workshop.*` 导入，不再fresh-exec112个helper或创建源路径hash类型注册。
+宿主仅扫描安装根的Python真实class：`ww_echo_workshop_settings.py`、`ww_echo_workshop_overlay.py`、`ww_echo_workshop_scan.py`。任务类名为 `WWEchoWorkshop*Task`；改名后旧Config文件名不再读取，旧数据目录不迁移。所有业务通过canonical `ww_echo_workshop.*` 导入，不再fresh-exec112个helper或创建源路径hash类型注册。
 
 内嵌页面由宿主调用 `create_import_page`；不支持该桥接的宿主可从任务卡打开同一助手窗口。安装新版本需完全重启，不承诺跨版本无重启热替换。
 

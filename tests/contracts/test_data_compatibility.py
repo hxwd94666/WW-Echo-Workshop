@@ -9,7 +9,7 @@ import threading
 import time
 import unittest
 
-from echo_workshop.storage.inventory import EchoRepository
+from ww_echo_workshop.storage.inventory import EchoRepository
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = ROOT / 'tests/fixtures'

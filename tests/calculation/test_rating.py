@@ -4,12 +4,12 @@ import tempfile
 import unittest
 from copy import deepcopy
 from dataclasses import replace
-from echo_workshop.application.live_selection import resolve_live_selection
+from ww_echo_workshop.application.live_selection import resolve_live_selection
 from tests.native_runtime import RecommendationService
 from tests.native_runtime import ScoreService
-from echo_workshop.core.compatibility import CompatibilityRule
-from echo_workshop.core.models import StatValue
-from echo_workshop.core.rating import LABELS
+from ww_echo_workshop.core.compatibility import CompatibilityRule
+from ww_echo_workshop.core.models import StatValue
+from ww_echo_workshop.core.rating import LABELS
 from tests.native_runtime import (
     loadout_rating,
     rating_template,
@@ -17,7 +17,7 @@ from tests.native_runtime import (
     single_standard,
 )
 from tests.native_runtime import calculate_echo_score
-from echo_workshop.resources.weights import ALGORITHM_VERSION, WeightSnapshot
+from ww_echo_workshop.resources.weights import ALGORITHM_VERSION, WeightSnapshot
 from tests.native_runtime import WeightProvider
 from pathlib import Path
 from tests.calculation.helpers import set_custom_template, changed_snapshot, tuned
@@ -100,7 +100,7 @@ class TestEchoRating(unittest.TestCase):
             for record, cell in zip(records, cells):
                 template = snapshot.scoring_template('1304')
                 with patch(
-                    'echo_workshop.core.rating.validate_grade_table',
+                    'ww_echo_workshop.core.rating.validate_grade_table',
                     side_effect=AssertionError('Per-cell grade validation'),
                 ):
                     scalar = calculate_echo_score(
@@ -364,7 +364,7 @@ class TestCustomWeights(unittest.TestCase):
 
     def test_fifty_point_normalization_skills_and_batch_scoring_cache(self):
         from tests.native_runtime import editable_values, build_custom_template
-        from echo_workshop.core.models import EchoRecord, StatValue
+        from ww_echo_workshop.core.models import EchoRecord, StatValue
         from tests.native_runtime import ScoreService
         from uuid import uuid4
 

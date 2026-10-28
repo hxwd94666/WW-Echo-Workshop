@@ -2,9 +2,9 @@
 
 ## 稳定身份
 
-- 产品名 Echo Workshop，Python 包 `echo_workshop`，安装ID `echo-workshop`。
-- 宿主任务使用 `EchoWorkshopSettingsTask`、`EchoWorkshopOverlayTask`、`EchoWorkshopScanTask`。
-- 数据根为 `config_file.parent/plugin_data/echo-workshop/`，不跟随业务模块位置变化。
+- 产品名 WW-Echo-Workshop，Python 包 `ww_echo_workshop`，安装ID `ww-echo-workshop`。
+- 宿主任务使用 `WWEchoWorkshopSettingsTask`、`WWEchoWorkshopOverlayTask`、`WWEchoWorkshopScanTask`。
+- 数据根为 `config_file.parent/plugin_data/ww-echo-workshop/`，不跟随业务模块位置变化。
 - 档案UUID、声骸物理UUID、角色/模版ID、历史计划ID和保护claims不随文件改名变化。
 - 匹配与配装分别持久化到 `ComparisonSettingsJSON` / `AllocationSettingsJSON`。
 

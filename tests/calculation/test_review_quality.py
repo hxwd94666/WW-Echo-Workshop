@@ -8,13 +8,13 @@ import threading
 import unittest
 from unittest.mock import Mock, PropertyMock, patch
 
-from echo_workshop.application.compute_protocol import ComputeFailure
-from echo_workshop.application.inventory_query import InventoryQueryService
-from echo_workshop.application.record_quality import quality_for
-from echo_workshop.application.view_state import review_checked_reason
-from echo_workshop.core.cancellation import OperationCancelled
-from echo_workshop.core.models import EchoRecord, canonical_json
-from echo_workshop.ui.inventory.card_data import checked_protection_text, project_checked_card
+from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
+from ww_echo_workshop.application.record_quality import quality_for
+from ww_echo_workshop.application.view_state import review_checked_reason
+from ww_echo_workshop.core.cancellation import OperationCancelled
+from ww_echo_workshop.core.models import EchoRecord, canonical_json
+from ww_echo_workshop.ui.inventory.card_data import checked_protection_text, project_checked_card
 from tests.native_runtime import _jobs
 
 FIXTURE = Path(__file__).with_name('fixtures') / 'review_quality.json'
@@ -110,7 +110,7 @@ class ReviewQuality(unittest.TestCase):
         ):
             with (
                 self.assertRaises(ComputeFailure),
-                self.assertLogs('ok.Echo Workshop.Jobs', level='ERROR'),
+                self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'),
             ):
                 service.review(self.rows)
             cancel = threading.Event()

@@ -4,10 +4,10 @@ import json
 from pathlib import Path
 import unittest
 
-from echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
+from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker
 
 ROOT = Path(__file__).resolve().parents[2]
-ENGINE = ROOT / 'build/native/release/echo-workshop-compute.exe'
+ENGINE = ROOT / 'build/native/release/ww-echo-workshop-compute.exe'
 
 
 class TestNativeMatching(unittest.TestCase):

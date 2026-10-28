@@ -10,12 +10,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = (
-    'echo_workshop.application',
-    'echo_workshop.storage',
-    'echo_workshop.resources',
-    'echo_workshop.capture',
-    'echo_workshop.ui',
-    'echo_workshop.adapters',
+    'ww_echo_workshop.application',
+    'ww_echo_workshop.storage',
+    'ww_echo_workshop.resources',
+    'ww_echo_workshop.capture',
+    'ww_echo_workshop.ui',
+    'ww_echo_workshop.adapters',
     'PySide6',
     'qfluentwidgets',
     'ok',
@@ -51,12 +51,12 @@ def imported_modules(node, path, root):
 
 def check_constant_parity(root, errors):
     """Keep the Python and native main-stat tables in lockstep."""
-    path = root / 'src/echo_workshop/native/compute/data/constants.json'
+    path = root / 'src/ww_echo_workshop/native/compute/data/constants.json'
     try:
         native = json.loads(path.read_text(encoding='utf-8'))
         sys.path.insert(0, str(root / 'src'))
-        from echo_workshop.core.models import MAINSTAT_VALIDATION_MAXIMA
-        from echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
+        from ww_echo_workshop.core.models import MAINSTAT_VALIDATION_MAXIMA
+        from ww_echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
     except (OSError, ValueError, ImportError) as error:
         errors.append(f'constant parity: {error}')
         return
@@ -80,7 +80,7 @@ def check_constant_parity(root, errors):
 
 def check(root=ROOT, *, core_only=False):
     errors, files = [], []
-    folders = ('src/echo_workshop/core',) if core_only else ('src', 'plugin', 'tests', 'tools')
+    folders = ('src/ww_echo_workshop/core',) if core_only else ('src', 'plugin', 'tests', 'tools')
     for folder in folders:
         for path in sorted((root / folder).rglob('*.py')):
             relative = path.relative_to(root).as_posix()
@@ -100,7 +100,7 @@ def check(root=ROOT, *, core_only=False):
                 if isinstance(node, (ast.Import, ast.ImportFrom)):
                     imports = imported_modules(node, path, root)
                     for name in imports:
-                        if name == 'echo_workshop' or name.startswith('echo_workshop.'):
+                        if name == 'ww_echo_workshop' or name.startswith('ww_echo_workshop.'):
                             target = root / 'src' / Path(*name.split('.'))
                             if (
                                 not target.with_suffix('.py').is_file()
@@ -111,7 +111,7 @@ def check(root=ROOT, *, core_only=False):
                                 )
                         if (
                             name.startswith('echo_')
-                            and not (name == 'echo_workshop' or name.startswith('echo_workshop.'))
+                            and not (name == 'ww_echo_workshop' or name.startswith('ww_echo_workshop.'))
                         ) or name in (
                             'overlay_status',
                             'xwuid_echo_data',
@@ -122,8 +122,8 @@ def check(root=ROOT, *, core_only=False):
                         ):
                             errors.append(f'{relative}:{node.lineno}: core dependency {name}')
                         if '/ui/' in relative and (
-                            name == 'echo_workshop.storage'
-                            or name.startswith('echo_workshop.storage.')
+                            name == 'ww_echo_workshop.storage'
+                            or name.startswith('ww_echo_workshop.storage.')
                         ):
                             errors.append(
                                 f'{relative}:{node.lineno}: UI must call an application service, not {name}'
@@ -131,8 +131,8 @@ def check(root=ROOT, *, core_only=False):
                         if (
                             relative.startswith(('storage/', 'resources/', 'capture/'))
                             and (
-                                name == 'echo_workshop.application'
-                                or name.startswith('echo_workshop.application.')
+                                name == 'ww_echo_workshop.application'
+                                or name.startswith('ww_echo_workshop.application.')
                             )
                             and relative not in LOWER_LAYER_APP_ALLOWED
                         ):
