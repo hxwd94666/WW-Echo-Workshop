@@ -22,5 +22,6 @@
 - [发布与验收](maintainer/release.md)：定向检查、构建、安装及用户流程。
 - [发布前开发计划](maintainer/release-plan.md)：门禁、阻塞项、执行顺序与发布判定。
 - [0.1 发布候选说明](maintainer/release-notes-0.1.md)：当前包、已验证范围、未验证项和回退。
+- [G5 真实游戏验收清单](maintainer/release-g5-checklist.md)：实时策略、HUD、资料和头像的现场验收项。
 
 安装前请先确认宿主：[OKWW 官方仓库](https://github.com/ok-oldking/ok-wuthering-waves)、[OKWW Releases](https://github.com/ok-oldking/ok-wuthering-waves/releases)、[OKWW 中文文档](https://ok-oldking.github.io/ok-wuthering-waves/zh-CN/)。

@@ -37,9 +37,6 @@ class CustomWeightEditor(QWidget):
         self.sub_controls = {}
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 8, 0, 0)
-        title = QLabel('自定义角色权重')
-        title.setStyleSheet('font-weight: bold;')
-        layout.addWidget(title)
         help_text = QLabel('数值越大，词条越重要。')
         help_text.setToolTip(
             '0 表示不计分。保存后，此角色的所有模版均保留本地权重，不随更新改变。理想声骸仍按 50 分计算。'

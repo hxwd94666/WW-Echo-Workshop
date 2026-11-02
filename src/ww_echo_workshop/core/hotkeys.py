@@ -6,8 +6,6 @@ import json
 ACTIONS = {
     'capture': '收录当前声骸',
     'stop': '停止收录',
-    'policy_detail': '展开策略详情',
-    'policy_hud_edit': '切换透明悬浮窗编辑',
 }
 
 MODIFIERS = {'Ctrl': 0x11, 'Alt': 0x12, 'Shift': 0x10}

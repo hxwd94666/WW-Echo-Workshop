@@ -52,13 +52,12 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
         self.scan_start_notice = None
         self.default_config.update(
             {
-                '启用声骸评分': True,
+                '启用声骸评分': False,
                 '使用独立OCR引擎': True,
                 '策略浮层模式': 'qt',
                 '策略悬浮窗位置': '',
                 '策略悬浮窗自动定位': False,
                 '策略悬浮窗字号': 15,
-                '策略悬浮窗编辑热键': 'Ctrl+Alt+L',
                 '自动匹配评分模板': False,
                 '角色评分模板': DEFAULT_TEMPLATE,
                 '启用强化策略': False,
@@ -78,23 +77,25 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 'AutoWeightUpdates': True,
                 'AllocationSettingsJSON': '',
                 'CaptureHotkeysJSON': '',
-                '策略详情热键': 'Ctrl+Alt+P',
                 'IntakeMode': 'manual',
                 'ScanMinimumLevel': '25',
             }
         )
         if self.config is not None:
             for key, value in (
+                ('启用声骸评分', False),
                 ('使用独立OCR引擎', True),
                 ('策略浮层模式', 'qt'),
                 ('策略悬浮窗位置', ''),
                 ('策略悬浮窗自动定位', False),
                 ('策略悬浮窗字号', 15),
-                ('策略悬浮窗编辑热键', 'Ctrl+Alt+L'),
-                ('策略详情热键', 'Ctrl+Alt+P'),
             ):
                 if key not in self.config:
                     self.config[key] = value
+            # Live scoring is opt-in because it competes for OCR resources.
+            if '实时评分默认关闭迁移' not in self.config:
+                self.config['实时评分默认关闭迁移'] = True
+                self.config['启用声骸评分'] = False
             # These two were experimental and are now fixed defaults.
             self.config['使用独立OCR引擎'] = True
             self.config['策略浮层模式'] = 'qt'
@@ -106,7 +107,6 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 '策略悬浮窗位置': {'hidden': True},
                 '策略悬浮窗自动定位': {'hidden': True},
                 '策略悬浮窗字号': {'hidden': True},
-                '策略悬浮窗编辑热键': {'hidden': True},
                 '启用强化策略': {'hidden': True},
                 '强化策略目标分': {'hidden': True},
                 '强化策略模式': {'hidden': True},
@@ -127,7 +127,6 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 'AutoWeightUpdates': {'hidden': True},
                 'AllocationSettingsJSON': {'hidden': True},
                 'CaptureHotkeysJSON': {'hidden': True},
-                '策略详情热键': {'hidden': True},
                 '自动匹配评分模板': {'hidden': True},
                 'IntakeMode': {'hidden': True},
                 'ScanMinimumLevel': {'hidden': True},

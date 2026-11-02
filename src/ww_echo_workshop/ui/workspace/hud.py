@@ -3,7 +3,8 @@ import html
 import json
 import time
 
-from PySide6.QtCore import QEvent, QObject, QPoint, Qt, QTimer
+from PySide6.QtCore import QEvent, QObject, QPoint, QSize, Qt, QTimer, Signal
+from PySide6.QtGui import QColor, QIcon, QPainter, QPen, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
@@ -23,6 +24,14 @@ from ww_echo_workshop.core.policy_presets import SYSTEMS
 from ww_echo_workshop.ui.widgets.roles import RolePicker
 
 DEFAULT_FONT_SIZE = 15
+_CHECK_STYLE = (
+    'QCheckBox { color: #f4f4f4; background: rgba(42, 48, 60, 165);'
+    ' border-radius: 5px; padding: 3px 6px; }'
+    'QCheckBox::indicator { width: 16px; height: 16px;'
+    ' border: 2px solid #ffffff; border-radius: 2px; background: transparent; }'
+    'QCheckBox::indicator:checked { background: #ffffff;'
+    ' border: 2px solid #ffffff; }'
+)
 LAYOUT_ANCHORS = {
     'enhancement': (0.375, 0.32),
     'bag': (0.53, 0.50),
@@ -35,6 +44,43 @@ LAYOUT_ANCHORS = {
 RIGHT_DETAIL_LEFT = 0.77
 # The comparison left stat panel must not be covered by the HUD.
 COMPARISON_LEFT = 0.56
+
+
+def _hud_icon(kind, color='#7dd3fc', size=24):
+    """Draw tiny flat HUD icons without adding external assets."""
+    pixmap = QPixmap(size, size)
+    pixmap.fill(Qt.transparent)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.setPen(QPen(QColor(color), 2.0, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin))
+    if kind == 'lock':
+        painter.drawRoundedRect(5, 11, 14, 9, 2, 2)
+        painter.drawArc(8, 4, 8, 10, 0, 180 * 16)
+    elif kind == 'unlock':
+        painter.drawRoundedRect(5, 11, 14, 9, 2, 2)
+        painter.drawArc(11, 4, 8, 10, 20 * 16, 150 * 16)
+    else:
+        for y in (7, 12, 17):
+            painter.drawLine(5, y, 19, y)
+    painter.end()
+    return QIcon(pixmap)
+
+
+def _icon_button(parent, kind, tooltip, color='#7dd3fc'):
+    button = QPushButton(parent)
+    button.setIcon(_hud_icon(kind, color))
+    button.setIconSize(QSize(20, 20))
+    button.setFixedSize(30, 28)
+    button.setFlat(True)
+    button.setAutoFillBackground(False)
+    button.setText('')
+    button.setToolTip(tooltip)
+    button.setAccessibleName(tooltip)
+    button.setStyleSheet(
+        'QPushButton, QPushButton:hover, QPushButton:pressed, QPushButton:focus {'
+        ' background-color: transparent; border: none; padding: 0; outline: none; }'
+    )
+    return button
 
 
 def layout_position(layout, viewport, width, ratio=1.0):
@@ -65,6 +111,8 @@ class NoWheelGuard(QObject):
 
 
 class HudWindow(QWidget):
+    unlock_requested = Signal()
+
     def __init__(self, task, runtime, parent=None):
         super().__init__(parent)
         self.task = task
@@ -77,6 +125,7 @@ class HudWindow(QWidget):
         self._wheel_guard = NoWheelGuard(self)
         self._last_layout = None
         self._last_interaction = 0.0
+        self._window_hidden_since = 0.0
         self._needs_fit = True
         self.setWindowFlags(
             Qt.Window | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.NoDropShadowWindowHint
@@ -105,14 +154,24 @@ class HudWindow(QWidget):
         self.normal_buttons = QWidget(self.panel)
         normal_row = QHBoxLayout(self.normal_buttons)
         normal_row.setContentsMargins(0, 4, 0, 0)
-        self.lock_button = QPushButton('锁定', self.normal_buttons)
+        self.lock_button = _icon_button(self.normal_buttons, 'lock', '锁定悬浮窗')
         self.lock_button.clicked.connect(self.lock)
-        self.details_button = QPushButton('详情', self.normal_buttons)
+        self.details_button = _icon_button(self.normal_buttons, 'menu', '详情')
         self.details_button.clicked.connect(self.toggle_details)
+        normal_row.addStretch()
         normal_row.addWidget(self.lock_button)
         normal_row.addWidget(self.details_button)
-        normal_row.addStretch()
         panel_layout.addWidget(self.normal_buttons)
+        self.unlock_button = _icon_button(None, 'unlock', '解除悬浮窗锁定（Ctrl+Alt+L）', '#e8f6ff')
+        self.unlock_button.setWindowFlags(
+            Qt.Tool | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.WindowDoesNotAcceptFocus
+        )
+        self.unlock_button.setAttribute(Qt.WA_ShowWithoutActivating)
+        self.unlock_button.setAttribute(Qt.WA_TranslucentBackground)
+        self.unlock_button.setFocusPolicy(Qt.NoFocus)
+        self.unlock_button.setFixedSize(30, 28)
+        self.unlock_button.clicked.connect(self._request_normal)
+        self.unlock_button.hide()
         self.edit_panel = QWidget(self.panel)
         grid = QGridLayout(self.edit_panel)
         grid.setContentsMargins(0, 5, 0, 0)
@@ -131,9 +190,24 @@ class HudWindow(QWidget):
         self.policy_check.toggled.connect(
             lambda checked: self._write('启用强化策略', bool(checked))
         )
-        grid.addWidget(self.live_check, 0, 0)
-        grid.addWidget(self.auto_check, 0, 1)
-        grid.addWidget(self.policy_check, 0, 2)
+        self.hud_follow_check = QCheckBox('悬浮窗位置变换（仅适配2K）', self.edit_panel)
+        self.hud_follow_check.setChecked(bool(task.config.get('策略悬浮窗自动定位', False)))
+        self.hud_follow_check.toggled.connect(self._position_changed)
+        checks_row = QWidget(self.edit_panel)
+        checks_row.setObjectName('hudChecks')
+        checks_layout = QHBoxLayout(checks_row)
+        checks_layout.setContentsMargins(0, 0, 0, 0)
+        checks_layout.setSpacing(12)
+        for check in (
+            self.live_check,
+            self.hud_follow_check,
+            self.auto_check,
+            self.policy_check,
+        ):
+            check.setStyleSheet(_CHECK_STYLE)
+            checks_layout.addWidget(check)
+        checks_layout.addStretch()
+        grid.addWidget(checks_row, 0, 0, 1, 4)
         grid.addWidget(QLabel('字号', self.edit_panel), 1, 0)
         self.font_size = QDoubleSpinBox(self.edit_panel)
         self.font_size.setRange(12.0, 32.0)
@@ -212,6 +286,10 @@ class HudWindow(QWidget):
             'QLabel { color: #f4f4f4; }'
             'QCheckBox { color: #f4f4f4; background: rgba(42, 48, 60, 165);'
             ' border-radius: 5px; padding: 3px 6px; }'
+            'QCheckBox::indicator { width: 14px; height: 14px;'
+            ' border: 1px solid #ffffff; border-radius: 2px; background: transparent; }'
+            'QCheckBox::indicator:checked { background: #ffffff;'
+            ' border: 1px solid #ffffff; }'
             'QComboBox, QDoubleSpinBox { color: #f4f4f4;'
             ' background: rgba(42, 48, 60, 240);'
             ' border: 1px solid rgba(125, 211, 252, 35); border-radius: 5px;'
@@ -429,15 +507,59 @@ class HudWindow(QWidget):
         if self._needs_fit:
             self._fit()
             self._needs_fit = False
+        if self._locked:
+            self._position_unlock()
+            self.unlock_button.show()
+
+    def hideEvent(self, event):
+        self.unlock_button.hide()
+        super().hideEvent(event)
+
+    def moveEvent(self, event):
+        super().moveEvent(event)
+        if self._locked:
+            self._position_unlock()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        if self._locked:
+            self._position_unlock()
+
+    def closeEvent(self, event):
+        self.unlock_button.close()
+        super().closeEvent(event)
+
+    def _request_normal(self):
+        self.normal()
+
+    def _position_changed(self, checked):
+        self._write('策略悬浮窗自动定位', bool(checked))
+        if checked:
+            self._last_layout = None
+
+    def _position_unlock(self):
+        self.unlock_button.adjustSize()
+        screen = self.screen() or QApplication.primaryScreen()
+        x = self.x() + self.width() - self.unlock_button.width() - 8
+        y = self.y() + 8
+        if screen is not None:
+            area = screen.availableGeometry()
+            x = max(area.left(), min(x, area.right() - self.unlock_button.width()))
+            y = max(area.top(), min(y, area.bottom() - self.unlock_button.height()))
+        self.unlock_button.move(x, y)
 
     def normal(self):
-        self._locked = False
+        if self._locked:
+            self.unlock_requested.emit()
+            return
+        self.hide()
         self._details = False
         self._last_interaction = time.monotonic()
         self.edit_panel.hide()
         self.drag_label.show()
         self.normal_buttons.show()
-        self.details_button.setText('详情')
+        self.unlock_button.hide()
+        self.details_button.setToolTip('详情')
         self.setWindowFlag(Qt.WindowTransparentForInput, False)
         self.setWindowFlag(Qt.WindowDoesNotAcceptFocus, True)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
@@ -451,6 +573,9 @@ class HudWindow(QWidget):
         self.edit_panel.hide()
         self.drag_label.hide()
         self.normal_buttons.hide()
+        self._position_unlock()
+        self.unlock_button.show()
+        self.unlock_button.raise_()
         self.setWindowFlag(Qt.WindowTransparentForInput, True)
         self.setWindowFlag(Qt.WindowDoesNotAcceptFocus, True)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, True)
@@ -459,13 +584,15 @@ class HudWindow(QWidget):
         self.show()
 
     def edit(self):
+        self.hide()
         self._locked = False
         self._details = True
         self._last_interaction = time.monotonic()
         self.edit_panel.show()
         self.drag_label.show()
         self.normal_buttons.show()
-        self.details_button.setText('收起')
+        self.unlock_button.hide()
+        self.details_button.setToolTip('收起')
         self.setWindowFlag(Qt.WindowTransparentForInput, False)
         self.setWindowFlag(Qt.WindowDoesNotAcceptFocus, False)
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
@@ -522,6 +649,7 @@ class HudController(QObject):
         self.task = task
         self.runtime = runtime
         self.window = HudWindow(task, runtime)
+        self.window.unlock_requested.connect(self._rebuild_window)
         self._hidden_since = 0.0
         self.timer = QTimer(self)
         self.timer.setInterval(100)
@@ -551,11 +679,26 @@ class HudController(QObject):
         self.timer.stop()
         self.window.close()
 
+    def _rebuild_window(self):
+        old = self.window
+        rows = old._rows
+        position = old.pos()
+        layout = old._last_layout
+        old.close()
+        window = HudWindow(self.task, self.runtime)
+        window._last_layout = layout
+        window.set_rows(rows)
+        window.move(position)
+        window.unlock_requested.connect(self._rebuild_window)
+        self.window = window
+        window.normal()
+        window.show()
+
     def toggle_edit(self):
         if self._mode() != 'qt':
             return
         if self.window._locked:
-            self.window.normal()
+            self._rebuild_window()
         else:
             self.window.lock()
 

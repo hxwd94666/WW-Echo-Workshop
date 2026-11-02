@@ -119,14 +119,6 @@ class ShortcutContent:
             saved = parse_bindings(task.config.get('CaptureHotkeysJSON', ''))
             for action, chord in saved.items():
                 self.fields[action].setText(chord.text)
-            if 'policy_detail' not in saved:
-                detail = parse_chord(str(task.config.get('策略详情热键') or ''))
-                if detail is not None:
-                    self.fields['policy_detail'].setText(detail.text)
-            if 'policy_hud_edit' not in saved:
-                hud = parse_chord(str(task.config.get('策略悬浮窗编辑热键') or ''))
-                if hud is not None:
-                    self.fields['policy_hud_edit'].setText(hud.text)
         except ValueError as error:
             self.feedback.setText(str(error))
         apply = QPushButton('保存快捷键')

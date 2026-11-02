@@ -2,7 +2,16 @@
 import json
 
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QCheckBox, QFormLayout, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QFormLayout,
+    QGridLayout,
+    QHBoxLayout,
+    QMessageBox,
+    QVBoxLayout,
+    QWidget,
+)
 from qfluentwidgets import BodyLabel, CaptionLabel, CardWidget, PushButton
 
 from ww_echo_workshop.application.policy import costs_from_config
@@ -34,7 +43,7 @@ class LivePolicyCard(CardWidget):
         layout.addWidget(heading)
 
         self.live_check = QCheckBox('显示实时评分', self)
-        self.hud_follow_check = QCheckBox('悬浮窗位置变换', self)
+        self.hud_follow_check = QCheckBox('悬浮窗位置变换（仅适配2K）', self)
         self.auto_check = QCheckBox('跟随当前装备角色评分', self)
         self.policy_check = QCheckBox('显示强化/重抽建议', self)
         self.live_check.setAccessibleName('显示实时评分')
@@ -150,7 +159,7 @@ class LivePolicyCard(CardWidget):
         self.hud_follow_check.setChecked(bool(self._config('策略悬浮窗自动定位', False)))
         self.auto_check.setChecked(bool(self._config('自动匹配评分模板', False)))
         self.policy_check.setChecked(bool(self._config('启用强化策略', False)))
-        self.live_check.toggled.connect(lambda value: self._write('启用声骸评分', bool(value)))
+        self.live_check.toggled.connect(self._live_changed)
         self.hud_follow_check.toggled.connect(self._hud_follow_changed)
         self.auto_check.toggled.connect(lambda value: self._write('自动匹配评分模板', bool(value)))
         self.policy_check.toggled.connect(lambda value: self._write('启用强化策略', bool(value)))
@@ -323,8 +332,47 @@ class LivePolicyCard(CardWidget):
             return
         self._apply_preset(preset)
 
+    def _live_changed(self, enabled):
+        if (
+            enabled
+            and not self._loading
+            and QApplication.platformName() != 'offscreen'
+            and not self._ocr_warning_accepted()
+        ):
+            box = QMessageBox(self)
+            box.setWindowTitle('实时评分 OCR 提示')
+            box.setIcon(QMessageBox.Warning)
+            box.setText('实时评分需要持续占用 OCR 资源。')
+            box.setInformativeText(
+                '自动战斗期间会自动暂停实时评分。使用其他 OCR 功能时，'
+                '请先关闭实时评分，避免 OCR 资源冲突和识别延迟。'
+            )
+            box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            box.setDefaultButton(QMessageBox.Cancel)
+            if box.exec() != QMessageBox.Ok:
+                self.live_check.blockSignals(True)
+                self.live_check.setChecked(False)
+                self.live_check.blockSignals(False)
+                enabled = False
+            else:
+                self.task.config['实时评分OCR提示已确认'] = True
+        self._write('启用声骸评分', bool(enabled))
+        self._sync_enabled()
+
+    def _ocr_warning_accepted(self):
+        return bool(self.task.config.get('实时评分OCR提示已确认', False))
+
     def _sync_enabled(self):
-        enabled = self.policy_check.isChecked()
+        live = self.live_check.isChecked()
+        for control in (
+            self.hud_follow_check,
+            self.auto_check,
+            self.policy_check,
+            self.picker,
+            self.preset_box,
+        ):
+            control.setEnabled(live)
+        enabled = live and self.policy_check.isChecked()
         self.target.setEnabled(enabled)
         self.mode.setEnabled(enabled)
         self.scoring.setEnabled(enabled)

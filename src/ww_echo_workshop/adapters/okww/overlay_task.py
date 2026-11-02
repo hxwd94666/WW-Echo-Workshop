@@ -9,7 +9,7 @@ import threading
 import time
 from ww_echo_workshop.application.templates import DEFAULT_TEMPLATE
 from ww_echo_workshop.adapters.okww.live_policy import LivePolicyHint
-from ww_echo_workshop.adapters.okww.live_presentation import POLICY_ACTION_COLOR, live_summary
+from ww_echo_workshop.adapters.okww.live_presentation import live_summary
 from ww_echo_workshop.adapters.okww.capture_recovery import CaptureRecoveryMonitor
 from ww_echo_workshop.adapters.okww.capture_device import read_capture_frame
 from ww_echo_workshop.adapters.okww.manual_worker import ManualWorkerMixin
@@ -29,15 +29,13 @@ from ww_echo_workshop.application.live_selection import resolve_live_selection
 from .manual_capture import run_manual_capture
 from ww_echo_workshop.application.compute_protocol import ComputeFailure
 from ww_echo_workshop.application.operations import OperationCancelled
+from ww_echo_workshop.adapters.okww.live_guards import (
+    analysis_key as _analysis_key,
+    combat_active as _combat_active,
+    live_digest as _live_digest,
+)
 
 STATUS_PAINTER_KEY = 'ww-echo-workshop-status'
-
-
-def _live_digest(frame):
-    try:
-        return hash(frame[::32, ::32].tobytes())
-    except (AttributeError, TypeError):
-        return None
 
 
 class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
@@ -52,13 +50,15 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
         self._destroyed = False
         self._run_lock = threading.RLock()
         self._last_live_digest = None
+        self._stable_rows_key = None
+        self._stable_analysis = None
+        self._combat_hold_until = 0.0
         self._live_layout = ''
         self._live_full_at = 0.0
         self._live_comparison = False
         self._cost_cache = {}
         self._live_policy = LivePolicyHint()
         self._live_policy_left = LivePolicyHint()
-        self._policy_detail = False
         self._manual_queue = queue.Queue(maxsize=20)
         self._manual_pending = []
         self._manual_total_captures = 0
@@ -189,7 +189,6 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             '策略评分权重': '',
             '强化策略资源预设': 'tuner',
             '强化策略资源权重': '[0.0,1.0,0.0,1000.0]',
-            '策略详情热键': 'Ctrl+Alt+P',
             'Show Debug Boxes': False,
         }
 
@@ -387,9 +386,6 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             return False
         return True
 
-    def toggle_policy_detail(self):
-        self._policy_detail = not self._policy_detail
-
     def _run_frame(self):
         if self._destroyed:
             return False
@@ -397,6 +393,22 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
 
         PLUGIN_OCR.release_if_idle(300)
         started = time.monotonic()
+        early_settings = self._settings()
+        early_task = self._settings_task()
+        early_runtime = getattr(early_task, 'runtime', None)
+        if (
+            early_runtime is not None
+            and not early_runtime._closed
+            and not early_settings.get('启用声骸评分', True)
+        ):
+            capture = early_runtime.capture.status
+            collecting = capture.state in ('active', 'single') and capture.mode != 'automatic'
+            if not collecting:
+                overlay = self.get_overlay_view()
+                if overlay is not None:
+                    self._clear(overlay, True)
+                PLUGIN_OCR.close()
+                return False
         overlay = self._ensure_overlay()
         settings = self._settings()
         settings_task = self._settings_task()
@@ -420,6 +432,17 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
             and runtime.capture.status.mode != 'automatic'
         )
         request = runtime.capture.single_request if collecting else None
+        active = getattr(getattr(self, 'executor', None), 'current_task', None)
+        if active is None:
+            active = getattr(getattr(og, 'executor', None), 'current_task', None)
+        executor = getattr(self, 'executor', None) or getattr(og, 'executor', None)
+        combat, self._combat_hold_until = _combat_active(executor, active, self._combat_hold_until)
+        if not collecting and combat:
+            # Automatic combat must keep capture/CPU latency; live scoring is
+            # intentionally suspended while combat owns the foreground task.
+            if overlay is not None:
+                self._clear(overlay, True)
+            return False
         if not settings.get('启用声骸评分', True) and not collecting:
             from ww_echo_workshop.adapters.okww.private_ocr import PLUGIN_OCR
 
@@ -552,6 +575,16 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
                 if analysis.layout:
                     self._live_layout = analysis.layout
                 self._live_comparison = bool(analysis.comparison)
+            if not collecting:
+                live_key = _analysis_key(analysis)
+                if live_key == self._stable_rows_key and self._stable_analysis is not None:
+                    # Keep the settled score while the same stat rows flicker
+                    # between inconsistent OCR scores. Real row changes update
+                    # immediately, so switching echoes stays responsive.
+                    analysis = self._stable_analysis
+                else:
+                    self._stable_rows_key = live_key
+                    self._stable_analysis = analysis
             signature = tuple((row.stat_name, row.value) for row in analysis.main_rows)
             if analysis.observed_cost is not None:
                 self._cost_cache[signature] = analysis.observed_cost
@@ -664,11 +697,6 @@ class WWEchoWorkshopOverlayTask(ManualWorkerMixin, TriggerTask):
                 )
             policy_text = '策略：等待识别…'
         summary, summary_colours = live_summary(analysis, reference, policy_text, left_policy_text)
-        if self._policy_detail and self._live_policy.last_result is not None:
-            detail = self._live_policy.detail_lines()
-            if detail:
-                summary += '\n' + '\n'.join(detail)
-                summary_colours += tuple((POLICY_ACTION_COLOR,) for _ in detail)
         hud_state = getattr(runtime, 'hud_state', None)
         if summary:
             if hud_state is not None:

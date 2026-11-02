@@ -54,6 +54,12 @@ class _InlineSurface:
 class WeightSettings(WeightContent, _InlineSurface, QWidget):
     def __init__(self, task, parent=None):
         super().__init__(task, parent)
+        # Data updates live in the workbench card; keep the settings surface
+        # focused on custom character weights.
+        controls = getattr(self, 'resource_controls', None)
+        if controls is not None:
+            self.layout().removeWidget(controls)
+            controls.hide()
         self.compact()
 
     def refresh(self):

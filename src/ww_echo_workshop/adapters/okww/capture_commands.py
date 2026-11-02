@@ -1,5 +1,4 @@
 # 将助手收录与快捷键命令接入宿主设备。
-import json
 import time
 from ok import og, TriggerTask
 
@@ -33,35 +32,10 @@ class CaptureCommands:
         window = getattr(getattr(og, 'device_manager', None), 'hwnd_window', None)
         return bool(window is not None and window.exists and getattr(window, 'pos_valid', False))
 
-    def _shortcut_payload(self, raw):
-        from ww_echo_workshop.application.hotkeys import (
-            encode_bindings,
-            parse_bindings,
-            parse_chord,
-        )
-
-        bindings = {action: chord.text for action, chord in parse_bindings(raw).items()}
-        configured = {}
-        if raw:
-            try:
-                payload = json.loads(raw).get('bindings', {})
-                configured = payload if isinstance(payload, dict) else {}
-            except (ValueError, TypeError):
-                configured = {}
-        for action, key, fallback in (
-            ('policy_detail', '策略详情热键', 'Ctrl+Alt+P'),
-            ('policy_hud_edit', '策略悬浮窗编辑热键', 'Ctrl+Alt+L'),
-        ):
-            chord = parse_chord(str(self.config.get(key) or fallback))
-            if chord is not None and action not in configured:
-                bindings[action] = chord.text
-        return encode_bindings(bindings) if bindings else raw
-
     def _configure_shortcuts(self, raw):
         from ww_echo_workshop.adapters.okww.shortcuts import ShortcutService
         from ww_echo_workshop.application.hotkeys import parse_bindings
 
-        raw = self._shortcut_payload(raw)
         if not parse_bindings(raw) and self.runtime.shortcuts is None:
             return
         # Start from the canonical GUI entry/arming path, not a disposable legacy card.
@@ -269,43 +243,10 @@ class CaptureCommands:
             capture = self.runtime.capture
             status = capture.status
             profile = self.config.get('InventoryProfileID', '')
-            if self.runtime.backups.restoring and action not in (
-                'stop',
-                'policy_detail',
-                'policy_hud_edit',
-            ):
+            if self.runtime.backups.restoring and action != 'stop':
                 raise ValueError('库存恢复作业进行中，快捷操作暂缓')
-            if (
-                status.mode == 'automatic'
-                and status.state != 'stopped'
-                and action not in ('stop', 'policy_detail', 'policy_hud_edit')
-            ):
+            if status.mode == 'automatic' and status.state != 'stopped' and action != 'stop':
                 raise ValueError('自动扫描中，请先暂停或停止扫描')
-            if action == 'policy_hud_edit':
-                controller = getattr(self.runtime, 'hud_controller', None)
-                if controller is None:
-                    raise ValueError('透明悬浮窗尚未启动')
-                controller.toggle_edit()
-                self.shortcut_message = '透明悬浮窗编辑模式已切换'
-                self.shortcut_message_at = time.monotonic()
-                self.log_info('快捷操作 policy_hud_edit：透明悬浮窗编辑模式已切换')
-                return
-            if action == 'policy_detail':
-                task = next(
-                    (
-                        item
-                        for item in self.get_tasks()
-                        if item.__class__.__name__ == 'WWEchoWorkshopOverlayTask'
-                    ),
-                    None,
-                )
-                if task is None:
-                    raise ValueError('策略浮层尚未运行')
-                task.toggle_policy_detail()
-                self.shortcut_message = '策略详情已切换'
-                self.shortcut_message_at = time.monotonic()
-                self.log_info('快捷操作 policy_detail：策略详情已切换')
-                return
             if action == 'capture':
                 if not self.capture_once(profile):
                     raise ValueError('已有收录正在进行，请等待或先停止')
