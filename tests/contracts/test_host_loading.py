@@ -49,7 +49,9 @@ class HostLoadingContract(unittest.TestCase):
                 self.assertEqual(name, type(task).__name__)
                 self.assertIsNone(getattr(task, 'runtime', None))
                 retained.append(task)
-        self.assertIs(EchoRecord, importlib.import_module('ww_echo_workshop.core.models').EchoRecord)
+        self.assertIs(
+            EchoRecord, importlib.import_module('ww_echo_workshop.core.models').EchoRecord
+        )
         self.assertIs(
             CompatibilityRule,
             importlib.import_module('ww_echo_workshop.core.compatibility').CompatibilityRule,
@@ -111,7 +113,9 @@ class HostLoadingContract(unittest.TestCase):
         )
         task.runtime = runtime
         task.disable = Mock()
-        manager.task_map = {task: [str(self.entries / 'ww_echo_workshop_settings.py'), 'fixture-hash']}
+        manager.task_map = {
+            task: [str(self.entries / 'ww_echo_workshop_settings.py'), 'fixture-hash']
+        }
         manager.task_executor.onetime_tasks.append(task)
         communicate = SimpleNamespace(task_list_updated=SimpleNamespace(emit=Mock()))
         install_unload_cleanup()

@@ -27,7 +27,9 @@ class TestComputeStartup(unittest.TestCase):
 
         with (
             ComputeWorker(ENGINE, fault_tests=True) as worker,
-            patch('ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start),
+            patch(
+                'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
+            ),
             patch.object(worker, '_send', wraps=worker._send) as send,
             ThreadPoolExecutor(max_workers=1) as calls,
         ):
@@ -58,7 +60,8 @@ class TestComputeStartup(unittest.TestCase):
             with (
                 self.subTest(flag=flag),
                 patch(
-                    'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=start
+                    'ww_echo_workshop.application.compute_protocol.subprocess.Popen',
+                    side_effect=start,
                 ),
                 ComputeWorker(ENGINE, fault_tests=True) as worker,
                 patch.object(worker, '_send', wraps=worker._send) as send,
@@ -75,7 +78,8 @@ class TestComputeStartup(unittest.TestCase):
 
         with (
             patch(
-                'ww_echo_workshop.application.compute_protocol.subprocess.Popen', side_effect=unarmed
+                'ww_echo_workshop.application.compute_protocol.subprocess.Popen',
+                side_effect=unarmed,
             ),
             ComputeWorker(ENGINE) as worker,
         ):

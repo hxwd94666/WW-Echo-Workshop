@@ -9,7 +9,11 @@ import unittest
 from unittest.mock import patch
 
 from ww_echo_workshop.application.compute_jobs import ComputeJobs
-from ww_echo_workshop.application.compute_protocol import ComputeFailure, ComputeWorker, encode_frame
+from ww_echo_workshop.application.compute_protocol import (
+    ComputeFailure,
+    ComputeWorker,
+    encode_frame,
+)
 
 ENGINE = Path(__file__).resolve().parents[2] / 'build/native/release/ww-echo-workshop-compute.exe'
 

@@ -201,7 +201,8 @@ class TestNativeScoreService(unittest.TestCase):
         with (
             tempfile.TemporaryDirectory() as folder,
             patch(
-                'ww_echo_workshop.application.runtime.WeightProvider', side_effect=ValueError('init')
+                'ww_echo_workshop.application.runtime.WeightProvider',
+                side_effect=ValueError('init'),
             ),
             self.assertRaisesRegex(ValueError, 'init'),
         ):

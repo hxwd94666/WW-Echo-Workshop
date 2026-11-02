@@ -233,7 +233,9 @@ class TestComputeChunks(unittest.TestCase):
                     cancel.wait(2)
 
         try:
-            with patch('ww_echo_workshop.application.compute_protocol.encode_messages', interrupted):
+            with patch(
+                'ww_echo_workshop.application.compute_protocol.encode_messages', interrupted
+            ):
                 work = jobs.submit(
                     'ping', lambda: {'text': 'x' * (MAX_FRAME + 100)}, cancel_event=cancel
                 )

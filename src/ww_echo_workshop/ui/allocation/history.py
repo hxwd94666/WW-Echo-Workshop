@@ -34,7 +34,11 @@ from ww_echo_workshop.ui.allocation.saved_role_actions import SavedRoleActions
 from ww_echo_workshop.ui.allocation.saved_refresh import SavedRefresh
 from ww_echo_workshop.ui.allocation.replacement import ReplacementDialog
 from ww_echo_workshop.ui.allocation.history_projection import SavedListProjection
-from ww_echo_workshop.ui.widgets.rating import HistoryScoreDelegate, HISTORY_SCORE_ROLE, lookup_avatar
+from ww_echo_workshop.ui.widgets.rating import (
+    HistoryScoreDelegate,
+    HISTORY_SCORE_ROLE,
+    lookup_avatar,
+)
 from ww_echo_workshop.ui.widgets.workspace import LoadoutCards
 
 
@@ -699,7 +703,10 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.release_button.setText(f'解除保护（{len(selected)}）' if selected else '解除保护')
         self.release_button.setVisible(current)
         self.remove_button.setVisible(row is not None)
-        from ww_echo_workshop.ui.allocation.action_labels import REMOVE_CURRENT_TIP, REMOVE_BACKUP_TIP
+        from ww_echo_workshop.ui.allocation.action_labels import (
+            REMOVE_CURRENT_TIP,
+            REMOVE_BACKUP_TIP,
+        )
 
         self.remove_button.setToolTip(REMOVE_CURRENT_TIP if current else REMOVE_BACKUP_TIP)
         ready = verified and not busy and not dialog and draft is None

@@ -8,9 +8,7 @@ from ww_echo_workshop.core.policy import PolicyError
 from ww_echo_workshop.core.policy_presets import validate_data_pack
 
 MAX_BYTES = 8 * 1024 * 1024
-BUILTIN_PATH = (
-    Path(__file__).resolve().parents[1] / 'resources' / 'policy' / 'echo-data.json'
-)
+BUILTIN_PATH = Path(__file__).resolve().parents[1] / 'resources' / 'policy' / 'echo-data.json'
 
 
 class PolicyDataStore:

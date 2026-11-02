@@ -33,6 +33,30 @@ LAYOUT_ANCHORS = {
 }
 # The right-hand echo detail panel starts at roughly 77% of the viewport.
 RIGHT_DETAIL_LEFT = 0.77
+# The comparison left stat panel must not be covered by the HUD.
+COMPARISON_LEFT = 0.56
+
+
+def layout_position(layout, viewport, width, ratio=1.0):
+    """Return logical HUD coordinates for a physical-pixel viewport."""
+    try:
+        vx, vy, vw, vh = (int(value) for value in viewport)
+        width = int(width)
+        ratio = float(ratio)
+    except (TypeError, ValueError):
+        raise ValueError('Invalid HUD layout geometry') from None
+    if width <= 0 or vw <= 0 or vh <= 0 or ratio <= 0:
+        raise ValueError('Invalid HUD layout geometry')
+    anchor = LAYOUT_ANCHORS.get(layout, (0.02, 0.20))
+    x = round((vx + vw * anchor[0]) / ratio)
+    y = round((vy + vh * anchor[1]) / ratio)
+    if layout in ('display', 'bag'):
+        panel_left = round((vx + vw * RIGHT_DETAIL_LEFT) / ratio)
+        x = min(x, panel_left - width - 12)
+    elif layout == 'comparison':
+        panel_left = round((vx + vw * COMPARISON_LEFT) / ratio)
+        x = min(x, panel_left - width - 12)
+    return x, y
 
 
 class NoWheelGuard(QObject):
@@ -318,11 +342,6 @@ class HudWindow(QWidget):
             return
         if not viewport:
             return
-        try:
-            vx, vy, vw, vh = (int(v) for v in viewport)
-        except (TypeError, ValueError):
-            return
-        anchor = LAYOUT_ANCHORS.get(layout, (0.02, 0.20))
         screen = self.screen() or QApplication.primaryScreen()
         # Capture/viewport bounds are physical pixels (for example 2560x1440),
         # while Qt window coordinates are device-independent logical pixels.
@@ -330,11 +349,10 @@ class HudWindow(QWidget):
         # otherwise lands too far right/down.
         ratio = float(screen.devicePixelRatio()) if screen is not None else 1.0
         ratio = ratio if ratio > 0 else 1.0
-        x = round((vx + vw * anchor[0]) / ratio)
-        y = round((vy + vh * anchor[1]) / ratio)
-        if layout in ('display', 'bag'):
-            panel_left = round((vx + vw * RIGHT_DETAIL_LEFT) / ratio)
-            x = min(x, panel_left - self.width() - 12)
+        try:
+            x, y = layout_position(layout, viewport, self.width(), ratio)
+        except ValueError:
+            return
         if screen is not None:
             area = screen.availableGeometry()
             x = min(max(x, area.left()), area.right() - self.width())

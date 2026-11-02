@@ -24,7 +24,12 @@ from ww_echo_workshop.resources.weight_control import WeightControl, WeightConfl
 from ww_echo_workshop.core.cancellation import checkpoint
 from ww_echo_workshop.core.scoring import ALGORITHM_VERSION as ALGORITHM_VERSION
 
-from ww_echo_workshop.resources.snapshot import CONDITIONS, SOURCE_COMMIT, SOURCE_REPOSITORY, TEMPLATES
+from ww_echo_workshop.resources.snapshot import (
+    CONDITIONS,
+    SOURCE_COMMIT,
+    SOURCE_REPOSITORY,
+    TEMPLATES,
+)
 
 
 SCHEMA_VERSION = 1

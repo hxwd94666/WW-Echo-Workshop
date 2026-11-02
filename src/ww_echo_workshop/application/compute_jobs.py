@@ -38,7 +38,9 @@ class ComputeJobs:
         self._closed, self._reaped = threading.Event(), threading.Event()
         self._lock = threading.Lock()
         self._workers, self._threads, self._running = {}, {}, {}
-        self._queues = {lane: queue.Queue(maxsize=8) for lane in ('interactive', 'search', 'policy')}
+        self._queues = {
+            lane: queue.Queue(maxsize=8) for lane in ('interactive', 'search', 'policy')
+        }
         self._slots = {lane: threading.BoundedSemaphore(8) for lane in self._queues}
         self._failures = {lane: 0 for lane in self._queues}
         self._stalled = set()

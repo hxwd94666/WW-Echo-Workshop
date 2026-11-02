@@ -46,7 +46,9 @@ def execute(command, *, record=None):
     env = dict(os.environ)
     # 使用工作区外的独立临时目录：Windows 链接器需要在其中创建、删除和重命名
     # 临时文件，工作区目录的权限项可能阻止这些操作；输出字节仍由 /Brepro 保持可复现。
-    temporary = ROOT.parent / 'ww-echo-workshop-build-temp'
+    temporary = Path(
+        os.environ.get('WW_ECHO_BUILD_TEMP', ROOT.parent / 'ww-echo-workshop-build-temp')
+    ).resolve()
     temporary.mkdir(parents=True, exist_ok=True)
     env['TEMP'] = env['TMP'] = str(temporary)
     toolchain = tomllib.loads(

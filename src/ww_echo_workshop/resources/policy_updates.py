@@ -12,6 +12,7 @@ from urllib.request import (
 from ww_echo_workshop.application.policy_data import MAX_BYTES
 from ww_echo_workshop.core.policy import PolicyError
 
+
 def validate_url(url):
     if not isinstance(url, str) or not url.strip():
         raise PolicyError('invalid_url', '策略数据地址为空')

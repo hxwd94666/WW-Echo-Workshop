@@ -285,7 +285,10 @@ class NativeInventoryQuery(unittest.TestCase):
             [r.item_id for r in selected],
         )
         self.assertEqual(17, result.payload[-1]['scope_generation'])
-        with self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'), self.assertRaises(ValueError):
+        with (
+            self.assertLogs('ok.WW-Echo-Workshop.Jobs', level='ERROR'),
+            self.assertRaises(ValueError),
+        ):
             PlanCommands(None, repository, allocation=allocation).execute(
                 'precheck', dict(request=request, snapshot=snapshot), candidate_filters={}
             )

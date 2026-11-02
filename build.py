@@ -4,13 +4,13 @@ from __future__ import annotations
 import argparse
 import ast
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import shutil
 import subprocess
 import sys
-import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parent
@@ -189,20 +189,23 @@ def build(output=None):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(body)
     target = output / f'ww-echo-workshop-{version()}.zip'
-    fd, temporary = tempfile.mkstemp(prefix='.ww_echo_workshop-', suffix='.zip', dir=output)
-    os.close(fd)
+    # 某些 Windows 安全策略会阻止在构建目录创建新的临时 ZIP；先在内存中
+    # 完成归档，再一次性写入目标文件。
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as package:
+        for name in sorted(expected):
+            info = zipfile.ZipInfo(INSTALL_ID + '/' + name, date_time=(2020, 1, 1, 0, 0, 0))
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o100644 << 16
+            package.writestr(info, expected[name])
+    staging = output / (target.name + '.new')
     try:
-        with zipfile.ZipFile(temporary, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as package:
-            for name in sorted(expected):
-                info = zipfile.ZipInfo(INSTALL_ID + '/' + name, date_time=(2020, 1, 1, 0, 0, 0))
-                info.compress_type = zipfile.ZIP_DEFLATED
-                info.external_attr = 0o100644 << 16
-                package.writestr(info, expected[name])
-        verify_archive(temporary, expected)
-        os.replace(temporary, target)
+        staging.write_bytes(buffer.getvalue())
+        os.replace(staging, target)
     finally:
-        if os.path.exists(temporary):
-            os.unlink(temporary)
+        if staging.exists():
+            staging.unlink()
+    verify_archive(target, expected)
     actual = {
         p.relative_to(folder).as_posix(): p.read_bytes() for p in folder.rglob('*') if p.is_file()
     }

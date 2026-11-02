@@ -111,7 +111,9 @@ def check(root=ROOT, *, core_only=False):
                                 )
                         if (
                             name.startswith('echo_')
-                            and not (name == 'ww_echo_workshop' or name.startswith('ww_echo_workshop.'))
+                            and not (
+                                name == 'ww_echo_workshop' or name.startswith('ww_echo_workshop.')
+                            )
                         ) or name in (
                             'overlay_status',
                             'xwuid_echo_data',

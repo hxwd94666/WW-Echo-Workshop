@@ -10,7 +10,11 @@ from tests.native_runtime import AllocationHarness
 from ww_echo_workshop.core.compatibility import CompatibilityRule
 from ww_echo_workshop.application.compute_jobs import ComputeJobs
 from ww_echo_workshop.application.requirements_check import RequirementsCheckService
-from ww_echo_workshop.core.costs import cost_layouts_from_rows, cost_layouts_to_rows, read_cost_layout
+from ww_echo_workshop.core.costs import (
+    cost_layouts_from_rows,
+    cost_layouts_to_rows,
+    read_cost_layout,
+)
 from ww_echo_workshop.core.models import EchoRecord, StatValue
 from ww_echo_workshop.core.requirements import (
     RoleRequirements,

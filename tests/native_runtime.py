@@ -30,7 +30,9 @@ from ww_echo_workshop.storage.workspace_bundle import (
     _plan as production_plan,
 )
 from ww_echo_workshop.storage.profile_transfer import inspect_profile_archive as production_inspect
-from ww_echo_workshop.storage.loadouts import validate_current_plan_references as production_references
+from ww_echo_workshop.storage.loadouts import (
+    validate_current_plan_references as production_references,
+)
 from ww_echo_workshop.application.loadout_actions import (
     source_payload as production_source,
     clone_loadout_payload as production_clone,

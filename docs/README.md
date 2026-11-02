@@ -20,5 +20,7 @@
 - [数据与兼容](maintainer/data-and-migration.md)：格式、身份、事务和回退。
 - [资料更新](maintainer/resources.md)：内置生成、自动检查、冻结与来源。
 - [发布与验收](maintainer/release.md)：定向检查、构建、安装及用户流程。
+- [发布前开发计划](maintainer/release-plan.md)：门禁、阻塞项、执行顺序与发布判定。
+- [0.1 发布候选说明](maintainer/release-notes-0.1.md)：当前包、已验证范围、未验证项和回退。
 
 安装前请先确认宿主：[OKWW 官方仓库](https://github.com/ok-oldking/ok-wuthering-waves)、[OKWW Releases](https://github.com/ok-oldking/ok-wuthering-waves/releases)、[OKWW 中文文档](https://ok-oldking.github.io/ok-wuthering-waves/zh-CN/)。

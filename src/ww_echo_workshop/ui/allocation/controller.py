@@ -11,7 +11,10 @@ from PySide6.QtWidgets import QTableWidgetItem
 
 from ww_echo_workshop.core.allocation.models import AllocationRequest, RoleRequest
 from ww_echo_workshop.core.loadout import protected_item_ids
-from ww_echo_workshop.application.allocation_preferences import allocation_settings, pending_role_keys
+from ww_echo_workshop.application.allocation_preferences import (
+    allocation_settings,
+    pending_role_keys,
+)
 from ww_echo_workshop.ui.matching.controller import _StopToken
 from ww_echo_workshop.ui.allocation.results import AllocationUX
 from ww_echo_workshop.ui.allocation.projection import AllocationProjection
@@ -289,7 +292,9 @@ class AllocationContent(
                     for group in saved_profile['priority_groups']
                 )
             if groups:
-                from ww_echo_workshop.application.matching.calculation import restrict_priority_groups
+                from ww_echo_workshop.application.matching.calculation import (
+                    restrict_priority_groups,
+                )
 
                 data['profiles'][self.profile.currentData()]['priority_groups'] = (
                     restrict_priority_groups(

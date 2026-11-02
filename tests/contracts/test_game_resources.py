@@ -9,7 +9,11 @@ from unittest.mock import patch
 
 from ww_echo_workshop.application.operations import OperationCancelled
 from ww_echo_workshop.resources import game_sources as s
-from ww_echo_workshop.resources.game_catalog import GameCatalog, GameCatalogClient, GameCatalogUpdates
+from ww_echo_workshop.resources.game_catalog import (
+    GameCatalog,
+    GameCatalogClient,
+    GameCatalogUpdates,
+)
 from ww_echo_workshop.resources.game_assets import GameAssets, placeholder_png, CatalogAvatarFetcher
 from ww_echo_workshop.resources.game_projection import CatalogSonataClient, CatalogEffectsClient
 from ww_echo_workshop.resources.sonata import SonataProvider, SonataUpdateService
@@ -187,7 +191,9 @@ class GameResourceContract(unittest.TestCase):
     def test_atomic_replace_failure_retains_active(self):
         data, raw = GameCatalogClient(transport=self.transport).fetch(self.catalog)
         before = self.catalog.active
-        with patch('ww_echo_workshop.resources.game_catalog.os.replace', side_effect=OSError('disk')):
+        with patch(
+            'ww_echo_workshop.resources.game_catalog.os.replace', side_effect=OSError('disk')
+        ):
             with self.assertRaises(OSError):
                 self.catalog.activate(data, raw)
         self.assertIs(before, self.catalog.active)
