@@ -59,7 +59,6 @@ class WeightSettings(WeightContent, _InlineSurface, QWidget):
         controls = getattr(self, 'resource_controls', None)
         if controls is not None:
             self.layout().removeWidget(controls)
-            controls.hide()
         self.compact()
 
     def refresh(self):

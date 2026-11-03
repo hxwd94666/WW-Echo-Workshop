@@ -42,6 +42,8 @@ class RolePicker(QWidget):
         layout.addRow(self.hint)
         self._loading = False
         self.characters.currentTextChanged.connect(self._character_changed)
+        self.characters.currentIndexChanged.connect(self._character_index_changed)
+        self.characters.activated.connect(self._character_activated)
         self.modals.currentIndexChanged.connect(self._modal_changed)
         self.reload(snapshot, key)
 
@@ -108,6 +110,18 @@ class RolePicker(QWidget):
         self.hint.setToolTip('按你选择的模版评分，不会自动切到分数最高的模版。')
 
     def _character_changed(self, *_):
+        if not self._loading:
+            self._load_modals()
+            self.changed.emit()
+
+    def _character_index_changed(self, *_):
+        # Editable combo boxes emit currentTextChanged before the selected
+        # index is committed; reload templates from this signal as well.
+        if not self._loading:
+            self._load_modals()
+            self.changed.emit()
+
+    def _character_activated(self, *_):
         if not self._loading:
             self._load_modals()
             self.changed.emit()

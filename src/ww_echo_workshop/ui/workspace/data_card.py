@@ -190,6 +190,7 @@ class PolicyDataCard(CardWidget):
         if parent_layout is not None:
             parent_layout.removeWidget(controls)
         self.controls_layout.addWidget(controls)
+        controls.show()
         self.controls_area.show()
         self.refresh()
 
