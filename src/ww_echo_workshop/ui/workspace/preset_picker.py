@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-from qfluentwidgets import PushButton
+from PySide6.QtWidgets import QPushButton
 
 from ww_echo_workshop.core.policy_presets import SYSTEMS
 
@@ -45,10 +45,10 @@ class PresetPickerDialog(QDialog):
         layout.addWidget(self.list, 1)
         footer = QHBoxLayout()
         footer.addStretch()
-        cancel = PushButton('取消', self)
+        cancel = QPushButton('取消', self)
         cancel.clicked.connect(self.reject)
         footer.addWidget(cancel)
-        apply = PushButton('应用', self)
+        apply = QPushButton('应用', self)
         apply.clicked.connect(self.accept)
         footer.addWidget(apply)
         layout.addLayout(footer)

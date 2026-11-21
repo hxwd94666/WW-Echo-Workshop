@@ -2,11 +2,9 @@
 from concurrent.futures import ThreadPoolExecutor
 import threading
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtGui import QPixmap
-from qfluentwidgets import MessageBox
-from ww_echo_workshop.ui.matching.controller import _StopToken
+from ww_echo_workshop.ui.widgets.controls import confirm_action
 from ww_echo_workshop.ui.inventory.evidence import open_evidence
-from ww_echo_workshop.application.operations import checkpoint, OperationCancelled
+from ww_echo_workshop.application.operations import OperationCancelled
 from ww_echo_workshop.core.loadout import protected_item_ids
 
 _RATING_ITEM_ROLE = int(Qt.UserRole) + 20
@@ -18,7 +16,7 @@ class SavedPlanController:
             self._submit_plan_job(kind, arguments)
 
     def _submit_plan_job(self, kind, arguments):
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return
         if (
             self._future is not None
@@ -31,49 +29,13 @@ class SavedPlanController:
         self._io_generation += 1
         generation = self._io_generation
         self._io_cancel = threading.Event()
-        stop = _StopToken(self._io_cancel, self.runtime)
+        cancel = self._io_cancel
         self._io_kind, self._io_profile = kind, self.profile.currentData()
         arguments = dict(arguments)
         self._io_arguments = dict(arguments)
         selected = self.saved.currentData()
-        commands = self.runtime.plan_commands
-        runtime = self.runtime
-        expected_revision = arguments.pop(
-            '_guard_revision',
-            arguments['result'].inventory_revision
-            if kind == 'save'
-            else arguments.get('inventory_revision'),
-        )
-        expected_weight = arguments.pop(
-            '_guard_weight',
-            arguments['result'].weight_version
-            if kind == 'save'
-            else arguments.get('weight_version'),
-        )
-        current_write = kind in (
-            'save-protect',
-            'protect',
-            'release-current',
-            'remove-current',
-            'save-loadout',
-            'release-items',
-        )
-        candidate_ids = self._candidate_ids
-        candidate_filters = (
-            None if self._candidate_filters is None else dict(self._candidate_filters)
-        )
-        scope_generation = self._scope_generation
-        edits, replacements = dict(self._edit_plans), dict(self._replace_plans)
-
-        def before_commit():
-            checkpoint(stop)
-            # Current-loadout writes validate both revisions in their transaction
-            # before bumping them. This hook runs AFTER that bump: check weight
-            # and cancellation only, not the old inventory revision again.
-            if (
-                not current_write and runtime.inventory.revision != expected_revision
-            ) or runtime.weights.active.version != expected_weight:
-                raise ValueError('库存/权重已变化，未提交方案/进度；旧文件保留，请重新评估')
+        run = self.services.jobs.plan
+        scope = self.allocation_scope()
 
         def progress(stage, done, total):
             try:
@@ -83,20 +45,7 @@ class SavedPlanController:
 
         def work():
             try:
-                value = commands.execute(
-                    kind,
-                    arguments,
-                    cancel_event=stop,
-                    progress=progress,
-                    before_commit=before_commit
-                    if current_write or kind in ('save', 'mark', 'backup-loadout', 'remove-backup')
-                    else None,
-                    candidate_ids=candidate_ids,
-                    candidate_filters=candidate_filters,
-                    scope_generation=scope_generation,
-                    edit_plans=edits,
-                    replace_plans=replacements,
-                )
+                value = run(kind, arguments, scope, cancel_event=cancel, progress=progress)
                 error = ''
             except OperationCancelled:
                 value, error = (
@@ -134,7 +83,7 @@ class SavedPlanController:
         if generation != self._io_generation:
             return
         self._io_future = None
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return
         value, selected = output
         if self._io_profile != self.profile.currentData():
@@ -370,7 +319,7 @@ class SavedPlanController:
             character_id=row['character_id'],
             expected_revision=snapshot.inventory_revision,
             expected_loadout_revision=snapshot.revision,
-            _guard_weight=self.runtime.weights.active.version,
+            _guard_weight=self.services.weight_snapshot().version,
         )
         message = (
             ('解除保护：' if kind == 'release-current' else '移除当前配装：')
@@ -381,7 +330,7 @@ class SavedPlanController:
             self.cancel_current_action()
             self._pending_current_action = (kind, dict(arguments), self._scope_generation)
             title = '解除保护' if kind == 'release-current' else '移除配装'
-            if not MessageBox(title, message, self.window()).exec():
+            if not confirm_action(self.window(), title, message):
                 self.cancel_current_action()
                 return
             self.confirm_current_action()
@@ -453,24 +402,11 @@ class SavedPlanController:
         text += f'\n采集：{record.captured_at}\n历史装配：{record.owner or "未知"}\n归属更新时间：{record.owner_updated_at or "未知"}\n保护：{record.locked}\n备注：{record.note}\n原 OCR：\n{record.raw_text}\n\n方案保存的是历史输入；手动完成标记不修改库存归属、不验证游戏。'
         self.detail_text.setPlainText(text)
         self._update_rating_colours()
-        if hasattr(self.image, 'set_record'):
-            self.image.set_record(record)
-            return
-        if record.screenshot_ref:
-            try:
-                image = QPixmap()
-                image.loadFromData(self.runtime.evidence.read(record.screenshot_ref), 'PNG')
-                self.image.setPixmap(
-                    image.scaled(160, 90, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                )
-            except (ValueError, OSError):
-                self.image.setText('原始截图缺失或校验失败')
-        else:
-            self.image.setText('此实例未保存截图')
+        self.image.set_record(record)
 
     def show_evidence(self):
         if self.selected():
-            open_evidence(self.selected(), self.runtime.evidence, self)
+            open_evidence(self.selected(), self.services.evidence, self)
 
     def mark(self):
         record = self.selected()
@@ -489,7 +425,7 @@ class SavedPlanController:
                 inventory_revision=self._payload['result']['inventory_revision'],
                 weight_version=self._payload['result']['weight_version'],
                 progress_revision=self._payload['progress_revision'],
-                _guard_revision=self.runtime.inventory.revision,
-                _guard_weight=self.runtime.weights.active.version,
+                _guard_revision=self.services.revision(),
+                _guard_weight=self.services.weight_snapshot().version,
             ),
         )

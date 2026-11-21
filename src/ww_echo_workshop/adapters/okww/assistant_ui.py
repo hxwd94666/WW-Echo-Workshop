@@ -1,7 +1,7 @@
 # 挂载助手页面并兼容宿主任务卡入口。
 import weakref
 from PySide6.QtCore import Qt, QTimer, QStringListModel
-from qfluentwidgets import SwitchButton, PushButton
+from PySide6.QtWidgets import QCheckBox, QPushButton
 from ww_echo_workshop.ui.widgets.inputs import EditableComboBox, PinyinCompleter as QCompleter
 from ww_echo_workshop.resources.search import search_matches
 from ww_echo_workshop.application.templates import matching_template_names
@@ -9,16 +9,21 @@ from .lifecycle import _WindowSignals, _window_lifetime_guard
 
 
 class _TemplateSearchComboBox(EditableComboBox):
-    def _onReturnPressed(self):
-        exact_index = self.findText(self.text())
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.lineEdit().returnPressed.connect(self._select_search_result)
+
+    def _select_search_result(self):
+        text = self.currentText()
+        exact_index = self.findText(text)
         if exact_index >= 0:
             self.setCurrentIndex(exact_index)
             return
         labels = getattr(self, '_active_labels', None)
         matches = (
-            [name for name in labels if search_matches(name, self.text())]
+            [name for name in labels if search_matches(name, text)]
             if labels is not None
-            else matching_template_names(self.text())
+            else matching_template_names(text)
         )
         if len(matches) == 1:
             self.setCurrentIndex(self.findText(matches[0]))
@@ -27,26 +32,34 @@ class _TemplateSearchComboBox(EditableComboBox):
 class SettingsUIBridge:
     @_window_lifetime_guard
     def create_import_page(self, parent):
-        """Local B bridge factory, not a claim that ok-script auto-discovers it."""
+        """Build the workbench when the desktop host mounts its plugin page."""
         from PySide6.QtCore import QThread
         from PySide6.QtWidgets import QApplication
         from shiboken6 import isValid
 
-        if QThread.currentThread() != QApplication.instance().thread():
+        app = QApplication.instance()
+        if not isinstance(app, QApplication) or QThread.currentThread() != app.thread():
             raise RuntimeError('插件页面应在 GUI 线程创建')
         if self.runtime is None or self.runtime._closed:
             raise ValueError(self.startup_error or '插件尚未初始化')
         self._ensure_signals(None)
-        self._configure_shortcuts(self.config.get('CaptureHotkeysJSON', ''))
+        self._restore_shortcuts()
         if (
             self.embedded_panel is None
             or not isValid(self.embedded_panel)
             or self.embedded_panel._stopped
         ):
             from ww_echo_workshop.ui.shell import EchoAssistantPanel
+            from .page_bindings import assistant_services
 
-            self.embedded_panel = EchoAssistantPanel(self, parent)
-        self.embedded_panel._activate('workspace')
+            panel = EchoAssistantPanel(assistant_services(self), parent)
+            try:
+                panel._activate('workspace')
+            except Exception:
+                panel.close()
+                panel.deleteLater()
+                raise
+            self.embedded_panel = panel
         for reference in tuple(self._entry_cards):
             card = reference()
             if card is not None and isValid(card):
@@ -77,6 +90,31 @@ class SettingsUIBridge:
             return True
         return False
 
+    def _new_mode_window(self, window_type, card):
+        from ww_echo_workshop.ui.widgets.layout import add_home_button
+        from .page_bindings import assistant_services
+
+        services = assistant_services(self)
+        main = window_type.mode == 'workspace'
+        slot = 'assistant_window' if main else window_type.mode + '_window'
+
+        def release(window):
+            if getattr(self, slot, None) is window:
+                setattr(self, slot, None)
+
+        window = window_type(services, card, on_close=release)
+        if not main:
+
+            def return_home():
+                selector = getattr(window, 'profile_box', getattr(window, 'profile', None))
+                if selector is not None and selector.currentData():
+                    services.set_profile(selector.currentData())
+                window.close()
+                self.open_assistant(window.parentWidget())
+
+            add_home_button(window, return_home)
+        return window
+
     @_window_lifetime_guard
     def open_assistant(self, card=None):
         if self._route_embedded('workspace'):
@@ -86,8 +124,9 @@ class SettingsUIBridge:
         if self._destroyed or self.runtime is None or self.runtime._closed:
             return
         self._ensure_signals(card)
+        self._restore_shortcuts()
         if self.assistant_window is None:
-            self.assistant_window = AssistantWindow(self, card)
+            self.assistant_window = self._new_mode_window(AssistantWindow, card)
         self.assistant_window.show()
         self.assistant_window.raise_()
         self.assistant_window.activateWindow()
@@ -102,10 +141,7 @@ class SettingsUIBridge:
             return
         self._ensure_signals(card)
         if self.inventory_window is None:
-            self.inventory_window = InventoryWindow(self, card)
-            from ww_echo_workshop.ui.widgets.layout import add_home_button
-
-            add_home_button(self.inventory_window, self)
+            self.inventory_window = self._new_mode_window(InventoryWindow, card)
         self.inventory_window.show()
         self.inventory_window.raise_()
         self.inventory_window.activateWindow()
@@ -151,7 +187,14 @@ class SettingsUIBridge:
 
         self._ensure_signals(card)
         if self.control_repair_window is None:
-            self.control_repair_window = ControlRepairWindow(self, card)
+            window = ControlRepairWindow(self.new_repair_controls(), card)
+            self.control_repair_window = window
+
+            def release_window():
+                if self.control_repair_window is window:
+                    self.control_repair_window = None
+
+            window.windowClosed.connect(release_window)
         self.control_repair_window.show()
         self.control_repair_window.raise_()
 
@@ -178,7 +221,7 @@ class SettingsUIBridge:
             return
         self._ensure_signals(card)
         if self.shortcut_window is None:
-            self.shortcut_window = ShortcutWindow(self, card)
+            self.shortcut_window = ShortcutWindow(self.shortcut_controls(), card)
         self.shortcut_window.show()
         self.shortcut_window.raise_()
 
@@ -192,13 +235,86 @@ class SettingsUIBridge:
             return
         self._ensure_signals(card)
         if self.allocation_window is None:
-            self.allocation_window = AllocationWindow(self, card)
-            from ww_echo_workshop.ui.widgets.layout import add_home_button
-
-            add_home_button(self.allocation_window, self)
+            self.allocation_window = self._new_mode_window(AllocationWindow, card)
         self.allocation_window.show()
         self.allocation_window.raise_()
         self.allocation_window.activateWindow()
+
+    def resource_settings(self):
+        from ww_echo_workshop.application.resource_settings import ResourceSettings
+
+        runtime = self.runtime
+
+        def write_auto(enabled):
+            self.config['AutoWeightUpdates'] = enabled
+
+        return ResourceSettings(
+            runtime.resources,
+            runtime.updates,
+            runtime.custom_weights,
+            runtime.sonata_updates,
+            runtime.sonata_effect_updates,
+            read_auto=lambda: bool(self.config.get('AutoWeightUpdates', True)),
+            write_auto=write_auto,
+            selected_character=lambda: self.config.get('TemplateCharacterID', 'default'),
+            closed=lambda: self._destroyed or runtime._closed or self.runtime is not runtime,
+        )
+
+    def shortcut_controls(self):
+        from ww_echo_workshop.application.hotkeys import parse_bindings
+        from ww_echo_workshop.ui.settings.shortcuts import ShortcutControls, ShortcutStatus
+
+        runtime = self.runtime
+
+        def saved_bindings():
+            return self.config.get('CaptureHotkeysJSON', '')
+
+        def status():
+            label = runtime.inventory.profiles().get(
+                self.config.get('InventoryProfileID', ''), '未选择有效档案'
+            )
+            try:
+                enabled = bool(parse_bindings(saved_bindings()))
+            except ValueError:
+                enabled = False
+            service = runtime.shortcuts
+            return ShortcutStatus(
+                label,
+                runtime.capture.status.state,
+                service.message if service else ('快捷键尚未启动' if enabled else '未设置快捷键'),
+                self.shortcut_message,
+            )
+
+        return ShortcutControls(
+            saved_bindings,
+            self.apply_shortcuts,
+            status,
+            closed=lambda: self._destroyed or runtime._closed or self.runtime is not runtime,
+        )
+
+    def new_repair_controls(self):
+        from ww_echo_workshop.application.repair import RepairService
+        from ww_echo_workshop.ui.settings.repair import RepairControls
+
+        runtime = self.runtime
+
+        def prepare_apply():
+            if runtime is not None and not runtime._closed:
+                if runtime.backups.status.busy:
+                    return '先完成或取消库存/工作区后台作业，再修复'
+                runtime.capture.stop()
+            return ''
+
+        return RepairControls(
+            service=RepairService(
+                self.config.config_file,
+                stop_event=runtime.stop_event if runtime is not None else None,
+                compute=runtime.compute if runtime is not None else None,
+            ),
+            startup_error=self.startup_error,
+            available=lambda: not self._destroyed and self.runtime is runtime,
+            prepare_apply=prepare_apply,
+        )
 
     @_window_lifetime_guard
     def open_weights(self, card):
@@ -210,7 +326,7 @@ class SettingsUIBridge:
             return
         self._ensure_signals(card)
         if self.weight_window is None:
-            self.weight_window = WeightWindow(self, card)
+            self.weight_window = WeightWindow(self.resource_settings(), card)
         self.weight_window.show()
         self.weight_window.raise_()
         self.weight_window.activateWindow()
@@ -225,10 +341,7 @@ class SettingsUIBridge:
             return
         self._ensure_signals(card)
         if self.comparison_window is None:
-            self.comparison_window = ComparisonWindow(self, card)
-            from ww_echo_workshop.ui.widgets.layout import add_home_button
-
-            add_home_button(self.comparison_window, self)
+            self.comparison_window = self._new_mode_window(ComparisonWindow, card)
         self.comparison_window.show()
         self.comparison_window.raise_()
         self.comparison_window.activateWindow()
@@ -237,7 +350,7 @@ class SettingsUIBridge:
         if getattr(card, '_echo_inventory_button', None) is not None:
             return
         self._ensure_signals(card)
-        repair = PushButton('故障恢复 / 控制记录修复', card)
+        repair = QPushButton('故障恢复 / 控制记录修复', card)
         repair.clicked.connect(lambda: self.open_control_repair(card))
         card.viewLayout.addWidget(repair)
         card._echo_control_repair_button = repair
@@ -246,33 +359,30 @@ class SettingsUIBridge:
             card._echo_inventory_button = repair
             return
         repair.hide()
-        assistant = PushButton('打开声骸工坊', card)
+        assistant = QPushButton('打开声骸工坊', card)
         assistant.clicked.connect(lambda: self.open_assistant(card))
         card.viewLayout.addWidget(assistant)
         card._echo_assistant_button = assistant
         self._entry_cards.append(weakref.ref(card))
-        try:
-            self._configure_shortcuts(self.config.get('CaptureHotkeysJSON', ''))
-        except (ValueError, OSError) as error:
-            self.shortcut_message = '快捷键配置待修正：' + str(error)
-        button = PushButton('声骸库 / 开始收录', card)
+        self._restore_shortcuts()
+        button = QPushButton('声骸库 / 开始收录', card)
         button.clicked.connect(lambda: self.open_inventory(card))
         # Keep the compact header narrow: use the expanded content area.
         button.hide()  # Retain callable legacy entry, not a second main action.
         card._echo_inventory_button = button
-        comparison = PushButton('多角色评分矩阵 / 找回', card)
+        comparison = QPushButton('多角色评分矩阵 / 找回', card)
         comparison.clicked.connect(lambda: self.open_comparison(card))
         comparison.hide()
         card._echo_comparison_button = comparison
-        weights = PushButton('XWUID 权重更新', card)
+        weights = QPushButton('XWUID 权重更新', card)
         weights.clicked.connect(lambda: self.open_weights(card))
         weights.hide()
         card._echo_weight_button = weights
-        allocation = PushButton('公平配装 / 换装清单', card)
+        allocation = QPushButton('公平配装 / 换装清单', card)
         allocation.clicked.connect(lambda: self.open_allocation(card))
         allocation.hide()
         card._echo_allocation_button = allocation
-        shortcuts = PushButton('收录快捷键 / 游戏内操作', card)
+        shortcuts = QPushButton('收录快捷键 / 游戏内操作', card)
         shortcuts.clicked.connect(lambda: self.open_shortcuts(card))
         shortcuts.hide()
         card._echo_shortcut_button = shortcuts
@@ -323,11 +433,9 @@ class SettingsUIBridge:
         for button in (card.start_button, card.pause_button, card.stop_button):
             if button is not None:
                 button.hide()
-        switch = SwitchButton(parent=card)
-        switch.setOnText('已启用')
-        switch.setOffText('已停用')
+        switch = QCheckBox('启用实时评分', card)
         switch.setChecked(bool(self.config.get('启用声骸评分', True)))
-        switch.checkedChanged.connect(
+        switch.toggled.connect(
             lambda checked: self.config.__setitem__('启用声骸评分', bool(checked))
         )
         # Stop TaskCard from restoring its one-shot Start button whenever any
@@ -400,7 +508,7 @@ class SettingsUIBridge:
             combo.setCurrentIndex(combo.findText(selected))
         else:
             combo.setCurrentIndex(-1)
-            combo.setText('失效选择：' + self.config.get('角色评分模板', ''))
+            combo.setEditText('失效选择：' + self.config.get('角色评分模板', ''))
         combo.blockSignals(False)
         widget.tr_options = labels
         widget.tr_dict = dict(zip(labels, labels))

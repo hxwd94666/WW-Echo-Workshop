@@ -52,8 +52,8 @@ class _InlineSurface:
 
 
 class WeightSettings(WeightContent, _InlineSurface, QWidget):
-    def __init__(self, task, parent=None):
-        super().__init__(task, parent)
+    def __init__(self, services, parent=None):
+        super().__init__(services, parent)
         # Data updates live in the workbench card; keep the settings surface
         # focused on custom character weights.
         controls = getattr(self, 'resource_controls', None)
@@ -63,7 +63,7 @@ class WeightSettings(WeightContent, _InlineSurface, QWidget):
 
     def refresh(self):
         if hasattr(self, 'auto'):
-            value = bool(self.task.config.get('AutoWeightUpdates', True))
+            value = self.services.auto()
             if self.auto.isChecked() != value:
                 self.auto.blockSignals(True)
                 self.auto.setChecked(value)
@@ -72,14 +72,14 @@ class WeightSettings(WeightContent, _InlineSurface, QWidget):
 
 
 class ShortcutSettings(ShortcutContent, _InlineSurface, QWidget):
-    def __init__(self, task, parent=None):
-        super().__init__(task, parent)
+    def __init__(self, controls, parent=None):
+        super().__init__(controls, parent)
         self.compact()
 
 
 class RepairSettings(ControlRepairContent, _InlineSurface, QWidget):
-    def __init__(self, task, parent=None):
-        super().__init__(task, parent)
+    def __init__(self, controls, parent=None):
+        super().__init__(controls, parent)
         self.compact()
 
     def showEvent(self, event):

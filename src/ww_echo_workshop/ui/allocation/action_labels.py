@@ -21,7 +21,4 @@ REPLACE_TIP = (
 
 
 def explain(button, text):
-    from qfluentwidgets import ToolTipFilter
-
     button.setToolTip(text)
-    button.installEventFilter(ToolTipFilter(button, showDelay=400))

@@ -1,70 +1,93 @@
 # 先采样冻结后识别，避免慢OCR完成时的窗口状态作废已取得的手动截图。
 import hashlib
 import time
+from ok.task.exceptions import FinishedException, TaskDisabledException
 
-from ok import og
-from ww_echo_workshop.capture.manual_snapshot import FrozenManualSnapshot
-from ww_echo_workshop.capture.viewport import detect_echo_viewport
-from ww_echo_workshop.application.compute_protocol import ComputeFailure
+from ww_echo_workshop.capture.manual_snapshot import ManualFrameBuffer
 from ww_echo_workshop.core.cancellation import OperationCancelled
-from .capture_device import capture_source_identity
-from .snapshot_parse import detect_scene, parse_snapshot_record
+from .capture_device import capture_source_identity, device_manager, read_task_sample
+from .panel_ocr import make_panel_reader
+from ww_echo_workshop.capture.snapshot_parse import detect_scene, parse_snapshot_record
 
 
-def _guard(task, settings, runtime, request, identity, *, frozen=False):
+def _context_current(task, settings, runtime, request, identity):
     capture = runtime.capture
-    if capture.single_request is not request and not any(
-        pending is request for pending in getattr(task, '_manual_pending', ())
-    ):
+    if capture.single_request is not request or request.cancelled.is_set():
         return False
     reason = ''
     if task._destroyed or settings._destroyed or runtime._closed or runtime.stop_event.is_set():
         reason = '插件已停止，本次收录已取消'
-    elif capture.expire_once():
+    elif capture.expire_once(request):
         return False
     elif settings.config.get('InventoryProfileID', '') != request.profile_id:
         reason = '档案已切换，本次收录已取消'
     elif runtime.backups.restoring:
         reason = '库存恢复作业已开始，本次收录已取消'
-    elif capture_source_identity(getattr(og, 'device_manager', None)) != identity:
+    elif capture_source_identity(device_manager()) != identity:
         reason = '截图来源已变化，本次收录已取消'
-    elif not frozen and (not settings._game_foreground() or not settings._capture_ready()):
-        reason = '采样尚未完成，请保持游戏前台后重按收录快捷键'
     if reason:
-        capture.cancel_once(reason)
+        capture.cancel_once(reason, request=request)
         task.log_info('手动收录取消：' + reason)
         return False
     return True
 
 
+def _guard(task, settings, runtime, request, identity, *, frozen=False):
+    if not _context_current(task, settings, runtime, request, identity):
+        return False
+    if frozen:
+        return True
+    ready = settings._game_foreground() and settings._capture_ready()
+    # Host probes can return after a replacement request or capture selection.
+    if not _context_current(task, settings, runtime, request, identity):
+        return False
+    if ready:
+        return True
+    reason = '采样尚未完成，请保持游戏前台后重按收录快捷键'
+    runtime.capture.cancel_once(reason, request=request)
+    task.log_info('手动收录取消：' + reason)
+    return False
+
+
 def _cancel_current(task, capture, request, message, **kwargs):
     if capture.single_request is request:
-        capture.cancel_once(message, **kwargs)
+        capture.cancel_once(message, request=request, **kwargs)
     else:
         task.log_warning(message)
 
 
-def parse_manual_snapshot(task, settings, runtime, request, snapshot, identity):
+def parse_manual_snapshot(task, settings, runtime, request, snapshot, identity, frozen_settings):
+    if not _guard(task, settings, runtime, request, identity, frozen=True):
+        return False
     capture = runtime.capture
     frames_required = capture.manual_stable_frames
     seconds_required = capture.manual_stable_seconds
     started = time.monotonic()
     weights = request.weights if request.weights is not None else runtime.weights.active
     sonata = request.sonata if request.sonata is not None else runtime.sonata.active
-    scene = detect_scene(task, snapshot.frame, snapshot.viewport)
+    parser = make_panel_reader(
+        task.executor,
+        frozen_settings,
+        threshold=task.ocr_default_threshold,
+        remembered=getattr(task, 'auto_matched_ids', None),
+    )
+    # The single manual worker can retain templates across requests, without
+    # retaining the previous request's OCR rules or selected role.
+    parser.sonata_matcher = getattr(task, '_manual_sonata_matcher', None)
+    scene = detect_scene(parser, snapshot.frame, snapshot.viewport)
     metadata, record = parse_snapshot_record(
-        task,
+        parser,
         snapshot.frame,
         snapshot.viewport,
-        settings.config,
+        frozen_settings,
         weights,
         request.profile_id,
         sonata,
         scene=scene,
         observations=runtime.observations,
-        cancel_event=runtime.stop_event,
-        cost_lookup=getattr(task, '_cached_cost', None),
+        cancel_event=request.cancelled,
     )
+    task._manual_sonata_matcher = parser.sonata_matcher
     if not _guard(task, settings, runtime, request, identity, frozen=True):
         return False
     analysis = metadata.analysis
@@ -122,84 +145,76 @@ def parse_manual_snapshot(task, settings, runtime, request, snapshot, identity):
 def run_manual_capture(task, settings, runtime, request, *, wait=None):
     """Acquire fresh pixels under foreground guards; parse immutable pixels once."""
     capture = runtime.capture
-    if any(pending is request for pending in getattr(task, '_manual_pending', ())):
+    if capture.is_manual_frozen(request):
         return False
-    identity = capture_source_identity(getattr(og, 'device_manager', None))
+
+    identity = capture_source_identity(device_manager())
     if request.source_identity is not None and identity != request.source_identity:
-        capture.cancel_once('截图来源已变化，请重新按收录快捷键')
+        capture.cancel_once('截图来源已变化，请重新按收录快捷键', request=request)
         task.log_info('手动收录取消：按键后截图来源已变化')
         return False
-    wait = wait or runtime.stop_event.wait
-    tokens, times, frames = [], [], []
-    viewport = None
+    wait = wait or request.cancelled.wait
+    buffer = ManualFrameBuffer(request)
     frames_required = capture.manual_stable_frames
     seconds_required = capture.manual_stable_seconds
     interval = max(0.05, seconds_required / (frames_required - 1))
-    capture.single_progress(request, 'sampling', '正在取得收录画面（0/3）')
+    frozen_settings = dict(settings.config)
+    capture.single_progress(request, 'sampling', f'正在取得收录画面（0/{frames_required}）')
     try:
-        while len(frames) < frames_required:
+        while len(buffer.frames) < frames_required:
             if not _guard(task, settings, runtime, request, identity):
                 return False
-            acquired_at = capture.clock()
-            # Request the host's real acquisition, never its cached frame property.
-            frame = task.next_frame()
-            token = getattr(task.executor, '_last_frame_time', None)
+            sample = read_task_sample(task, capture.clock, device_manager)
             if not _guard(task, settings, runtime, request, identity):
                 return False
-            if frame is None or token is None or token == request.after_token or token in tokens:
+            if sample is None or not buffer.add(sample.pixels, sample.token, sample.acquired_at):
                 if wait(0.05):
                     return False
                 continue
-            observed = detect_echo_viewport(frame)
-            if observed is None or (viewport is not None and observed != viewport):
-                capture.cancel_once('采样画面无效或尺寸变化，请保持声骸页面后重试')
-                return False
-            viewport = observed
-            frozen = frame.copy()
-            frozen.flags.writeable = False
-            frames.append(frozen)
-            tokens.append(token)
-            times.append(acquired_at)
+            count = len(buffer.frames)
             capture.single_progress(
-                request,
-                'sampling',
-                f'正在取得收录画面（{len(frames)}/{frames_required}）',
-                frames=len(frames),
+                request, 'sampling', f'正在取得收录画面（{count}/{frames_required}）', frames=count
             )
-            if len(frames) < frames_required and wait(interval):
+            if count < frames_required and wait(interval):
                 return False
-        snapshot = FrozenManualSnapshot(
-            request, tuple(frames), tuple(tokens), tuple(times), viewport
-        )
+        snapshot = buffer.freeze()
+        if not _context_current(
+            task, settings, runtime, request, identity
+        ) or not capture.mark_manual_frozen(request):
+            return False
         capture.single_progress(
-            request, 'recognizing', '画面已冻结，正在识别；此时可切出游戏', frames=len(frames)
+            request,
+            'recognizing',
+            '画面已冻结，正在识别；此时可切出游戏',
+            frames=len(snapshot.frames),
         )
         task.log_info(
-            f'手动收录画面已冻结：新帧={len(frames)}，采样跨度={times[-1] - times[0]:.2f}s；开始单次识别'
+            f'手动收录画面已冻结：新帧={len(snapshot.frames)}，采样跨度={snapshot.times[-1] - snapshot.times[0]:.2f}s；开始单次识别'
         )
-        if not task._enqueue_manual(snapshot, request, identity, settings, runtime):
-            capture.cancel_once('解析队列已满，请稍后重试')
+        if not task._enqueue_manual(
+            snapshot, request, identity, settings, runtime, frozen_settings
+        ):
+            capture.cancel_once('解析队列已满，请稍后重试', request=request)
         return False
-    except OperationCancelled:
+    except (OperationCancelled, FinishedException, TaskDisabledException):
         capture.cancel_once(
             '本次收录已取消',
             diagnostic_state='cancelled',
             summary_code='capture_cancelled',
+            request=request,
         )
         return False
-    except (ValueError, OSError, ComputeFailure) as error:
+    except ValueError as error:
         capture.cancel_once(
-            '本次收录未完成：' + str(error),
-            diagnostic_state='failed',
-            summary_code='capture_failed',
+            str(error),
+            request=request,
         )
-        task.log_warning('手动收录失败：' + str(error))
         return False
     except Exception as error:
-        capture.cancel_once(
-            '本次识别异常，请查看日志后重试',
-            diagnostic_state='failed',
-            summary_code='capture_failed',
+        capture.fail_manual(
+            'sampling',
+            error,
+            request=request,
+            message='本次采样异常，请查看日志后重试',
         )
-        task.log_warning(f'手动收录异常：{error}')
         return False

@@ -1,98 +1,191 @@
 # 获取宿主扫描帧并解析冻结观察。
-from contextlib import nullcontext
 from dataclasses import replace
 import time
-from ok import og, Box
-from ww_echo_workshop.capture.viewport import EchoViewport
-from ww_echo_workshop.capture.scan.grid import bag_sort_direction
+from ww_echo_workshop.capture.viewport import EchoViewport, detect_echo_viewport
+from ww_echo_workshop.capture.scan.grid import bag_scrollbar, bag_sort_direction
 from ww_echo_workshop.core.cancellation import OperationCancelled
-from .capture_device import _window_capture_available
-from .snapshot_parse import parse_snapshot_record
+from ww_echo_workshop.capture.scan.access import ScanAccess, scan_access
+from .capture_device import (
+    device_manager,
+    foreground_scan_supported,
+    read_task_sample,
+    scan_device_identity,
+)
+from .panel_ocr import frame_reader, make_panel_reader
+
+
+def _same_page_without_selection(expected, observed):
+    from ww_echo_workshop.capture.scan.signatures import _same_grid
+
+    return (
+        expected.single_page == observed.single_page
+        and expected.bottom_confirmed == observed.bottom_confirmed
+        and _same_grid(replace(expected, selected=observed.selected), observed)
+    )
 
 
 class _ObservationStop:
-    def __init__(self, runtime_event, scan_event):
+    def __init__(self, runtime_event, scan_event=None, *, obsolete=None):
         self.runtime_event, self.scan_event = runtime_event, scan_event
+        self.obsolete = obsolete
 
     def is_set(self):
-        return self.runtime_event.is_set() or (
-            self.scan_event is not None and self.scan_event.is_set()
+        return (
+            self.runtime_event.is_set()
+            or (self.scan_event is not None and self.scan_event.is_set())
+            or (self.obsolete is not None and self.obsolete())
         )
 
 
 class ScanObservation:
-    def _guard(self, *, allow_paused=False, observation_only=False):
+    def _guard(self, operation='observe'):
         runtime, scan = self._active_runtime, getattr(self, '_scan', None)
         if runtime is None or scan is None:
             return False
-        if (
-            self._destroyed
-            or runtime._closed
-            or runtime.stop_event.is_set()
-            or self.executor.exit_event.is_set()
-            or scan.generation != self._generation
-        ):
+        generation = self._generation
+        if scan.status_for(generation) is None:
             return False
-        if (
-            self._settings.config.get('InventoryProfileID', '') != scan.profile_id
-            or self._capture_identity() != self._identity
-            or runtime.capture.status.mode != 'automatic'
-            or runtime.capture.status.state == 'stopped'
-        ):
-            scan.stop('档案、捕获或输入目标已变化；扫描已停止')
-            return False
-        if self.executor.paused:
-            scan.pause('OKWW 已暂停，扫描已暂停')
-            runtime.capture.pause()
-            return False
-        if not self._settings._capture_ready():
-            scan.stop('捕获连接已断开；扫描已停止')
-            return False
-        manager = getattr(og, 'device_manager', None)
-        window = getattr(manager, 'hwnd_window', None)
-        passive = (
-            observation_only
-            and allow_paused
-            and scan.status.state == 'paused'
-            and _window_capture_available(manager)
-            and getattr(window, 'exists', False)
-            and getattr(window, 'pos_valid', False)
-        )
-        if (
-            not passive
-            and scan.status.state != 'draining'
-            and not self._settings._game_foreground()
-        ):
-            if scan.status.state == 'running':
-                scan.pause('游戏不在前台，扫描已暂停；在助手点继续后切回游戏')
-                runtime.capture.pause()
-            return False
-        return scan.status.state in (
-            ('preparing', 'running', 'paused')
-            if allow_paused
-            else ('preparing', 'running', 'draining')
-        )
 
-    def _observe(self, *, allow_paused=False, observation_only=False):
-        if not self._guard(allow_paused=allow_paused, observation_only=observation_only):
+        def cancelled():
+            return (
+                self._destroyed
+                or runtime._closed
+                or runtime.stop_event.is_set()
+                or self.executor.exit_event.is_set()
+            )
+
+        def context_matches():
+            capture = runtime.capture.scan_status(generation)
+            return (
+                capture is not None
+                and capture.state != 'stopped'
+                and self._settings.config.get('InventoryProfileID', '') == scan.profile_id
+                and self._capture_identity() == self._identity
+                and foreground_scan_supported(device_manager())
+            )
+
+        if cancelled():
+            scan.stop('扫描已取消，已收录记录保留', generation=generation)
+            return False
+        matches = context_matches()
+        ready = self._settings._capture_ready() if matches else False
+        foreground = self._settings._game_foreground() if matches else False
+        # Probes may return after the user stopped or replaced this scan.
+        matches = matches and context_matches()
+        status = scan.status_for(generation)
+        if status is None:
+            return False
+        if cancelled():
+            scan.stop('扫描已取消，已收录记录保留', generation=generation)
+            return False
+        state = status.state
+        decision = scan_access(
+            state,
+            operation=operation,
+            current=True,
+            cancelled=False,
+            context_matches=matches,
+            host_paused=self.executor.paused,
+            ready=ready,
+            foreground=foreground,
+        )
+        if decision is ScanAccess.CHANGED:
+            scan.stop('档案、捕获或输入目标已变化；扫描已停止', generation=generation)
+        elif decision is ScanAccess.DISCONNECTED:
+            scan.stop('捕获连接已断开；扫描已停止', generation=generation)
+        elif decision in (ScanAccess.HOST_PAUSED, ScanAccess.OUT_OF_FOCUS):
+            if state == 'draining':
+                scan.stop('游戏已切出或 OKWW 已暂停；保留已收录记录', generation=generation)
+            if state == 'running':
+                scan.pause(
+                    'OKWW 已暂停，扫描已暂停'
+                    if decision is ScanAccess.HOST_PAUSED
+                    else '游戏不在前台，扫描已暂停；在助手点继续后切回游戏',
+                    generation=generation,
+                )
+                runtime.capture.pause(generation=generation)
+        return decision is ScanAccess.ALLOW
+
+    def _observe(self, *, operation='observe'):
+        if not self._guard(operation):
             return None
-        acquired_at = self._active_runtime.capture.clock()
         with self._measure('capture_frame'):
-            frame = self.next_frame()
-        token = getattr(self.executor, '_last_frame_time', None)
-        if frame is None or token is None or token == self._last_token:
+            sample = read_task_sample(
+                self,
+                self._active_runtime.capture.clock,
+                device_manager,
+                identify=scan_device_identity,
+            )
+        if not self._guard(operation) or sample is None or sample.token == self._last_token:
             return None
+        frame, token, acquired_at = sample.pixels, sample.token, sample.acquired_at
         self._last_token = token
-        if getattr(self, '_fixed_mode', False):
+        if getattr(self, '_page_ready', False):
             from types import SimpleNamespace
-            from ww_echo_workshop.capture.scan.levels import selected_slot, list_bottom
+            from ww_echo_workshop.capture.scan.levels import (
+                selected_slot,
+                page_content,
+                page_moved,
+            )
 
             viewport = self._fixed_grid.viewport
+            if frame.shape[:2] != self._fixed_frame_shape:
+                self._scan.stop('捕获画面大小已变化；请重新开始扫描', generation=self._generation)
+                return None
+            measured = detect_echo_viewport(frame)
+            if measured is None:
+                return None
+            if measured != viewport:
+                self._scan.stop('捕获画面边界已变化；请重新开始扫描', generation=self._generation)
+                return None
+            if bag_sort_direction(frame, viewport) != 'descending':
+                return None
+            if operation == 'resume':
+                self._short_grid_candidate = None
+                if self._pending_scroll is not None:
+                    # The fixed batch resumes with its existing wheel count;
+                    # only the finished batch can publish the next page.
+                    return frame, token, acquired_at, viewport, None, self._fixed_grid
+                with self._measure('resume_grid_detection'):
+                    grid = self._detector.detect(frame, viewport, context=self._fixed_grid.context)
+                if grid is None or not self._guard(operation):
+                    return None
+                # Selecting another slot is harmless: the task will reclick
+                # the intended target. Compare measured geometry and content.
+                if not _same_page_without_selection(self._fixed_grid, grid):
+                    self._scan.stop(
+                        '暂停期间列表位置或内容已变化；请回到顶部重新扫描',
+                        generation=self._generation,
+                    )
+                    return None
+                return frame, token, acquired_at, viewport, None, grid
+            if self._pending_scroll is not None:
+                with self._measure('scroll_grid_detection'):
+                    grid = self._detector.detect(frame, viewport, context=self._fixed_grid.context)
+                if not self._guard() or grid is None:
+                    return None
+                grid = replace(grid, capture_token=token)
+                return frame, token, acquired_at, viewport, None, grid
+            if len(self._fixed_grid.tiles) < 3:
+                if not self._check_short_page(frame, viewport, acquired_at):
+                    return None
+            else:
+                thumb, expected = bag_scrollbar(frame, viewport), self._fixed_grid.scrollbar
+                # A temporarily hidden thumb is not proof of the old position.
+                if thumb is None and expected is not None:
+                    return None
+                moved = thumb is not None and (expected is None or abs(thumb - expected) >= 0.003)
+                if moved or page_moved(
+                    self._page_signature, page_content(frame, self._fixed_grid.tiles)
+                ):
+                    self._scan.stop(
+                        '列表内容或位置已变化；请回到顶部重新扫描', generation=self._generation
+                    )
+                    return None
             grid = replace(
                 self._fixed_grid,
                 capture_token=token,
-                selected=selected_slot(frame, self._fixed_grid.tiles, self._scan._target, viewport),
-                bottom_confirmed=list_bottom(frame, viewport),
+                selected=selected_slot(frame, self._scan._target, viewport),
             )
             metadata = SimpleNamespace(
                 level=None,
@@ -100,38 +193,32 @@ class ScanObservation:
                 analysis=SimpleNamespace(layout='bag', layout_provisional=False),
             )
             return frame, token, acquired_at, viewport, metadata, grid
-        from ww_echo_workshop.capture.viewport import detect_echo_viewport
-
         with self._measure('viewport'):
             viewport = detect_echo_viewport(frame)
         if viewport is None:
             return None
         self._settings._scan_hud_viewport = viewport
-        # Selection/grid observations do not need grade OCR. The gate asks for
-        # an actual reading only after traversal confirms the selected target.
-        self._probe_read_level = self._pipeline is None
-        if allow_paused:
-            self._sort_probe_cache = None
-        with self._measure('probe' if self._pipeline is not None else 'preflight_metadata'):
-            metadata = (
-                self._read_probe(frame, viewport)
-                if self._pipeline is not None
-                else self._parser.read_metadata(
-                    frame,
-                    self._settings.config,
-                    self._scan.weights,
-                    viewport=viewport,
-                    scan=True,
-                    observation_service=self._active_runtime.observations,
-                    cancel_event=self._active_runtime.stop_event,
-                )
+        # Only preflight needs this metadata read; active scanning uses frozen detail jobs.
+        scan, generation = self._scan, self._generation
+        with self._measure('preflight_metadata'):
+            metadata = self._scan_parser.read_metadata(
+                frame,
+                self._frozen_settings,
+                scan.weights,
+                viewport=viewport,
+                scan=True,
+                observation_service=self._active_runtime.observations,
+                cancel_event=_ObservationStop(
+                    self._active_runtime.stop_event,
+                    obsolete=lambda: scan.status_for(generation) is None,
+                ),
             )
-        if not self._guard(allow_paused=allow_paused, observation_only=observation_only):
+        if not self._guard():
             return None
         if getattr(metadata.analysis, 'layout', '') != 'bag' or getattr(
             metadata.analysis, 'layout_provisional', False
         ):
-            self._scan.stop('请保持声骸背包页面；扫描已停止')
+            self._scan.stop('请保持声骸背包页面；扫描已停止', generation=self._generation)
             return None
         area = EchoViewport.checked(viewport, frame.shape[1], frame.shape[0])
         labels = tuple(
@@ -146,286 +233,139 @@ class ScanObservation:
         )
         context = ('bag', labels, bag_sort_direction(frame, viewport))
         with self._measure('grid_detection'):
-            cache_allowed = (
-                self._pipeline is not None
-                and not allow_paused
-                and self._scan._phase in ('select', 'confirm', 'read')
-            )
-            grid = (
-                self._detector.observe_cached(frame, viewport, context=context)
-                if cache_allowed
-                else None
-            )
-            cache_hit = grid is not None
-            if grid is None:
-                grid = self._detector.detect(frame, viewport, context=context)
+            grid = self._detector.detect(frame, viewport, context=context)
             if getattr(self, '_timings', None) is not None:
-                self._timings.increment(
-                    'grid_cached_observations' if cache_hit else 'grid_full_measurements'
-                )
+                self._timings.increment('grid_full_measurements')
         if grid is not None:
-            edge = None
-            if self._scan._anchor_active:
-                from ww_echo_workshop.capture.scan.anchor import gold_boundary
-
-                edge = gold_boundary(frame, grid, self._scroll_anchor)
-            grid = replace(grid, capture_token=token, anchor_boundary=edge)
+            grid = replace(grid, capture_token=token)
         return (frame, token, acquired_at, viewport, metadata, grid)
 
-    def _make_scan_parser(self):
-        # A separate parser facade owns its caches. Its OCR bypasses task.ocr's
-        # pause/sleep/device side effects and reads only the supplied image.
-        import copy
-
-        parser = copy.copy(self._parser)
-        parser._sonata_matcher = None
-        parser._scan_icon_fast = True
-        timings = getattr(self, '_timings', None)
-        parser._scan_timings = timings
-        fun = parser.ocr_fun('default')
-
-        def frozen_ocr(*, frame, box):
-            image = frame[box.y : box.y + box.height, box.x : box.x + box.width]
-            waiting = time.perf_counter()
-            if timings is not None:
-                timings.record('ocr_lock_wait', max(0.0, time.perf_counter() - waiting))
-            name = (
-                'level_ocr'
-                if box.name.startswith('echo-level')
-                else 'sort_ocr'
-                if box.name == 'echo-sort'
-                else 'detail_ocr'
+    def _check_short_page(self, frame, viewport, at):
+        # The regular three-thumbnail threshold cannot detect a replaced
+        # short page or an insertion outside its previously sampled slots.
+        reference = self._fixed_grid
+        with self._measure('short_grid_detection'):
+            grid = self._detector.detect(frame, viewport, context=reference.context)
+        if grid is None or not self._guard():
+            self._short_grid_candidate = None
+            return False
+        previous = getattr(self, '_short_grid_candidate', None)
+        if _same_page_without_selection(reference, grid):
+            self._short_grid_candidate = None
+            return True
+        self._short_grid_candidate = (reference, grid, at)
+        if (
+            previous is not None
+            and previous[0] is reference
+            and 0 < at - previous[2] <= 5
+            and _same_page_without_selection(previous[1], grid)
+        ):
+            self._scan.stop(
+                '短列表内容或位置已变化；请回到顶部重新扫描', generation=self._generation
             )
-            with timings.stage(name) if timings is not None else nullcontext():
-                detected, _ = fun(box, image, None, 1.0, parser.ocr_default_threshold, 'default')
-            return sorted(detected, key=lambda b: (b.y, b.x))
+        return False
 
-        parser.ocr = frozen_ocr
-        return parser
-
-    def _read_probe(self, frame, viewport):
-        from types import SimpleNamespace
-        from ww_echo_workshop.capture.scan.pipeline import bag_region, observed_level
-
-        boxes, level = [], None
-        if getattr(self, '_probe_read_level', True):
-            grade = bag_region(frame, viewport, (0.68, 0.17, 0.755, 0.23))
-            boxes = self._scan_parser.ocr(frame=frame, box=Box(*grade, name='echo-level'))
-            level = observed_level(boxes)
-        if getattr(self, '_probe_read_level', True) and level is None:
-            # Still only the header's grade band, not full stats OCR. More
-            # margin preserves the plus sign across resolutions/font metrics.
-            grade = bag_region(frame, viewport, (0.665, 0.15, 0.795, 0.235))
-            boxes = self._scan_parser.ocr(frame=frame, box=Box(*grade, name='echo-level-retry'))
-            level = observed_level(boxes)
-        sort = bag_region(frame, viewport, (0.13, 0.87, 0.335, 0.96), side='left')
-        # Cache only a nonempty caption with identical bright text pixels and
-        # geometry. A changed caption/viewport is re-read, never silently reused.
-        # The sort direction is still observed separately from every new frame.
-        import numpy as np
-
-        x, y, w, h = sort
-        crop = frame[y : y + h, x : x + w, :3]
-        mask = (crop.min(axis=2) > 170) & (crop.max(axis=2) - crop.min(axis=2) < 80)
-        packed = np.packbits(mask).tobytes()
-        key = (tuple(viewport), sort, packed)
-        cached = getattr(self, '_sort_probe_cache', None)
-        if cached is not None and cached[0] == key:
-            labels = cached[1]
-            if getattr(self, '_timings', None) is not None:
-                self._timings.increment('sort_ocr_cache_hits')
-        else:
-            labels = self._scan_parser.ocr(frame=frame, box=Box(*sort, name='echo-sort'))
-            self._sort_probe_cache = (key, tuple(labels)) if labels and mask.sum() >= 8 else None
-        return SimpleNamespace(
-            level=level,
-            probe_texts=tuple(str(b.name) for b in boxes),
-            original_boxes=tuple(labels),
-            analysis=SimpleNamespace(layout='bag', layout_provisional=False),
+    def _make_scan_parser(self):
+        return make_panel_reader(
+            self.executor,
+            self._frozen_settings,
+            threshold=self.ocr_default_threshold,
+            remembered=getattr(self._parser, 'auto_matched_ids', None),
+            timings=self._timings,
+            scan_icons=True,
         )
 
     def _snapshot_parser(self, *, crop_mode='packed', cancel_event=None):
-        # Bind the complete job environment now. A cancelled inference may
-        # finish after this task/runtime is gone; it retains no repository/UI.
-        from ww_echo_workshop.capture.evidence import prepare_evidence
-        from ww_echo_workshop.capture.scan.crop import read_fields
+        from ww_echo_workshop.capture.scan.snapshot import snapshot_parser
 
-        if crop_mode not in ('original', 'packed'):
-            raise ValueError('Unknown scan snapshot crop mode')
-        parser, settings = self._scan_parser, self._frozen_settings
-        profile, weights, sonata = self._scan.profile_id, self._scan.weights, self._scan.sonata
-        observations = self._active_runtime.observations
-        stop_event = _ObservationStop(self._active_runtime.stop_event, cancel_event)
-        timings = getattr(self, '_timings', None)
-
-        def measure(name):
-            return timings.stage(name) if timings is not None else nullcontext()
-
-        def parse(snapshot):
-            frame, viewport = snapshot.frame, snapshot.viewport
-            boxes = []
-            metadata = None
-            packed_observation = None
-            if crop_mode == 'packed':
-                try:
-                    boxes = read_fields(frame, viewport, parser.ocr, mode='packed', box_factory=Box)
-                    with measure('metadata'):
-                        metadata = parser.read_metadata(
-                            frame,
-                            settings,
-                            weights,
-                            viewport=viewport,
-                            boxes=boxes,
-                            scan=True,
-                            observation_service=observations,
-                            cancel_event=stop_event,
-                        )
-                    packed_observation = metadata
-                except ValueError:
-                    # Geometry/crop ambiguity gets one legacy attempt on THIS
-                    # frozen image. Engine/runtime exceptions still propagate.
-                    if timings is not None:
-                        timings.increment('packed_crop_errors')
-                if timings is not None:
-                    timings.increment('packed_crop_attempts')
-            if crop_mode == 'packed' and timings is not None and metadata is not None:
-                if (
-                    getattr(metadata, 'issues', ())
-                    or getattr(metadata.analysis, 'layout', '') != 'bag'
-                ):
-                    timings.increment('packed_legacy_fallbacks')
-            with measure('metadata'):
-                metadata, record = parse_snapshot_record(
-                    parser,
-                    frame,
-                    viewport,
-                    settings,
-                    weights,
-                    profile,
-                    sonata,
-                    scene='bag',
-                    boxes=boxes or None,
-                    initial=metadata,
-                    expected_level=snapshot.proof.level,
-                    observations=observations,
-                    cancel_event=stop_event,
-                )
-            boxes = getattr(metadata, 'original_boxes', boxes)
-            if getattr(metadata.analysis, 'layout', '') != 'bag' or getattr(
-                metadata.analysis, 'layout_provisional', False
-            ):
-                analysis = metadata.analysis
-                row, column = snapshot.proof.position
-                raise ValueError(
-                    'Queued snapshot is not a complete bag panel; '
-                    f'position=({row + 1},{column + 1}); level={snapshot.proof.level}; '
-                    f'layout={getattr(analysis, "layout", "")!r}; '
-                    f'provisional={getattr(analysis, "layout_provisional", False)}; '
-                    f'rows=({len(getattr(analysis, "main_rows", ()))},{len(getattr(analysis, "sub_rows", ()))}); '
-                    f'boxes={len(boxes)}'
-                )
-            if record is None or record.level != snapshot.proof.level:
-                raise ValueError('Queued snapshot level/details disagree')
-            if packed_observation is not metadata and getattr(packed_observation, 'issues', ()):
-                # A later same-frame read must not erase an earlier conflicting
-                # observation. Preserve its raw boxes and unresolved issues, but
-                # drop warnings the final record has already resolved.
-                from dataclasses import replace
-
-                from ww_echo_workshop.capture.metadata import settle_observation_issues
-
-                packed_issues = tuple(settle_observation_issues(record, packed_observation.issues))
-                record = replace(
-                    record,
-                    issues=tuple(dict.fromkeys(record.issues + packed_issues)),
-                    raw_text=record.raw_text
-                    + '\n[echo-scan-packed-observation]\n'
-                    + packed_observation.raw_text(),
-                )
-            with measure('png_encode'):
-                record, evidence = prepare_evidence(record, frame, metadata.analysis)
-            return record, evidence
-
-        return parse
+        # Bind the whole frozen job context now, without capturing runtime/UI.
+        return snapshot_parser(
+            self._scan_parser,
+            self._frozen_settings,
+            self._scan.profile_id,
+            self._scan.weights,
+            self._scan.sonata,
+            self._active_runtime.observations,
+            _ObservationStop(self._active_runtime.stop_event, cancel_event),
+            crop_mode=crop_mode,
+            timings=getattr(self, '_timings', None),
+        )
 
     def _consume_results(self):
-        if self._pipeline is None or not self._guard():
+        if self._pipeline is None:
             return
-        while (result := self._pipeline.poll()) is not None:
+        while self._guard('commit'):
+            result = self._deferred_detail or self._pipeline.poll()
+            self._deferred_detail = None
+            if result is None:
+                return
             snapshot, value, error = result
             proof = snapshot.proof
             with self._scan._lock:
-                if not self._guard() or proof.position not in self._scan._submitted:
+                if (
+                    self._scan.generation != self._generation
+                    or proof.position not in self._scan._submitted
+                ):
+                    continue
+            if isinstance(error, OperationCancelled):
+                self._diagnostic_summary = 'scan_cancelled'
+                self._scan.stop('扫描已取消，已收录记录保留', generation=self._generation)
+                return
+            outcome = 'failed'
+            if error is None:
+                with self._measure('inventory_commit'):
+                    committed = self._active_runtime.capture.commit_scan_snapshot(
+                        value[0],
+                        value[1],
+                        proof,
+                        generation=self._generation,
+                        commit_guard=lambda: self._guard('commit'),
+                        cancel_event=self._pipeline.cancelled,
+                    )
+                if committed is not None:
+                    outcome = committed
+                elif self._scan.status.state == 'paused':
+                    # A guard may pause before committing. Preserve
+                    # the original immutable result instead of losing a slot.
+                    self._deferred_detail = result
                     return
-                if isinstance(error, OperationCancelled):
-                    self._diagnostic_summary = 'scan_cancelled'
-                    self._scan.stop('扫描已取消，已收录记录保留')
-                    return
-                outcome = 'failed'
-                if error is None:
-                    before = self._active_runtime.capture.status
-                    with self._measure('inventory_commit'):
-                        committed = self._active_runtime.capture.commit_scan_snapshot(
-                            value[0],
-                            value[1],
-                            proof,
-                            generation=self._generation,
-                            commit_guard=self._guard,
-                        )
-                    if committed:
-                        after = self._active_runtime.capture.status
-                        outcome = 'pending' if after.pending > before.pending else 'added'
-                else:
-                    if not self._parse_failure_notice:
-                        self._parse_failure_notice = True
-                        self.log_warning(
-                            '声骸解析失败；已收录记录保留，请导出诊断报告查看错误类型与阶段'
-                        )
-                self._scan.resolve_detail(
-                    outcome,
-                    generation=self._generation,
-                    position=proof.position,
-                    reason='parse' if error is not None else 'evidence',
-                )
+            elif not self._parse_failure_notice:
+                self._parse_failure_notice = True
+                self.log_warning('声骸解析失败；已收录记录保留，请导出诊断报告查看错误类型与阶段')
+            self._scan.resolve_detail(
+                outcome,
+                generation=self._generation,
+                position=proof.position,
+                reason='parse' if error is not None else 'evidence',
+            )
 
     def _make_grade_reader(self):
-        # Independent host-configured engine, created INSIDE the grade thread.
-        # No shared OCR_LOCK and no mutation of the executor's engine cache.
-        import copy
-        from types import SimpleNamespace
+        from .private_ocr import PluginOcrService
 
-        facade = copy.copy(self._parser)
-        engine = self.executor._create_ocr_lib('default')
-        facade._executor = SimpleNamespace(
-            config=self.executor.config,
-            ocr_lib=lambda name: engine,
-            ocr_po_translation=getattr(self.executor, 'ocr_po_translation', None),
-            locale=getattr(self.executor, 'locale', 'zh_CN'),
-            text_fix=getattr(self.executor, 'text_fix', {}),
+        service = PluginOcrService()
+        read_region = frame_reader(
+            self.executor,
+            threshold=self.ocr_default_threshold,
+            enabled=self._frozen_settings.get('使用独立OCR引擎', True),
+            service=service,
         )
-        facade.screenshot = lambda *a, **kw: None
-        fun = facade.ocr_fun('default')
 
         def read(image):
-            boxes, _ = fun(
-                Box(0, 0, image.shape[1], image.shape[0]),
-                image,
-                None,
-                1.0,
-                facade.ocr_default_threshold,
-                'default',
-            )
-            return boxes
+            return read_region(image, (0, 0, image.shape[1], image.shape[0]), 'echo-level')
 
+        read.close = service.close
         return read
 
     def _submit_page_levels(self, observed):
         from ww_echo_workshop.capture.scan.levels import crop_levels
 
-        self._page = self._scan._offset // 3
+        self._slot_indices = {
+            (tile.row, tile.column): index for index, tile in enumerate(self._fixed_grid.tiles)
+        }
         self._page_levels = None
         self._grade_tokens = None
         self._grade_fallback = None
+        self._grade_fallback_detail = None
         self._grade_deadline = time.monotonic() + 30
         job = crop_levels(
             observed[0], self._fixed_grid.tiles, self._generation, self._page, observed[1]
@@ -443,22 +383,60 @@ class ScanObservation:
                 raise RuntimeError('等级线程识别失败') from error
             if job.selected is None:
                 self._page_levels = list(values)
-                self._grade_tokens = [job.token] * 18
+                self._grade_tokens = [job.token] * len(values)
             else:
                 self._page_levels[job.selected] = values[0]
                 self._grade_tokens[job.selected] = job.token
                 self._grade_fallback = 'done'
 
-    def _fallback_level(self, frame, viewport, token, index):
-        import numpy as np
-        from ww_echo_workshop.capture.scan.pipeline import bag_region
-        from ww_echo_workshop.capture.scan.levels import GradeJob
+    def _read_selected_level(self, observed, gate, index, position):
+        from ww_echo_workshop.capture.scan.pipeline import (
+            _detail_observation,
+            _same_detail_observation,
+        )
 
-        x, y, w, h = bag_region(frame, viewport, (0.665, 0.15, 0.795, 0.235))
-        crop = np.array(frame[y : y + h, x : x + w, :3], copy=True)
-        crop.flags.writeable = False
-        if self._grade_pipeline.submit(
+        frame, token, at, viewport, _, _ = observed
+        level = self._page_levels[index]
+        if self._grade_fallback == 'done':
+            if _same_detail_observation(
+                self._grade_fallback_detail, _detail_observation(frame, viewport)
+            ):
+                return True, level
+            # The result belongs to an older selected detail. Wait for a
+            # stable panel again instead of using a late low grade as cutoff.
+            self._page_levels[index] = None
+            self._grade_fallback = None
+            gate.clear_samples()
+        elif self._grade_fallback is not None:
+            if time.monotonic() >= self._grade_deadline:
+                raise TimeoutError('等级线程未返回单件补读结果')
+        elif level is not None and level >= self._scan.minimum_level:
+            return True, level
+        elif (
+            gate.stable_pair(
+                frame,
+                viewport,
+                token,
+                at,
+                position,
+                self._generation,
+                scope=('grade', self._page),
+            )
+            is not None
+        ):
+            if not self._fallback_level(frame, viewport, token, index, detail=gate.detail):
+                gate.clear_samples()
+        return False, None
+
+    def _fallback_level(self, frame, viewport, token, index, *, detail):
+        from ww_echo_workshop.capture.scan.levels import GradeJob, freeze_selected_grade
+
+        crop = freeze_selected_grade(frame, viewport, detail)
+        if crop is None or not self._grade_pipeline.submit(
             GradeJob(self._generation, self._page, token, (crop,), index)
         ):
-            self._grade_fallback = index
-            self._grade_deadline = time.monotonic() + 30
+            return False
+        self._grade_fallback = index
+        self._grade_fallback_detail = detail
+        self._grade_deadline = time.monotonic() + 30
+        return True

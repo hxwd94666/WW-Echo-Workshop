@@ -15,17 +15,15 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from ww_echo_workshop.resources.search import search_matches
-from qfluentwidgets import (
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import (
     CaptionLabel,
-    CheckBox,
-    FlowLayout,
-    LineEdit,
-    PushButton,
     PrimaryPushButton,
-    isDarkTheme,
-    qconfig,
-    themeColor,
+    WorkshopCheckBox,
+    accent_color,
 )
+from PySide6.QtWidgets import QLineEdit, QPushButton
+from ww_echo_workshop.ui.widgets.flow_layout import FlowLayout
 from ww_echo_workshop.core.filters import (
     InventoryFilters,
     MAIN_STAT_KEYS,
@@ -102,12 +100,11 @@ class SubstatBox(QFrame):
         self.setFixedSize(190, 38)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(8, 2, 8, 2)
-        self.box = CheckBox(text, self)
+        self.box = WorkshopCheckBox(text, self)
         layout.addWidget(self.box)
         self.box.toggled.connect(self.toggled.emit)
         self.box.toggled.connect(self.update_theme)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeColorChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
 
     def isChecked(self):
@@ -128,10 +125,8 @@ class SubstatBox(QFrame):
         super().mousePressEvent(event)
 
     def update_theme(self, *_):
-        border = (
-            themeColor().name() if self.isChecked() else ('#555555' if isDarkTheme() else '#d6d6d6')
-        )
-        bg = '#303030' if isDarkTheme() else '#ffffff'
+        border = accent_color(self).name() if self.isChecked() else colors_for_widget(self).border
+        bg = colors_for_widget(self).control
         self.setStyleSheet(
             f'#EchoSubstatTile {{border:1px solid {border};border-radius:5px;background:{bg};}}'
         )
@@ -165,7 +160,7 @@ class InventoryFilterBar(QWidget):
 
         def choices(group, layout, values):
             options = QWidget(group)
-            flow = FlowLayout(options, needAni=False)
+            flow = FlowLayout(options)
             flow.setContentsMargins(0, 0, 0, 0)
             boxes = {}
             for key, text in values:
@@ -180,11 +175,11 @@ class InventoryFilterBar(QWidget):
             '状态', '多选显示任一状态；已保护包括手动保护和配装占用，不改游戏锁定。'
         )
         options = QWidget(status)
-        flow = FlowLayout(options, needAni=False)
+        flow = FlowLayout(options)
         flow.setContentsMargins(0, 0, 0, 0)
         self.status_boxes = {}
         for key, text in STATUS_OPTIONS:
-            control = CheckBox(text, options)
+            control = WorkshopCheckBox(text, options)
             self.status_boxes[key] = control
             flow.addWidget(control)
             control.toggled.connect(self._changed)
@@ -199,7 +194,7 @@ class InventoryFilterBar(QWidget):
         self.sub_count = CaptionLabel('已选 0/5', subs)
         layout.addWidget(self.sub_count)
         options = QWidget(subs)
-        flow = FlowLayout(options, needAni=False)
+        flow = FlowLayout(options)
         flow.setContentsMargins(0, 0, 0, 0)
         self.sub_boxes = {}
         for key in SUB_STAT_KEYS:
@@ -209,7 +204,7 @@ class InventoryFilterBar(QWidget):
             control.toggled.connect(lambda checked, k=key: self._sub_changed(k, checked))
         layout.addWidget(options)
         sonata, layout = section('套装（可多选）', '符合任一所选套装；搜索只隐藏选项，不取消勾选。')
-        self.sonata_search = LineEdit(sonata)
+        self.sonata_search = QLineEdit(sonata)
         self.sonata_search.setPlaceholderText('搜索套装（中文 / 拼音 / 首字母）')
         self.sonata_search.setAccessibleName('套装搜索')
         self.sonata_search.textChanged.connect(self._search_sonatas)
@@ -224,7 +219,7 @@ class InventoryFilterBar(QWidget):
         self.feedback.setWordWrap(True)
         self.feedback.hide()
         root.addWidget(self.feedback)
-        self.clear_button = PushButton('重置', self)
+        self.clear_button = QPushButton('重置', self)
         self.clear_button.clicked.connect(self.clear)
         root.addWidget(self.clear_button)
 
@@ -346,7 +341,7 @@ class InventoryFilterDrawer(QFrame):
         self.summary = CaptionLabel('0 项条件', self)
         head.addWidget(self.summary)
         head.addStretch()
-        self.close_button = PushButton('×', self)
+        self.close_button = QPushButton('×', self)
         self.close_button.setFixedWidth(36)
         self.close_button.setToolTip('关闭，不应用本次修改')
         self.close_button.clicked.connect(self.close_panel)
@@ -374,16 +369,13 @@ class InventoryFilterDrawer(QFrame):
         self.escape = QShortcut(QKeySequence(Qt.Key_Escape), self)
         self.escape.setContext(Qt.WidgetWithChildrenShortcut)
         self.escape.activated.connect(self.close_panel)
-        qconfig.themeChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
         self.hide()
 
     def update_theme(self, *_):
-        bg, border, fg, field = (
-            ('#252525', '#444444', '#f4f4f4', '#333333')
-            if isDarkTheme()
-            else ('#f9f9f9', '#d8d8d8', '#202020', '#ffffff')
-        )
+        colors = colors_for_widget(self)
+        bg, border, fg, field = colors.panel, colors.border, colors.text, colors.control
         palette = self.palette()
         for role, color in (
             (QPalette.Window, bg),

@@ -11,22 +11,21 @@ from PySide6.QtWidgets import (
     QDialogButtonBox,
     QFrame,
     QHBoxLayout,
+    QLabel,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import (
-    BodyLabel,
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import (
     CaptionLabel,
     PrimaryPushButton,
-    PushButton,
-    isDarkTheme,
-    qconfig,
 )
 
 from ww_echo_workshop.ui.inventory.cards import EchoCardWidget
-from ww_echo_workshop.application.quick_score import QuickScoreStale, refresh_record, score_one
+from ww_echo_workshop.application.quick_score import QuickScoreService, QuickScoreStale
 from ww_echo_workshop.application.record_quality import quality_for
 from ww_echo_workshop.core.cancellation import OperationCancelled
 from ww_echo_workshop.ui.widgets.roles import RolePicker
@@ -42,11 +41,22 @@ class _ScoreSignals(QObject):
 class QuickScoreDialog(QDialog):
     _basis = '与匹配单件评分相同，主词条按 +25 口径；分数不是伤害提升。只读，不更改库存或角色设置。'
 
-    def __init__(self, task, record, parent=None, *, quality, inventory_revision):
+    def __init__(
+        self,
+        scorer: QuickScoreService,
+        record,
+        parent=None,
+        *,
+        quality,
+        inventory_revision,
+        preferences,
+        avatars,
+    ):
         super().__init__(parent)
-        self.task, self.runtime, self.record = task, task.runtime, record
-        self.snapshot = self.runtime.weights.active
-        self._preferences = task.config.get('ComparisonSettingsJSON', '')
+        self.scorer, self.record = scorer, record
+        self._read_preferences = preferences
+        self.snapshot = self.scorer.weight_snapshot()
+        self._preferences = self._read_preferences()
         self.result = None
         self._result_notice = ''
         self._quality = quality_for(record, quality)
@@ -69,7 +79,7 @@ class QuickScoreDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(18, 14, 18, 14)
         layout.setSpacing(10)
-        self.heading = BodyLabel('快速评分', self)
+        self.heading = QLabel('快速评分', self)
         font = self.heading.font()
         font.setPointSize(15)
         font.setBold(True)
@@ -93,7 +103,7 @@ class QuickScoreDialog(QDialog):
         self.card = EchoCardWidget(left)
         self.card.set_record(record, quality=quality)
         self.card.setFixedWidth(260)
-        self.card.avatar_cache = self.runtime.avatars
+        self.card.avatar_cache = avatars
         left_layout.addWidget(self.card)
         content.addWidget(left, 0, Qt.AlignTop)
         shell = QWidget(body)
@@ -138,7 +148,7 @@ class QuickScoreDialog(QDialog):
         form.addLayout(self.result_row)
         self.score_label.hide()
         self.score_label.setToolTip('')
-        self.result_placeholder = BodyLabel('尚未评分', right)
+        self.result_placeholder = QLabel('尚未评分', right)
         self.result_placeholder.setObjectName('quickScorePlaceholder')
         form.addWidget(self.result_placeholder)
         controls = QHBoxLayout()
@@ -146,11 +156,11 @@ class QuickScoreDialog(QDialog):
         self.score_button.setToolTip(self._basis)
         self.score_button.clicked.connect(self.start_score)
         controls.addWidget(self.score_button, 1)
-        self.cancel_button = PushButton('取消评分', right)
+        self.cancel_button = QPushButton('取消评分', right)
         self.cancel_button.clicked.connect(self.cancel_score)
         controls.addWidget(self.cancel_button)
         form.addLayout(controls)
-        self.summary = BodyLabel('', right)
+        self.summary = QLabel('', right)
         self.summary.hide()
         self.summary.setWordWrap(True)
         self.summary.setTextInteractionFlags(Qt.TextSelectableByMouse)
@@ -171,8 +181,7 @@ class QuickScoreDialog(QDialog):
         self.quality_timer = QTimer(self)
         self.quality_timer.setInterval(20)
         self.quality_timer.timeout.connect(self._poll_quality)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeChangedFinished.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         fit_dialog(self, 720, max(440, self.card.height() + 180))
         self.update_theme()
         self._update_controls()
@@ -212,9 +221,9 @@ class QuickScoreDialog(QDialog):
         self.mark_stale('请从搜索结果选择角色。' if searching else '')
 
     def update_theme(self, *_):
-        dark = isDarkTheme()
-        foreground = QColor('#f3f3f3' if dark else '#202020')
-        background = QColor('#202020' if dark else '#fafafa')
+        colors = colors_for_widget(self)
+        foreground = QColor(colors.text)
+        background = QColor(colors.panel)
         palette = self.palette()
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, background)
@@ -224,9 +233,9 @@ class QuickScoreDialog(QDialog):
             surface.setPalette(palette)
         self.setAutoFillBackground(True)
         self.area.widget().setAutoFillBackground(True)
-        control = '#2d2d2d' if dark else '#ffffff'
-        border = '#494949' if dark else '#d6d6d6'
-        muted = '#a0a0a0' if dark else '#767676'
+        control = colors.control
+        border = colors.border
+        muted = colors.muted
         self.setStyleSheet(f"""
             #EchoQuickScoreDialog {{ background:{background.name()}; color:{foreground.name()}; }}
             #EchoQuickScoreDialog QWidget#quickScoreBody {{ background:{background.name()}; }}
@@ -289,21 +298,21 @@ class QuickScoreDialog(QDialog):
         self._update_controls()
 
     def refresh_context(self):
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.scorer.closed():
             self.stop_worker()
             return
-        active = self.runtime.weights.active
+        active = self.scorer.weight_snapshot()
         if active.version != self.snapshot.version:
             key = self.picker.key()
             self.snapshot = active
             self.picker.reload(active, key)
             self.mark_stale('评分权重已更新，请点击评分重新计算。')
-        preferences = self.task.config.get('ComparisonSettingsJSON', '')
+        preferences = self._read_preferences()
         if preferences != self._preferences:
             self._preferences = preferences
             if self.result is not None or self._future is not None:
                 self.mark_stale('角色适配设置已变化，请点击评分重新计算。')
-        revision = self.runtime.inventory.try_revision()
+        revision = self.scorer.try_revision()
         if revision is None:
             return
         if revision != self._seen_revision:
@@ -336,8 +345,7 @@ class QuickScoreDialog(QDialog):
         self._quality_revision, self._quality_pending_revision = revision, None
         self._quality_cancel = threading.Event()
         self._quality_future = self._work_pool().submit(
-            refresh_record,
-            self.runtime,
+            self.scorer.refresh_record,
             self.record,
             self._quality,
             revision=revision,
@@ -352,7 +360,7 @@ class QuickScoreDialog(QDialog):
         future = self._quality_future
         if future is None or not future.done():
             return
-        observed = self.runtime.inventory.try_revision()
+        observed = self.scorer.try_revision()
         if observed is None:
             return
         revision = self._quality_revision
@@ -405,7 +413,7 @@ class QuickScoreDialog(QDialog):
             return
         if self._quality_pending_revision is not None or self._quality_failed_revision is not None:
             return
-        observed = self.runtime.inventory.try_revision()
+        observed = self.scorer.try_revision()
         if observed is None:
             return
         if observed != self._seen_revision:
@@ -421,7 +429,7 @@ class QuickScoreDialog(QDialog):
         if self._deferred_score is not None:
             return
         if self._quality_failed_revision is not None:
-            revision = self.runtime.inventory.try_revision()
+            revision = self.scorer.try_revision()
             if revision is not None:
                 self._queue_quality(revision)
             return
@@ -443,8 +451,7 @@ class QuickScoreDialog(QDialog):
         record, snapshot, cancel = self.record, self.snapshot, self._cancel
         self._show_message('正在评分，可取消。')
         self._future = self._work_pool().submit(
-            score_one,
-            self.runtime,
+            self.scorer.score_one,
             record,
             key,
             snapshot=snapshot,
@@ -477,7 +484,7 @@ class QuickScoreDialog(QDialog):
         self._update_controls()
 
     def _present_score(self, generation, result, error):
-        if self._closing or self.runtime._closed or generation != self._generation:
+        if self._closing or self.scorer.closed() or generation != self._generation:
             self._update_controls()
             return
         if error is not None:

@@ -2,7 +2,6 @@
 """Multi-template matrix and retrieval cards; scoring stays off the Qt thread."""
 
 from concurrent.futures import ThreadPoolExecutor
-import json
 import threading
 
 from PySide6.QtCore import QObject, Qt, QTimer, Signal, Slot
@@ -10,35 +9,13 @@ from PySide6.QtCore import QObject, Qt, QTimer, Signal, Slot
 from ww_echo_workshop.core.compatibility import CompatibilityRule
 from ww_echo_workshop.application.scoring import ComparisonCancelled
 from ww_echo_workshop.application.operations import OperationCancelled
-from ww_echo_workshop.application.pins import prepare_pin_catalog
 from ww_echo_workshop.ui.matching.results import ComparisonUX
-from ww_echo_workshop.application.matching.feedback import (
-    MatchRequirementsError,
-    feedback_from_code,
-    validate_match_requirements,
-)
-
-
-class _ComparisonPayload(tuple):
-    """Keep the seven-field compatibility payload with an immutable catalogue."""
-
-    def __new__(cls, values, catalog, claims=None):
-        result = super().__new__(cls, values)
-        result.catalog = tuple(catalog)
-        result.claims = dict(claims or {})
-        return result
+from ww_echo_workshop.application.matching.feedback import MatchRequirementsError
+from ww_echo_workshop.application.matching.jobs import MatchingRequest
 
 
 class _ResultSignals(QObject):
     completed = Signal(int, object, str)
-
-
-class _StopToken:
-    def __init__(self, local, runtime):
-        self.local, self.runtime = local, runtime
-
-    def is_set(self):
-        return self.local.is_set() or self.runtime.stop_event.is_set()
 
 
 class ComparisonContent(ComparisonUX):
@@ -54,9 +31,9 @@ class ComparisonContent(ComparisonUX):
     def request_stop(self):
         self.stop_worker()
 
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.services = services
         self._pool = None
         self._future = None
         self._cancel = threading.Event()
@@ -90,35 +67,17 @@ class ComparisonContent(ComparisonUX):
         self.publication_timer.timeout.connect(self._retry_publication)
         self.item_picker.changed.connect(self.changed)
         self.profile_box.currentIndexChanged.connect(self.load_profile)
-        selected = self.profile_box.findData(task.config.get('InventoryProfileID', ''))
+        selected = self.profile_box.findData(self.services.profile_id())
         self.profile_box.setCurrentIndex(selected)
         self.load_profile()
 
     def action(self, callback):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             return
         try:
             callback()
         except (ValueError, KeyError, OSError) as error:
             self.status.setText(str(error))
-
-    def preferences(self):
-        raw = self.task.config.get('ComparisonSettingsJSON', '')
-        if not raw:
-            return {'schema_version': 1, 'profiles': {}}
-        if len(raw) > 1024 * 1024:
-            raise ValueError('比较配置过大，请备份并清理该配置')
-        try:
-            data = json.loads(raw)
-            if (
-                not isinstance(data, dict)
-                or data.get('schema_version') != 1
-                or not isinstance(data.get('profiles'), dict)
-            ):
-                raise ValueError('比较配置格式不兼容；原配置保留')
-            return data
-        except json.JSONDecodeError as error:
-            raise ValueError('比较配置损坏；原配置保留') from error
 
     def selections(self):
         return tuple(self.state.roles)
@@ -126,24 +85,14 @@ class ComparisonContent(ComparisonUX):
     def filter_options(self):
         return dict(self.state.filters)
 
-    def _preference_data(self):
-        profile = self.profile_box.currentData()
-        if not profile:
-            raise ValueError('请选择本地档案')
-        data = self.preferences()
-        data['profiles'][profile] = dict(
+    def _preference_row(self):
+        return dict(
             selections=self.selections(),
             filters=self.filter_options(),
             rules=[
                 dict(character_id=key[0], modal_id=key[1], **rule.to_dict())
                 for key, rule in self._rules.items()
             ],
-        )
-        return data
-
-    def save_preferences(self):
-        self.task.config['ComparisonSettingsJSON'] = json.dumps(
-            self._preference_data(), ensure_ascii=False, allow_nan=False
         )
 
     def load_profile(self, *_):
@@ -158,13 +107,10 @@ class ComparisonContent(ComparisonUX):
         error = ''
         saved = {}
         try:
-            saved = self.preferences()['profiles'].get(self.profile_box.currentData(), {})
+            saved = self.services.preferences.for_profile(self.profile_box.currentData())
             if not isinstance(saved, dict):
                 raise ValueError('档案比较配置损坏')
-            fallback = (
-                self.task.config.get('TemplateCharacterID'),
-                self.task.config.get('TemplateModalID'),
-            )
+            fallback = self.services.fallback_role()
             initial = (
                 [fallback]
                 if all(isinstance(x, str) and x for x in fallback) and fallback[0] != 'default'
@@ -187,13 +133,13 @@ class ComparisonContent(ComparisonUX):
             selected = set()
             error = str(caught)
         available = tuple(
-            (char, modal) for char, modal, _ in self.runtime.weights.active.options.values()
+            (char, modal) for char, modal, _ in self.services.weight_snapshot().options.values()
         )
         self.state.roles = tuple(key for key in available if key in selected) + tuple(
             sorted(selected - set(available))
         )
         self.state.current_role = self.state.roles[0] if self.state.roles else None
-        self._template_version = self.runtime.weights.active.version
+        self._template_version = self.services.weight_snapshot().version
         filters = saved.get('filters', {}) if isinstance(saved, dict) else {}
         defaults = dict(text='', cost=None, mode='confirmed', fully_tuned=False, max_age_days=0)
         if isinstance(filters, dict):
@@ -211,8 +157,7 @@ class ComparisonContent(ComparisonUX):
         self._schedule_comparison_refresh()  # Catalogue only in the embedded page.
 
     def _defaults_snapshot(self):
-        provider = getattr(self.runtime, 'role_defaults', None)
-        return provider.active if provider is not None else None
+        return self.services.defaults_snapshot()
 
     def _defaults_version(self):
         return getattr(self._defaults_snapshot(), 'version', '')
@@ -231,9 +176,9 @@ class ComparisonContent(ComparisonUX):
         key = self.state.current_role
         rule = self.effective_rule(key)
         character = key[0] if key else ''
-        rule = self.runtime.weights.active.compatibility_rule(character, rule)
+        rule = self.services.weight_snapshot().compatibility_rule(character, rule)
         self.element_rule.setCurrentIndex(self.element_rule.findData(rule.element))
-        known = self.runtime.weights.active.character_elements.get(character, '')
+        known = self.services.weight_snapshot().character_elements.get(character, '')
         self.element_rule.setEnabled(not known)
         self.element_rule.setToolTip(
             '角色属性已自动获取：' + known if known else '可明确指定角色属性'
@@ -274,7 +219,7 @@ class ComparisonContent(ComparisonUX):
             self._start_comparison(_allow_empty=_allow_empty)
 
     def _start_comparison(self, *, _allow_empty=False, _catalogue_only=False):
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return
         if self._future is not None:
             if _catalogue_only:
@@ -288,7 +233,7 @@ class ComparisonContent(ComparisonUX):
         selections = self.selections()
         if not selections and not _allow_empty:
             raise ValueError('请先添加至少一个角色与模版。')
-        snapshot = self.runtime.weights.active
+        snapshot = self.services.weight_snapshot()
         if not _catalogue_only:
             for key in selections:
                 snapshot.template(*key)
@@ -307,7 +252,19 @@ class ComparisonContent(ComparisonUX):
         generation = self._generation
         profile = self.profile_box.currentData()
         self._cancel = threading.Event()
-        stop = _StopToken(self._cancel, self.runtime)
+        cancelled = self._cancel
+        request = MatchingRequest(
+            profile,
+            snapshot,
+            defaults_version,
+            selections,
+            selected_ids,
+            filters,
+            rules,
+            requirements,
+            catalogue_only=_catalogue_only,
+        )
+        run = self.services.matching.run
         self._queued = False
         self._queued_compute = False
         self._worker_kind = 'catalogue' if _catalogue_only else 'compute'
@@ -322,63 +279,7 @@ class ComparisonContent(ComparisonUX):
 
         def calculate():
             try:
-                revision, records, claims = self.runtime.inventory.inventory_snapshot(
-                    profile, cancel_event=stop, include_loadouts=True
-                )
-                if not _catalogue_only:
-                    validate_match_requirements(
-                        requirements, records, snapshot, stop, pin_checks=self.runtime.pin_checks
-                    )
-                scope = self.runtime.inventory_queries.matching_scope(
-                    records,
-                    selected_ids=selected_ids,
-                    **filters,
-                    protected_ids=claims,
-                    cancel_event=stop,
-                )
-                catalog, records = scope.catalog, scope.records
-                scores = (
-                    self.runtime.scores.compare(
-                        records,
-                        selections,
-                        inventory_revision=revision,
-                        rules=rules,
-                        requirements=requirements,
-                        cancel_event=stop,
-                        snapshot=snapshot,
-                    )
-                    if selections and not _catalogue_only
-                    else ()
-                )
-                labels = (
-                    tuple(
-                        f'{snapshot.template(*key)["name"]}\n{key[0]}/{key[1]}'
-                        for key in selections
-                    )
-                    if not _catalogue_only
-                    else ()
-                )
-                result = _ComparisonPayload(
-                    (profile, revision, snapshot, records, selections, scores, labels),
-                    catalog,
-                    claims,
-                )
-                result.defaults_version = defaults_version
-                result.projections = (
-                    self.runtime.match_projections.project(
-                        records, selections, scores, cancel_event=stop
-                    )
-                    if selections and not _catalogue_only
-                    else None
-                )
-                result.fixed_catalog = prepare_pin_catalog(
-                    catalog,
-                    queries=self.runtime.inventory_queries,
-                    usable_only=True,
-                    cancel_event=stop,
-                )
-                result.catalogue_only = _catalogue_only
-                result.feedback = feedback_from_code(scope.feedback_code)
+                result = run(request, cancel_event=cancelled)
                 error = ''
             except (ComparisonCancelled, OperationCancelled):
                 result, error = None, '比较已取消'
@@ -417,7 +318,7 @@ class ComparisonContent(ComparisonUX):
         self._future = None
         self._worker_kind = None
         self.cancel_button.setEnabled(False)
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             self._clear_publication()
             return
         if self._queued_compute:
@@ -441,10 +342,10 @@ class ComparisonContent(ComparisonUX):
             self._clear_publication()
             self.status.setText('比较已取消；旧矩阵仅供历史查看')
             return
-        profile, revision, snapshot, records, selections, scores, labels = result
-        version = snapshot.version
-        defaults_version = getattr(result, 'defaults_version', self._defaults_version())
-        current_revision = self.runtime.inventory.try_revision()
+        request = result.request
+        profile, revision = request.profile_id, result.revision
+        version, defaults_version = request.snapshot.version, request.defaults_version
+        current_revision = self.services.try_revision()
         if current_revision is None:
             self._publication = (generation, result, error)
             self.publication_timer.start()
@@ -455,14 +356,14 @@ class ComparisonContent(ComparisonUX):
         if (
             profile != self.profile_box.currentData()
             or revision != current_revision
-            or version != self.runtime.weights.active.version
+            or version != self.services.weight_snapshot().version
             or defaults_version != self._defaults_version()
         ):
             self.status.setText('库存、权重或选择已变；旧计算结果已丢弃')
             self._schedule_comparison_refresh()
             return
-        self._match_feedback = getattr(result, 'feedback', None)
-        if getattr(result, 'catalogue_only', False):
+        self._match_feedback = result.feedback
+        if request.catalogue_only:
             # Candidate refresh preserves UUID checks and must never make an
             # empty score payload look like a fresh calculation.
             self.item_picker.reload(result.catalog, fixed_catalog=result.fixed_catalog)
@@ -474,9 +375,13 @@ class ComparisonContent(ComparisonUX):
             return
         current = self.state.selected_identity
         self.item_picker.reload(result.catalog, fixed_catalog=result.fixed_catalog)
-        self.matrix_model.claims = dict(getattr(result, 'claims', {}))
+        self.matrix_model.claims = dict(result.claims)
         self.matrix_model.reset_matrix(
-            records, selections, scores, labels, projections=result.projections
+            result.records,
+            request.selections,
+            result.scores,
+            result.labels,
+            projections=result.projections,
         )
         self.state.selected_identity = (
             current
@@ -486,7 +391,7 @@ class ComparisonContent(ComparisonUX):
         self._result_key = (profile, revision, version, defaults_version)
         self._fact_key = self._result_key
         self.status.setText(
-            f'仅已收录：{len(records)} 件 × {len(selections)} 模态；库存修订 {revision}；快照 {version[:12]}；未知适配不作确定推荐'
+            f'仅已收录：{len(result.records)} 件 × {len(request.selections)} 模态；库存修订 {revision}；快照 {version[:12]}；未知适配不作确定推荐'
         )
         self.sync_participants()
         self.publish_ux_results()
@@ -497,12 +402,7 @@ class ComparisonContent(ComparisonUX):
         self.publication_timer.stop()
 
     def _retry_publication(self):
-        if (
-            self._closing
-            or self.runtime._closed
-            or self.task._destroyed
-            or self._publication is None
-        ):
+        if self._closing or self.services.closed() or self._publication is None:
             self._clear_publication()
             return
         self._completed(*self._publication)
@@ -516,7 +416,7 @@ class ComparisonContent(ComparisonUX):
         )
 
     def refresh_facts(self):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             self.close()
             return
         if self._future is not None:
@@ -527,7 +427,7 @@ class ComparisonContent(ComparisonUX):
                 self._seen_defaults_version = defaults_version
                 if not self._rule_dirty:
                     self.load_rule()
-            revision = self.runtime.inventory.try_revision()
+            revision = self.services.try_revision()
             if revision is None:
                 self._facts_busy = True
                 self.status.setText('库存事务忙；旧矩阵仅供历史查看，标记前须复核')
@@ -535,10 +435,10 @@ class ComparisonContent(ComparisonUX):
             key = (
                 self.profile_box.currentData(),
                 revision,
-                self.runtime.weights.active.version,
+                self.services.weight_snapshot().version,
                 self._defaults_version(),
             )
-            if self.runtime.weights.active.version != getattr(self, '_template_version', None):
+            if self.services.weight_snapshot().version != getattr(self, '_template_version', None):
                 self.reload_templates()
             if self._fact_key is not None and key != self._fact_key:
                 self._fact_key = key
@@ -554,18 +454,18 @@ class ComparisonContent(ComparisonUX):
                 )
             self._facts_busy = False
         except ValueError:
-            if self.runtime._closed:
+            if self.services.closed():
                 self.close()
             else:
                 raise
 
     def reload_templates(self):
-        self._template_version = self.runtime.weights.active.version
+        self._template_version = self.services.weight_snapshot().version
         self.sync_participants()
 
     def showEvent(self, event):
         with self._worker_lock:
-            if not self.runtime._closed and not self.task._destroyed:
+            if not self.services.closed():
                 self._closing = False
                 self.timer.start()
         super().showEvent(event)

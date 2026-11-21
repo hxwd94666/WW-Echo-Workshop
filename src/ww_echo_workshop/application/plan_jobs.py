@@ -57,7 +57,7 @@ class PlanCommands:
                 repository=self._repository,
             )
         from ww_echo_workshop.application.diagnostics import begin_job
-        from ww_echo_workshop.application.matching.scope import select_match_records
+        from ww_echo_workshop.application.allocation_jobs import allocation_candidates
         from ww_echo_workshop.application.pins import prepare_pin_catalog
 
         job = begin_job('plan-preparation')
@@ -73,13 +73,13 @@ class PlanCommands:
                 revision, records = self._repository.inventory_snapshot(
                     arguments['profile_id'], cancel_event=cancel_event
                 )
-            if candidate_filters is not None:
-                if self._queries is None:
-                    raise ValueError('候选筛选需要显式的 Rust 库存查询服务')
-                records = self._queries.filter_records(
-                    records, cancel_event=cancel_event, **candidate_filters
-                )
-            records = select_match_records(records, candidate_ids, cancel_event=cancel_event)
+            records = allocation_candidates(
+                records,
+                candidate_ids,
+                candidate_filters,
+                queries=self._queries,
+                cancel_event=cancel_event,
+            )
             if kind == 'precheck':
                 if self._allocation is None:
                     raise ValueError('配装预检需要已装配的 Rust 计算服务')

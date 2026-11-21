@@ -1,15 +1,13 @@
 # 为匹配和配装共用指定角色模版的权重编辑入口。
-def open_template_weights(task, key):
-    if task is None or getattr(task, '_panel', None) is None:
-        raise ValueError('请在声骸工坊中编辑模版权重。')
+def open_template_weights(panel, key):
     if key is None:
         raise ValueError('请先选择角色与模版。')
-    snapshot = task.runtime.weights.active
+    weights = panel.ensure_weight_settings()
+    snapshot = weights.services.weight_snapshot
     if key[0] not in snapshot.templates or key[1] not in snapshot.templates[key[0]]:
         raise ValueError('该角色的权重已失效，请更新资料后重试。')
-    panel = task._panel
     panel._populate_settings('scoring')
-    editor = panel.weights.ensure_custom_editor()
+    editor = weights.ensure_custom_editor()
     if editor.pending:
         raise ValueError('权重正在保存，请完成后再管理其他模版。')
     if editor.selection != key:

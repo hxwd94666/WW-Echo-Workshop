@@ -3,6 +3,13 @@ import threading
 import time
 
 
+# Longer than the normal full-frame OCR refresh, but bounded across disconnects.
+LIVE_HUD_TTL_SECONDS = 6.0
+HUD_POLICY_HEADER = '强化策略'
+HUD_POLICY_BUSY = '计算中…'
+HUD_COMPARISON_SEPARATOR_RGB = (196, 199, 204)
+
+
 class HudState:
     def __init__(self):
         self._lock = threading.Lock()
@@ -47,13 +54,14 @@ class HudState:
 
     def snapshot(self):
         with self._lock:
+            visible = self._visible and time.monotonic() - self._updated_at < LIVE_HUD_TTL_SECONDS
             return {
-                'text': self._text,
-                'colours': self._colours,
-                'rows': self._rows,
-                'layout': self._layout,
-                'viewport': self._viewport,
-                'frame_size': self._frame_size,
+                'text': self._text if visible else '',
+                'colours': self._colours if visible else (),
+                'rows': self._rows if visible else (),
+                'layout': self._layout if visible else '',
+                'viewport': self._viewport if visible else (),
+                'frame_size': self._frame_size if visible else (),
                 'updated_at': self._updated_at,
-                'visible': self._visible,
+                'visible': visible,
             }

@@ -1,9 +1,9 @@
 # 复用冻结帧的详情解析与回退，不读取新的实时画面。
 import re
 
-from ok.feature.Box import Box
 from ww_echo_workshop.capture.scan.pipeline import bag_region
-from ww_echo_workshop.capture.viewport import EchoViewport, detect_echo_viewport
+from ww_echo_workshop.capture.viewport import COMPARISON_SPLIT, EchoViewport, detect_echo_viewport
+from ww_echo_workshop.core.cancellation import checkpoint
 
 
 def _scene_from_text(text):
@@ -32,7 +32,7 @@ def detect_scene(parser, frame, viewport):
     y = area.y + round(area.height * 0.01)
     region = (x, y, round(area.width * 0.80), max(1, round(area.height * 0.12)))
     try:
-        boxes = parser.ocr(frame=frame, box=Box(*region, name='echo-scene'))
+        boxes = parser.read_region(frame, region, 'echo-scene')
     except Exception:
         return ''
     return _scene_from_text(' '.join(str(box.name) for box in (boxes or ())))
@@ -54,15 +54,18 @@ def _read_metadata(
     observations,
     cancel_event,
     cost_lookup,
+    comparison_hint=False,
 ):
+    checkpoint(cancel_event)
     return parser.read_metadata(
         frame,
         settings,
         weights,
         viewport=viewport,
         boxes=boxes,
-        scan=True,
+        scan=scene == 'bag',
         layout_hint=scene,
+        comparison_hint=comparison_hint,
         observation_service=observations,
         cancel_event=cancel_event,
         cost_lookup=cost_lookup,
@@ -121,10 +124,14 @@ def parse_snapshot_record(
             cancel_event=cancel_event,
             cost_lookup=cost_lookup,
         )
+    comparison = bool(getattr(getattr(metadata, 'analysis', None), 'comparison', False))
     x1, y1, x2, y2 = _detail_region(scene)
+    if comparison:
+        x1 = COMPARISON_SPLIT
     if _needs_fallback(metadata, expected_level):
+        checkpoint(cancel_event)
         rect = bag_region(frame, viewport, (x1, y1, x2, y2))
-        boxes = parser.ocr(frame=frame, box=Box(*rect, name='echo-detail-retry'))
+        boxes = parser.read_region(frame, rect, 'echo-detail-retry')
         metadata = _read_metadata(
             parser,
             frame,
@@ -136,14 +143,14 @@ def parse_snapshot_record(
             observations=observations,
             cancel_event=cancel_event,
             cost_lookup=cost_lookup,
+            comparison_hint=comparison,
         )
     if _needs_fallback(metadata, expected_level):
         bands = []
         for index, (top, bottom) in enumerate(((y1, 0.39), (0.39, 0.735), (0.735, y2))):
+            checkpoint(cancel_event)
             rect = bag_region(frame, viewport, (x1, top, x2, bottom))
-            bands.extend(
-                parser.ocr(frame=frame, box=Box(*rect, name='echo-detail-retry-' + str(index)))
-            )
+            bands.extend(parser.read_region(frame, rect, 'echo-detail-retry-' + str(index)))
         metadata = _read_metadata(
             parser,
             frame,
@@ -155,6 +162,8 @@ def parse_snapshot_record(
             observations=observations,
             cancel_event=cancel_event,
             cost_lookup=cost_lookup,
+            comparison_hint=comparison,
         )
+    checkpoint(cancel_event)
     record = parser.read_record(metadata, frame, viewport, profile, weights, sonata)
     return metadata, record

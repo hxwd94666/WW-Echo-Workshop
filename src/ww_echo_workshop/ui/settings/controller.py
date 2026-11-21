@@ -1,6 +1,34 @@
 # 装配工坊设置分组与明确应用的评分和诊断选项。
+from collections.abc import Callable
+from dataclasses import dataclass
+from pathlib import Path
+from threading import Event
+from typing import TYPE_CHECKING
+
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-from qfluentwidgets import BodyLabel, CardWidget, PushButton
+from PySide6.QtWidgets import QPushButton
+from ww_echo_workshop.ui.widgets.controls import CardWidget, SubtitleLabel
+
+if TYPE_CHECKING:
+    from ww_echo_workshop.application.backup_jobs import BackupService
+    from ww_echo_workshop.application.profiles import ProfileSettingsService
+    from ww_echo_workshop.application.resource_settings import ResourceSettings
+    from ww_echo_workshop.application.screenshot_cleanup import CleanupStatus
+    from ww_echo_workshop.ui.settings.repair import RepairControls
+    from ww_echo_workshop.ui.settings.shortcuts import ShortcutControls
+
+
+@dataclass(frozen=True)
+class SettingsServices:
+    profiles: 'ProfileSettingsService'
+    backups: 'BackupService'
+    resources: 'ResourceSettings'
+    shortcuts: 'ShortcutControls'
+    new_repair: Callable[[], 'RepairControls']
+    request_clear_screenshots: Callable[[], bool]
+    screenshot_cleanup_status: Callable[[], 'CleanupStatus']
+    deleted_profile_archives: Path
+    stop_event: Event
 
 
 class _SettingsSection(CardWidget):
@@ -11,11 +39,7 @@ class _SettingsSection(CardWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(14, 12, 14, 12)
         layout.setSpacing(10)
-        heading = BodyLabel(title, self)
-        font = heading.font()
-        font.setBold(True)
-        font.setPointSize(11)
-        heading.setFont(font)
+        heading = SubtitleLabel(title, self)
         layout.addWidget(heading)
         self.content = QWidget(self)
         self.content_layout = QVBoxLayout(self.content)
@@ -42,7 +66,7 @@ class AssistantSettingsController:
             section = _SettingsSection(title, body)
             self.settings_sections[key] = section
             area.add_section(key, section, group)
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         # This is the same authoritative header control, not a second setting.
         self.settings_scan_level = inventory.scan_level
         intake = self.settings_sections['shortcuts']
@@ -56,13 +80,18 @@ class AssistantSettingsController:
         from ww_echo_workshop.ui.settings.screenshots import ScreenshotSettings
 
         screenshots = self.settings_sections['screenshots']
-        screenshots.content_layout.addWidget(ScreenshotSettings(self.runtime, screenshots.content))
+        self.screenshot_settings = ScreenshotSettings(
+            screenshots.content,
+            request_clear=self.settings_services.request_clear_screenshots,
+            cleanup_status=self.settings_services.screenshot_cleanup_status,
+        )
+        screenshots.content_layout.addWidget(self.screenshot_settings)
         self.plugin_management = self.settings_sections['plugin']
-        self.export_diagnostics_button = PushButton('导出诊断报告')
+        self.export_diagnostics_button = QPushButton('导出诊断报告')
         self.export_diagnostics_button.setToolTip('仅运行摘要，不含声骸库、截图、OCR或账号。')
         self.export_diagnostics_button.clicked.connect(self.export_diagnostics)
         self.plugin_management.content_layout.addWidget(self.export_diagnostics_button)
-        self.uninstall_button = PushButton('移除插件')
+        self.uninstall_button = QPushButton('移除插件')
         self.uninstall_button.setToolTip('移除插件后，已收录的声骸库仍保留。')
         self.uninstall_button.setEnabled(False)  # Actual host integration owns this callback.
         self.plugin_management.content_layout.addWidget(self.uninstall_button)
@@ -79,7 +108,7 @@ class AssistantSettingsController:
         if not hasattr(self, 'weights'):
             from ww_echo_workshop.ui.settings.page import WeightSettings
 
-            self.weights = WeightSettings(self.proxy, self)
+            self.weights = WeightSettings(self.settings_services.resources, self)
             self.weights.advanced_controls.hide()
         return self.weights
 
@@ -97,7 +126,7 @@ class AssistantSettingsController:
             from ww_echo_workshop.ui.settings.page import ShortcutSettings
 
             section = self.settings_sections['shortcuts']
-            self.shortcuts = ShortcutSettings(self.proxy, section.content)
+            self.shortcuts = ShortcutSettings(self.settings_services.shortcuts, section.content)
             section.content_layout.addWidget(self.shortcuts)
         if group == 'scoring':
             weights = self._ensure_weights()
@@ -115,7 +144,7 @@ class AssistantSettingsController:
         section = _SettingsSection('启动配置修复', self.settings_page.body)
         self.settings_sections['repair'] = section
         self.settings_page.add_section('repair', section, 'advanced')
-        self.repair = RepairSettings(self.proxy, section.content)
+        self.repair = RepairSettings(self.settings_services.new_repair(), section.content)
         section.content_layout.addWidget(self.repair)
 
     def open_settings_section(self, key):
@@ -149,7 +178,7 @@ class AssistantSettingsController:
                 path,
                 context={
                     'plugin_version': manifest.get('version', ''),
-                    'auto_weight_updates': bool(self.task.config.get('AutoWeightUpdates', True)),
+                    'auto_weight_updates': self.settings_services.resources.auto(),
                 },
             )
             self.feedback.setText('诊断报告已导出。')

@@ -210,10 +210,10 @@ class NativeCustomWeights(unittest.TestCase):
             grid=SimpleNamespace(count=lambda: 0),
             characters=SimpleNamespace(currentData=lambda: '1304'),
             variants=SimpleNamespace(currentData=lambda: 'default'),
-            runtime=SimpleNamespace(
-                weights=SimpleNamespace(active=snapshot),
-                custom_weights=service,
-                updates=SimpleNamespace(request_custom=Mock(return_value=True)),
+            services=SimpleNamespace(
+                weight_snapshot=snapshot,
+                custom=service,
+                request_custom=Mock(return_value=True),
             ),
             reset_button=Mock(),
             state=Mock(),
@@ -261,7 +261,7 @@ class NativeCustomWeights(unittest.TestCase):
             self.service, 'build', side_effect=AssertionError('GUI built custom template')
         ):
             self.editor_method('save')(fake)
-        fake.runtime.updates.request_custom.assert_called_once_with(
+        fake.services.request_custom.assert_called_once_with(
             '1304', 'default', main=case['main'], sub=case['sub'], expected_version=snapshot.version
         )
         self.assertTrue(fake.pending)

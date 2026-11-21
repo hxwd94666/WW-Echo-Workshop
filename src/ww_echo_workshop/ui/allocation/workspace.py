@@ -4,7 +4,7 @@
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-from qfluentwidgets import FluentIcon
+from ww_echo_workshop.ui.widgets.controls import standard_icon
 
 
 def role_label(snapshot, key):
@@ -22,7 +22,7 @@ def avatar_icon(cache, character):
             pixmap = QPixmap()
             if pixmap.loadFromData(data):
                 return QIcon(pixmap)
-    return FluentIcon.PEOPLE.icon()
+    return standard_icon('SP_FileDialogInfoView')
 
 
 class LoadoutPriorityEditor(QWidget):

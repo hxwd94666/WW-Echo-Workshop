@@ -3,7 +3,7 @@
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QScrollArea, QVBoxLayout, QWidget
-from qfluentwidgets import SegmentedWidget
+from ww_echo_workshop.ui.widgets.navigation import ModeNavigation
 
 
 class GroupedSettingsSurface(QWidget):
@@ -23,7 +23,7 @@ class GroupedSettingsSurface(QWidget):
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(10)
-        self.navigation = SegmentedWidget(self)
+        self.navigation = ModeNavigation(self, accessible_name='工坊设置分组')
         for key, label in self.GROUPS:
             self.navigation.addItem(
                 key, label, onClick=lambda checked, group=key: self.show_group(group)

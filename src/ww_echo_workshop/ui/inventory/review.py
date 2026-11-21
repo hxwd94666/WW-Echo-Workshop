@@ -1,9 +1,7 @@
 # 管理声骸核对表单待定关联及保存取消流程。
 from dataclasses import replace
-from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QVBoxLayout, QWidget
 from ww_echo_workshop.ui.widgets.inputs import QComboBox
-from qfluentwidgets import BodyLabel, PushButton
-from ww_echo_workshop.ui.widgets.inputs import ComboBox
 from ww_echo_workshop.ui.inventory.cards import EchoCardWidget
 
 
@@ -22,16 +20,15 @@ class InventoryReviewController:
         if self._editor is not None:
             return
         from ww_echo_workshop.ui.widgets.editors import InlineRecordEditor
-        from ww_echo_workshop.ui.inventory.review_fields import ReviewChoices
 
         editor = InlineRecordEditor(
             record,
             self,
-            evidence=self.runtime.evidence,
+            evidence=self.services.evidence,
             confirm=confirm,
             previous=previous,
-            choices=ReviewChoices.from_runtime(self.runtime, record),
-            quality_check=self.runtime.quality_checks.start,
+            choices=self.services.review_choices(record),
+            quality_check=self.services.quality_checks.start,
             quality=self.inventory_model.quality(record),
             review_kind=review_kind,
         )
@@ -47,7 +44,7 @@ class InventoryReviewController:
         self.profile_box.setEnabled(False)
 
         def save():
-            if self.task._destroyed or self.runtime._closed:
+            if self._editor is not editor or self.services.closed():
                 return
             try:
                 commit(editor.result_record)
@@ -65,6 +62,9 @@ class InventoryReviewController:
         editor = self._editor
         self._editor = None
         if editor is not None:
+            cancel_quality = getattr(editor, 'cancel_quality', None)
+            if cancel_quality is not None:
+                cancel_quality()
             self.editor_area.takeWidget()
             editor.deleteLater()
         self.editor_area.hide()
@@ -81,7 +81,7 @@ class InventoryReviewController:
         revision = self._mutation_revision()
         self._edit_inline(
             record,
-            lambda value: self.runtime.inventory.update(
+            lambda value: self.services.inventory.update(
                 replace(value, review='confirmed'), expected_revision=revision
             ),
             confirm=True,
@@ -101,7 +101,7 @@ class InventoryReviewController:
             if choice is None:
                 raise ValueError('请选择另存一件或更新旧件。')
             action, target = choice
-            self.runtime.inventory.resolve_capture(
+            self.services.inventory.resolve_capture(
                 record.item_id,
                 action,
                 corrected=value,
@@ -110,24 +110,24 @@ class InventoryReviewController:
             )
 
         editor = self._edit_inline(record, commit, confirm=True, review_kind=kind)
-        decision = ComboBox(editor)
+        decision = QComboBox(editor)
         decision.setAccessibleName('重复或升级记录的处理方式')
         decision.addItem('请选择处理方式', userData=None)
         decision.addItem('另存一件（不同声骸）', userData=('new', None))
         action = 'refresh' if kind == 'duplicate' else 'upgrade'
         previous_records = {}
         for identity in candidates:
-            old = self.runtime.inventory.get(identity)
+            old = self.services.inventory.get(identity)
             previous_records[identity] = old
             decision.addItem(
                 f'更新旧件：{old.name} · +{old.level} · {identity[:8]}', userData=(action, identity)
             )
         choice_row = QHBoxLayout()
-        choice_row.addWidget(BodyLabel('本次收录', editor))
+        choice_row.addWidget(QLabel('本次收录', editor))
         choice_row.addWidget(decision, 1)
         editor.layout().insertLayout(0, choice_row)
         editor.capture_resolution = decision
-        previous_label = BodyLabel('将更新的旧件：请对照词条确认', editor.preview_panel)
+        previous_label = QLabel('将更新的旧件：请对照词条确认', editor.preview_panel)
         previous_card = EchoCardWidget(editor.preview_panel)
         editor.preview_panel.layout().addWidget(previous_label)
         editor.preview_panel.layout().addWidget(previous_card)
@@ -177,7 +177,7 @@ class InventoryReviewController:
         revision = self._mutation_revision()
 
         def commit(value):
-            self.runtime.inventory.update(
+            self.services.inventory.update(
                 replace(value, review='confirmed'), expected_revision=revision
             )
             self._select_next_after = record.item_id
@@ -188,18 +188,22 @@ class InventoryReviewController:
         selected = self.selected()
         if not selected:
             return
-        if selected[1] == 'item':
-            super().confirm_selected()
-            return
+        record, kind, _ = selected
         revision = self._mutation_revision()
-        record = selected[0]
+        if kind == 'item':
+            self.services.inventory.confirm(
+                record.item_id,
+                expected_revision=revision,
+                quality=self.inventory_model.quality(record),
+            )
+            return
         self._edit_inline(
             record,
-            lambda value: self.runtime.inventory.resolve_capture(
+            lambda value: self.services.inventory.resolve_capture(
                 record.item_id, 'new', corrected=value, expected_revision=revision
             ),
             confirm=True,
-            review_kind=selected[1],
+            review_kind=kind,
         )
 
     def upgrade_selected(self):
@@ -213,15 +217,15 @@ class InventoryReviewController:
         # Explicit target chooser stays inside the page, never chooses a winner.
         chooser = QWidget()
         layout = QVBoxLayout(chooser)
-        layout.addWidget(BodyLabel('选择要更新的旧件'))
+        layout.addWidget(QLabel('选择要更新的旧件'))
         choice = QComboBox()
         choice.addItem('请选择旧件', None)
         for key in candidates:
-            old = self.runtime.inventory.get(key)
+            old = self.services.inventory.get(key)
             choice.addItem(f'{old.name} · +{old.level} · {key[:8]}', key)
         layout.addWidget(choice)
-        proceed = PushButton('核对旧件与新观察')
-        back = PushButton('取消')
+        proceed = QPushButton('核对旧件与新观察')
+        back = QPushButton('取消')
         layout.addWidget(proceed)
         layout.addWidget(back)
         self.editor_area.setWidget(chooser)
@@ -234,13 +238,13 @@ class InventoryReviewController:
             key = choice.currentData()
             if key is None:
                 return
-            previous = self.runtime.inventory.get(key)
+            previous = self.services.inventory.get(key)
             self.editor_area.takeWidget()
             self._editor = None
             chooser.deleteLater()
             self._edit_inline(
                 record,
-                lambda value: self.runtime.inventory.resolve_capture(
+                lambda value: self.services.inventory.resolve_capture(
                     record.item_id,
                     'refresh' if kind == 'duplicate' else 'upgrade',
                     target_id=key,

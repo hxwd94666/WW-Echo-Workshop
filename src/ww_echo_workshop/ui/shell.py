@@ -1,73 +1,61 @@
 # 装配三模式导航和公共助手工具栏。
 """One embedded assistant, one runtime, lazy business pages and flat settings."""
 
-from PySide6.QtCore import QTimer
-from PySide6.QtGui import QColor, QPalette
-from PySide6.QtWidgets import QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
-from qfluentwidgets import (
+from collections.abc import Callable, Mapping
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Protocol
+
+from PySide6.QtCore import QEvent, QTimer, SignalInstance
+from PySide6.QtGui import QPalette
+from PySide6.QtWidgets import QApplication, QHBoxLayout, QStackedWidget, QVBoxLayout, QWidget
+from ww_echo_workshop.ui.widgets.controls import (
     CaptionLabel,
-    PushButton,
-    SegmentedWidget,
     TitleLabel,
-    qconfig,
-    isDarkTheme,
 )
-from ww_echo_workshop.ui.widgets.layout import open_profile_window
+from PySide6.QtWidgets import QPushButton
 from ww_echo_workshop.ui.settings.profiles import ProfileManagementController
 from ww_echo_workshop.ui.settings.controller import AssistantSettingsController
+from ww_echo_workshop.ui.widgets.navigation import ModeNavigation
 from ww_echo_workshop.ui.widgets.state import update_text, update_tooltip
+from ww_echo_workshop.ui.widgets.workshop_palette import DARK, workshop_palette, workshop_styles
+
+if TYPE_CHECKING:
+    from ww_echo_workshop.application.runtime import PluginRuntime
+    from ww_echo_workshop.ui.settings.controller import SettingsServices
 
 
-class _PageTask:
-    """Route existing cross-page commands without opening legacy dialogs."""
+class HostTheme(Protocol):
+    changed: SignalInstance
 
-    def __init__(self, task, panel):
-        self._task, self._panel = task, panel
-        self.inventory_window = self.comparison_window = self.allocation_window = None
+    def palette(self) -> QPalette: ...
 
-    def __getattr__(self, name):
-        return getattr(self._task, name)
 
-    def open_inventory(self, parent=None):
-        return self._panel._activate('inventory')
-
-    def open_comparison(self, parent=None):
-        return self._panel._activate('comparison')
-
-    def open_allocation(self, parent=None):
-        return self._panel._activate('allocation')
-
-    def open_workspace(self, parent=None):
-        return self._panel._activate('workspace')
-
-    def open_assistant(self, parent=None):
-        return self.open_inventory()
-
-    def open_weights(self, parent=None):
-        return self._panel.open_settings_section('weights').weights
-
-    def open_shortcuts(self, parent=None):
-        return self._panel.open_settings_section('shortcuts').shortcuts
-
-    def open_control_repair(self, parent=None):
-        return self._panel.open_settings_section('repair').repair
-
-    def ensure_profile_switch(self, profile):
-        reason = self._panel.profile_switch_error(profile)
-        if reason:
-            raise ValueError(reason)
+@dataclass(frozen=True)
+class AssistantServices:
+    runtime: 'PluginRuntime'
+    closed: Callable[[], bool]
+    set_profile: Callable[[str], None]
+    build_settings: Callable[['EchoAssistantPanel'], 'SettingsServices']
+    pages: Mapping[str, Callable[['EchoAssistantPanel'], QWidget]]
+    host_theme: HostTheme | None = None
 
 
 class EchoAssistantPanel(ProfileManagementController, AssistantSettingsController, QWidget):
-    def __init__(self, task, parent=None):
+    def __init__(self, services: AssistantServices, parent=None):
         super().__init__(parent)
         self.setObjectName('echoAssistantPanel')
         self.setAutoFillBackground(True)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeChangedFinished.connect(self.update_theme)
-        self.update_theme()
-        self.task, self.runtime = task, task.runtime
-        self.proxy = _PageTask(task, self)
+        self.services, self.runtime = services, services.runtime
+        self._workshop_colors = None
+        self._palette_timer = QTimer(self)
+        self._palette_timer.setSingleShot(True)
+        self._palette_timer.timeout.connect(self._apply_workshop_palette)
+        if parent is not None:
+            parent.installEventFilter(self)
+        QApplication.instance().paletteChanged.connect(self._schedule_workshop_palette)
+        if services.host_theme is not None:
+            services.host_theme.changed.connect(self._schedule_workshop_palette)
+        self._apply_workshop_palette()
         self._owned_pages = {}
         self._stopped = False
         self._match_inventory_session = None
@@ -78,7 +66,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         outer.setSpacing(12)
         header = self.header = QHBoxLayout()
         header.addWidget(TitleLabel('声骸工坊'))
-        self.settings_button = PushButton('设置')
+        self.settings_button = QPushButton('设置')
         self.settings_button.clicked.connect(self.show_settings)
         header.addWidget(self.settings_button)
         header.addStretch()
@@ -86,14 +74,13 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         self.capture_status.setWordWrap(False)
         header.addWidget(self.capture_status)
         outer.addLayout(header)
-        self.navigation = SegmentedWidget()
+        self.navigation = ModeNavigation()
         for key, text in (
             ('workspace', '工作台'),
             ('comparison', '匹配'),
             ('allocation', '配装'),
             ('inventory', '声骸库'),
         ):
-            # SegmentedWidget emits itemClicked(bool), including on mouse clicks.
             self.navigation.addItem(key, text, onClick=lambda checked, k=key: self.navigate(k))
         outer.addWidget(self.navigation)
         self.toolbar = QHBoxLayout()
@@ -112,18 +99,15 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         header.addWidget(inventory.intake_mode)
         header.addWidget(inventory.scan_level)
         inventory.intake_mode.show()  # Same controls are mounted once in the shared toolbar.
-        self.scan_failures_button = PushButton('处理未收录失败')
+        self.scan_failures_button = QPushButton('处理未收录失败')
         self.scan_failures_button.clicked.connect(
-            lambda: self.proxy.inventory_window.action(
-                self.proxy.inventory_window.show_scan_failures
-            )
+            lambda: self.inventory_page.action(self.inventory_page.show_scan_failures)
         )
         self.toolbar.addWidget(self.scan_failures_button)
         for button in (inventory.start_button, inventory.pause_button, inventory.stop_button):
             header.addWidget(button)
-        inventory.table.avatar_cache = self.runtime.avatars
-        inventory.image.avatar_cache = self.runtime.avatars
         self._avatar_revision = -1
+        self.settings_services = self.services.build_settings(self)
         self.settings_page = self._build_settings()
         self.stack.addWidget(self.settings_page)
         self._activate('workspace')
@@ -135,27 +119,38 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         self.destroyed.connect(lambda *_: self.stop_worker())
         self.refresh_status()
 
-    def update_theme(self, *_):
-        palette = self.palette()
-        dark = isDarkTheme()
-        surface = QColor('#202020' if dark else '#f9f9f9')
-        foreground = QColor('#f4f4f4' if dark else '#202020')
-        from qfluentwidgets import themeColor
+    def eventFilter(self, watched, event):
+        if watched is self.parentWidget() and event.type() in (
+            QEvent.PaletteChange,
+            QEvent.StyleChange,
+        ):
+            self._schedule_workshop_palette()
+        return super().eventFilter(watched, event)
 
-        for role in (QPalette.Window, QPalette.Base, QPalette.Button, QPalette.ToolTipBase):
-            palette.setColor(role, surface)
-        for role in (QPalette.WindowText, QPalette.Text, QPalette.ButtonText, QPalette.ToolTipText):
-            palette.setColor(role, foreground)
-        palette.setColor(QPalette.AlternateBase, QColor('#292929' if dark else '#f0f0f0'))
-        secondary = QColor('#a0a0a0' if dark else '#767676')
-        palette.setColor(QPalette.PlaceholderText, secondary)
-        for role in (QPalette.Text, QPalette.ButtonText, QPalette.WindowText):
-            palette.setColor(QPalette.Disabled, role, secondary)
-        palette.setColor(QPalette.Highlight, themeColor())
-        palette.setColor(QPalette.HighlightedText, QColor('#101010' if dark else '#ffffff'))
-        self.setPalette(palette)
-        # Scroll-area surfaces are created before parenting into the stack and
-        # can otherwise keep QApplication's light background in a dark host.
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event.type() == QEvent.ApplicationFontChange and hasattr(self, '_palette_timer'):
+            self._schedule_workshop_palette()
+
+    def _schedule_workshop_palette(self, *_):
+        # OKWW publishes the Qt palette and stylesheet in separate steps.
+        self._palette_timer.start(0)
+
+    def _apply_workshop_palette(self):
+        parent = self.parentWidget()
+        if self.services.host_theme is not None:
+            host = self.services.host_theme.palette()
+        else:
+            host = parent.palette() if parent is not None else QApplication.palette()
+        palette, colors = workshop_palette(host)
+        if self._workshop_colors != colors:
+            self._workshop_colors = colors
+            self.setProperty('workshopDark', colors is DARK)
+        styles = workshop_styles(colors)
+        if self.styleSheet() != styles:
+            self.setStyleSheet(styles)
+        if self.palette() != palette:
+            self.setPalette(palette)
         for surface in getattr(self, '_settings_surfaces', ()):
             surface.setPalette(palette)
         for page in getattr(self, '_owned_pages', {}).values():
@@ -164,25 +159,46 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
 
     def _page(self, name):
         if name not in self._owned_pages:
-            from ww_echo_workshop.ui.inventory.page import InventoryPage
-            from ww_echo_workshop.ui.matching.page import ComparisonPage
-            from ww_echo_workshop.ui.allocation.page import AllocationPage
-            from ww_echo_workshop.ui.workspace.page import WorkspacePage
-
-            page_type = {
-                'inventory': InventoryPage,
-                'comparison': ComparisonPage,
-                'allocation': AllocationPage,
-                'workspace': WorkspacePage,
-            }[name]
-            page = page_type(self.proxy, self.stack)
+            page = self.services.pages[name](self)
             self._owned_pages[name] = page
-            setattr(self.proxy, name + '_window', page)
             self.stack.addWidget(page)
         return self._owned_pages[name]
 
+    @property
+    def inventory_page(self):
+        return self._owned_pages.get('inventory')
+
+    def _show_inventory_feedback(self, message):
+        if message:
+            self.feedback.setText(message)
+        self.feedback.setVisible(bool(message))
+
+    def _set_inventory_profile(self, profile_id):
+        self.services.set_profile(profile_id)
+
+    def closed(self):
+        return self._stopped or self.services.closed()
+
+    def _inventory_profile_changed(self):
+        self.feedback.hide()
+        current = next(
+            (
+                name
+                for name, page in self._owned_pages.items()
+                if page is self.stack.currentWidget()
+            ),
+            None,
+        )
+        if current and current != 'inventory':
+            # The shared selector is visible in all modes.
+            self.navigate(current)
+
+    def _open_inventory_route(self):
+        self.navigate('inventory')
+        return self.stack.currentWidget() is self._owned_pages['inventory']
+
     def _activate(self, name):
-        if self._stopped or self.task._destroyed or self.runtime._closed:
+        if self.closed():
             return None
         page = self._page(name)
         self._business_route = name
@@ -192,14 +208,57 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         self.settings_button.setText('设置')
         return page
 
+    def _open_profile_route(self, name, profile):
+        """Switch the explicit profile without ending work in the current one."""
+        if profile not in self.runtime.inventory.profiles():
+            raise ValueError('档案已不存在，请重新选择。')
+        reason = self.profile_switch_error(profile)
+        if reason:
+            raise ValueError(reason)
+        capture = self.runtime.capture.status
+        if capture.state != 'stopped' and capture.profile_id != profile:
+            raise ValueError('另一档案正在收录，请先明确结束，再切换。')
+        page = self._owned_pages.get(name)
+        field = 'profile' if name == 'allocation' else 'profile_box'
+        if page is not None and getattr(page, field).currentData() != profile:
+            selector = getattr(page, field)
+            if (
+                not selector.isEnabled()
+                or getattr(page, '_future', None) is not None
+                or getattr(page, '_io_future', None) is not None
+            ):
+                raise ValueError('目标窗口正在处理，请完成或取消作业后再切换档案。')
+            if name == 'allocation' and page._role_draft is not None and page.incoming.count():
+                raise ValueError('配装仍有待配置角色，请先处理或取消草稿，再切换档案。')
+        page = self._activate(name)
+        if page is None:
+            raise ValueError('插件已停止，请重新打开后切换档案。')
+        selector = getattr(page, field)
+        if selector.currentData() != profile:
+            index = selector.findData(profile)
+            if index < 0:
+                selector.blockSignals(True)
+                selector.addItem(self.runtime.inventory.profiles()[profile], userData=profile)
+                selector.blockSignals(False)
+                index = selector.findData(profile)
+            if name == 'inventory':
+                selector.blockSignals(True)
+                selector.setCurrentIndex(index)
+                selector.blockSignals(False)
+                page.profile_changed()
+            else:
+                selector.setCurrentIndex(index)
+        self._set_inventory_profile(profile)
+        return page
+
     def navigate(self, name):
         if self._stopped:
             return
         try:
             if self._match_inventory_session is not None and name != 'inventory':
                 self.cancel_inventory_selection()
-            profile = self.proxy.inventory_window.profile_box.currentData()
-            open_profile_window(self.proxy, name, self, profile)
+            profile = self.inventory_page.profile_box.currentData()
+            self._open_profile_route(name, profile)
             self.feedback.hide()
         except (ValueError, KeyError, OSError) as error:
             self.feedback.setText(str(error))
@@ -230,7 +289,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         if self._match_inventory_session is not None:
             self._activate('inventory')
             return
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         route = next(
             (
                 name
@@ -299,7 +358,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
 
     def _finish_inventory_selection(self, *, filtered=False, _job=None, _confirmation=None):
         session = self._match_inventory_session
-        inventory, requester = self.proxy.inventory_window, self._match_origin
+        inventory, requester = self.inventory_page, self._match_origin
         if session is None or requester is None:
             raise ValueError('请先从匹配或配装打开声骸选择。')
         profile = inventory.profile_box.currentData()
@@ -360,7 +419,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         job = begin_job('ui.match_inventory_cancel')
         try:
             selected = len(session.selected_ids)
-            state = session.cancel(self.proxy.inventory_window.profile_box.currentData())
+            state = session.cancel(self.inventory_page.profile_box.currentData())
             route = session.return_route
             self._restore_inventory_selection_view(state)
             self._activate(route)
@@ -374,7 +433,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         pending = getattr(self, '_inventory_confirmation', None)
         if pending is not None:
             pending.cancel()
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         self._match_inventory_session = self._match_origin = None
         self._match_origin_context = None
         inventory._match_selection_restoring = True
@@ -399,7 +458,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         session = self._match_inventory_session
         if session is not None and session.active and target != session.profile_id:
             return '正在选择候选声骸，请先应用或取消选择，再切换档案。'
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         accepted = inventory._accepted_profile if inventory is not None else target
         if self.runtime.backups.status.busy and target != accepted:
             return '数据作业进行中，请结束后再切换档案。'
@@ -449,7 +508,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         return any(self._page_draft(page) for page in self._owned_pages.values())
 
     def profile_mutation_error(self, *, ignore_backup=False):
-        if self._stopped or self.task._destroyed or self.runtime._closed:
+        if self.closed():
             return '插件已停止，请重新打开后管理档案。'
         if getattr(self, '_profile_job', None) is not None and not ignore_backup:
             return '档案数据正在处理，请稍后再管理档案。'
@@ -471,15 +530,11 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         return ''
 
     def refresh_profile_guard(self):
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         if inventory is None:
             return
         reason = self.profile_mutation_error()
-        revision = (
-            None
-            if self._stopped or self.task._destroyed or self.runtime._closed
-            else self.runtime.inventory.try_revision()
-        )
+        revision = None if self.closed() else self.runtime.inventory.try_revision()
         inventory.profile_box.setEnabled(not reason)
         if hasattr(self, 'create_profile_button'):
             for control in (
@@ -510,7 +565,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
         return self._rename_managed_profile()
 
     def create_profile(self):
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         self.refresh_profile_guard()
         reason = self.profile_mutation_error()
         if reason:
@@ -530,15 +585,15 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             self._profile_message('档案已创建并打开。')
 
     def refresh_status(self):
-        if self._stopped or self.task._destroyed or self.runtime._closed:
+        if self.closed():
             self.timer.stop()
             return
         revision = self.runtime.avatars.revision
         if revision != self._avatar_revision:
             self._avatar_revision = revision
-            self.proxy.inventory_window.table.viewport().update()
-            self.proxy.inventory_window.image.update()
-            comparison = self.proxy.comparison_window
+            self.inventory_page.table.viewport().update()
+            self.inventory_page.image.update()
+            comparison = self._owned_pages.get('comparison')
             if comparison is not None:
                 comparison._sync_role_strip()
         state = self.runtime.capture.status
@@ -567,14 +622,15 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             'single': '收录中',
         }.get(state.state, '收录状态更新中')
         capture_text = f'{label} · 新增 {state.added}'
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
+        intake = inventory.services.intake
         inventory.refresh_capture_controls()
         inventory.cancel_backup_button.setVisible(self.runtime.backups.status.busy)
         inventory.profile_box.setVisible(True)
         self.refresh_profile_guard()
         busy = state.state != 'stopped'
         self.settings_scan_level.setEnabled(not busy and not self.runtime.backups.status.busy)
-        level = str(self.task.config.get('ScanMinimumLevel', '25'))
+        level = intake.minimum_level
         index = self.settings_scan_level.findData(level)
         if index >= 0 and self.settings_scan_level.currentIndex() != index:
             self.settings_scan_level.blockSignals(True)
@@ -585,7 +641,7 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             inventory.profile_box.currentData() or ''
         )
         if state.mode == 'automatic' and (
-            busy or (same_scan_profile and self.task.config.get('IntakeMode') == 'automatic')
+            busy or (same_scan_profile and intake.mode == 'automatic')
         ):
             label = {
                 'preparing': '准备扫描',
@@ -599,14 +655,12 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             if scan.backlog:
                 capture_text += f' · 解析 {scan.backlog}'
         elif state.mode == 'manual' and busy:
-            queue = getattr(self.task, '_manual_queue', None)
-            backlog = queue.qsize() if queue is not None else 0
+            backlog = intake.manual_backlog
             capture_text = (
                 f'{label} · 新增 {state.added} · 解析队列 {backlog} · 待核对 {state.needs_review}'
             )
         elif not busy:
-            automatic = self.task.config.get('IntakeMode', 'manual') == 'automatic'
-            if automatic and self.task._capture_ready():
+            if intake.mode == 'automatic' and intake.ready:
                 capture_text = '扫描时请勿操作鼠标'
         self.scan_failures_button.setVisible(same_scan_profile and scan.failed > 0)
         self.scan_failures_button.setEnabled(
@@ -616,13 +670,13 @@ class EchoAssistantPanel(ProfileManagementController, AssistantSettingsControlle
             and self._match_inventory_session is None
         )
         update_tooltip(self.capture_status, inventory.capture_help.text())
-        if not self.task._capture_ready() and state.state == 'stopped':
+        if not intake.ready and state.state == 'stopped':
             capture_text = '未连接游戏 · 可计算'
         update_text(self.capture_status, capture_text)
 
     def show_intake_review(self):
         self.navigate('inventory')
-        inventory = self.proxy.inventory_window
+        inventory = self.inventory_page
         if self.stack.currentWidget() is not inventory:
             return
 

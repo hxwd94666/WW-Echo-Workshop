@@ -7,7 +7,7 @@ from ww_echo_workshop.application.templates import (
     template_names,
 )
 from ww_echo_workshop.application.runtime import PluginRuntime
-from .lifecycle import install_unload_cleanup
+from .lifecycle import host_owns_imported_pages, install_unload_cleanup
 from .assistant_ui import SettingsUIBridge
 from .capture_commands import CaptureCommands
 
@@ -15,19 +15,24 @@ from .capture_commands import CaptureCommands
 class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
     def on_main_window(self, window):
         """Host hook: attach the embedded page before the first window show."""
+        if host_owns_imported_pages():
+            return None
         from .assistant_tab import attach_echo_assistant
 
         return attach_echo_assistant(window)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        from .assistant_ui import ensure_task_card_patch
+        from PySide6.QtWidgets import QApplication
 
-        self._host_card_patch, self._host_card_error = ensure_task_card_patch()
+        if isinstance(QApplication.instance(), QApplication) and not host_owns_imported_pages():
+            from .assistant_ui import ensure_task_card_patch
+
+            ensure_task_card_patch()
         self.name = '声骸工坊'
-        from ww_echo_workshop.ui.widgets.workshop_icon import WorkshopIcon
+        from ww_echo_workshop.ui.widgets.workshop_icon import workshop_icon
 
-        self.group_icon = WorkshopIcon()
+        self.group_icon = workshop_icon()
         self.description = '看评分、收录声骸、比较和配装'
         self._echo_owned_cleanup = True
         self.runtime = None
@@ -36,6 +41,7 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
         self._loading_echo_config = False
         self._destroyed = False
         self._destroy_lock = threading.RLock()
+        self._quit_app = None
         self._entry_cards = []
         self.inventory_window = None
         self.assistant_window = None
@@ -161,8 +167,7 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
             self._loading_echo_config = False
 
     def on_create(self):
-        # Imported tasks do receive on_create, but this host's imported-task
-        # loader does not call post_init. Do not put required setup there.
+        # 旧版导入加载器调用 on_create，新版还会调用 post_init。
         if self.runtime is not None and not self.runtime._closed:
             return
         self._destroyed = False
@@ -177,7 +182,7 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
                 raise  # Unrelated failures remain visible, not a silent fallback.
             self.runtime = None
             self.startup_error = '工作区控制记录待修复；未创建替代库存：' + str(error)
-            install_unload_cleanup()
+            self._bind_host_shutdown()
             return
         from ww_echo_workshop.storage.workspace_bundle import PREFERENCE_KEYS
 
@@ -202,12 +207,21 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
             else:
                 self.config['TemplateCharacterID'] = char_id
                 self.config['TemplateModalID'] = modal_id
-        install_unload_cleanup()
+        self._bind_host_shutdown()
         self.runtime.updates.start(auto_enabled=self.config.get('AutoWeightUpdates', True))
         self.runtime.sonata_updates.start(auto_enabled=self.config.get('AutoWeightUpdates', True))
         self.runtime.sonata_effect_updates.start(
             auto_enabled=self.config.get('AutoWeightUpdates', True)
         )
+
+    def _bind_host_shutdown(self):
+        from PySide6.QtCore import QCoreApplication
+
+        install_unload_cleanup()
+        app = QCoreApplication.instance()
+        if app is not None and self._quit_app is None:
+            app.aboutToQuit.connect(self.on_destroy)
+            self._quit_app = app
 
     def on_destroy(self):
         with self._destroy_lock:
@@ -217,6 +231,9 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
         if self._destroyed:
             return
         self._destroyed = True
+        if self._quit_app is not None:
+            self._quit_app.aboutToQuit.disconnect(self.on_destroy)
+            self._quit_app = None
         self._embedded_activate = None
         if self.runtime is not None:
             # Broadcast to every shared token before waiting for any one window.
@@ -265,6 +282,15 @@ class WWEchoWorkshopSettingsTask(SettingsUIBridge, CaptureCommands, BaseTask):
         return None
 
     def run(self):
-        # Kept for compatibility with the host's imported-task registry. The
-        # card exposes a persistent switch, so users never need to run it.
-        return
+        from PySide6.QtCore import QTimer
+        from PySide6.QtWidgets import QApplication
+
+        app = QApplication.instance()
+        if isinstance(app, QApplication):
+            QTimer.singleShot(0, app, self._open_from_task_card)
+
+    def _open_from_task_card(self):
+        if self.runtime is None and self.startup_error:
+            self.open_control_repair(None)
+        else:
+            self.open_assistant()

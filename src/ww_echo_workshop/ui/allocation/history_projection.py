@@ -1,7 +1,7 @@
 # 缓存不可变配装来源到角色侧栏的投影，并复用每个角色的头像图标。
 from ww_echo_workshop.application.compute_bridge import rating_result
 from ww_echo_workshop.ui.allocation.workspace import avatar_icon
-from qfluentwidgets import isDarkTheme
+from ww_echo_workshop.ui.widgets.controls import is_dark_theme
 
 
 class SavedListProjection:
@@ -26,8 +26,8 @@ class SavedListProjection:
         return self._projected_rows
 
     def _icon_revision(self):
-        avatars = self.page.runtime.avatars
-        return id(avatars), avatars.revision, isDarkTheme()
+        avatars = self.page.services.avatars
+        return id(avatars), avatars.revision, is_dark_theme(self.page)
 
     def _role_icon(self, character_id):
         revision = self._icon_revision()
@@ -35,7 +35,7 @@ class SavedListProjection:
             self._icon_cache_revision = revision
             self._role_icons = {}
         if character_id not in self._role_icons:
-            self._role_icons[character_id] = avatar_icon(self.page.runtime.avatars, character_id)
+            self._role_icons[character_id] = avatar_icon(self.page.services.avatars, character_id)
         return self._role_icons[character_id]
 
     def _refresh_icons(self):

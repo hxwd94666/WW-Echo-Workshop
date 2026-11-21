@@ -1,6 +1,6 @@
 # 合并已保存配装的库存核验，并在失败后提供就地重试而不反复自动提交。
 from PySide6.QtCore import QTimer
-from qfluentwidgets import PushButton
+from PySide6.QtWidgets import QPushButton
 
 
 class SavedRefresh:
@@ -13,7 +13,7 @@ class SavedRefresh:
         self._verify_timer = QTimer(self)
         self._verify_timer.setSingleShot(True)
         self._verify_timer.timeout.connect(self._start_verification)
-        self.recheck_button = PushButton('重新核验', self)
+        self.recheck_button = QPushButton('重新核验', self)
         self.recheck_button.clicked.connect(self.retry_verification)
         self.recheck_button.hide()
         header.addWidget(self.recheck_button)

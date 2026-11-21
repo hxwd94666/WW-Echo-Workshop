@@ -1,11 +1,19 @@
 # 接入宿主卸载并关闭后台资源。
-"""Narrow compatibility hook for hosts that omit on_destroy during unload."""
+"""旧版卸载兜底与跨线程窗口信号。"""
 
 from functools import wraps
+from importlib.util import find_spec
 from PySide6.QtCore import QObject, Signal
 
 
+def host_owns_imported_pages():
+    # 2.0.17 和 3.x 的插件注册器接管了页面挂载与卸载通知。
+    return find_spec('ok.core.plugins') is not None
+
+
 def install_unload_cleanup():
+    if host_owns_imported_pages():
+        return False
     try:
         from ok.core.task_manager import TaskManager
     except ImportError:
@@ -38,7 +46,7 @@ def install_unload_cleanup():
 
 class _WindowSignals(QObject):
     shutdown = Signal()
-    shortcut = Signal(int, str)
+    shortcut = Signal(int, str, object)
 
 
 def _window_lifetime_guard(method):

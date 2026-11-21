@@ -1,5 +1,4 @@
-# 向宿主浮层绘制声骸评分和词条贡献。
-"""OCR-row grouping and native painting for the Echo stat debug overlay."""
+# 从 OCR 文字和坐标得到声骸词条与原生评分观测。
 
 from __future__ import annotations
 
@@ -9,12 +8,9 @@ from types import SimpleNamespace
 
 from ww_echo_workshop.application.text import simplify_echo_text
 from ww_echo_workshop.core.scoring import normalize_stat_unit
-from ww_echo_workshop.ui.widgets.rating_style import rating_colour
-from ww_echo_workshop.capture.viewport import EchoViewport
-from ww_echo_workshop.adapters.okww.score_painter import EchoStatBoxPainter  # noqa: F401
+from ww_echo_workshop.capture.viewport import COMPARISON_SPLIT, EchoViewport
 
 
-ECHO_STAT_PAINTER_KEY = 'echo-stat-boxes'
 TIER_TEXT_COLOR = (80, 185, 255)
 LOWEST_TIER_TEXT_COLOR = (80, 235, 130)
 HIGHEST_TIER_TEXT_COLOR = (255, 75, 75)
@@ -77,15 +73,7 @@ class EchoStatAnalysis:
     score_text: str = ''
     potential_text: str = ''
     rating_color: tuple[int, int, int] | None = None
-
-
-def _rating_rgb(rating):
-    if rating is None:
-        return None
-    value = rating_colour(rating, True)
-    if not value.startswith('#'):
-        return None
-    return tuple(int(value[i : i + 2], 16) for i in (1, 3, 5))
+    retained_cost: int | None = None
 
 
 def analyze_echo_stats(
@@ -104,6 +92,8 @@ def analyze_echo_stats(
     layout_hint='',
     comparison_hint=False,
     cost_lookup=None,
+    retry_cost=None,
+    rating_rgb=None,
 ):
     """Recognize one Echo panel and calculate its row and total scores."""
     if not screen_width or not screen_height:
@@ -168,11 +158,13 @@ def analyze_echo_stats(
     min_x, max_x = (0.68, 0.99)
     selection_boxes = ocr_boxes
     if comparison:
-        min_x, max_x = (0.52, 0.775) if comparison_side == 'left' else (0.775, 0.99)
+        min_x, max_x = (
+            (0.52, COMPARISON_SPLIT) if comparison_side == 'left' else (COMPARISON_SPLIT, 0.99)
+        )
         dx, _ = area.offset('right')
         # Both columns use the right/selected echo's role selection. Scores
         # under two different owners' weights would not be a valid delta.
-        selection_boxes = [b for b in ocr_boxes if b.x >= dx + screen_width * 0.775]
+        selection_boxes = [b for b in ocr_boxes if b.x >= dx + screen_width * COMPARISON_SPLIT]
         right_boxes = [b for b in right_boxes if min_x * screen_width <= b.x < max_x * screen_width]
     skill_headings = [b for b in headings if min_x * screen_width <= b.x < max_x * screen_width]
     right_end = min((b.y for b in skill_headings), default=screen_height * 0.47)
@@ -265,8 +257,20 @@ def analyze_echo_stats(
         ]
     )
     observed_cost = _observed_cost(cost_boxes)
-    if observed_cost is None and cost_lookup is not None:
-        observed_cost = cost_lookup(tuple((row.stat_name, row.value) for row in main_rows))
+    if observed_cost is None and not is_tuning_page and retry_cost is not None:
+        region = area.cost_header_region(
+            round(area.y + main_rows[0].y), comparison=comparison, side=comparison_side
+        )
+        if region is not None:
+            x, y, w, h = region
+            observed_cost = _observed_cost(
+                [box for box in retry_cost(region) if x <= box.x < x + w and y <= box.y < y + h]
+            )
+    cost_hint = observed_cost
+    if cost_hint is None and cost_lookup is not None:
+        # A cached value can seed the numeric estimate, not provide visual
+        # evidence of this item's COST or authorize a definite grade.
+        cost_hint = cost_lookup(tuple((row.stat_name, row.value) for row in main_rows))
     dx, dy = area.offset('left' if is_tuning_page else 'right')
 
     def captured(row):
@@ -294,7 +298,7 @@ def analyze_echo_stats(
         sub_rows,
         selections=((live.ids[0], live.ids[1], live.template),) if live is not None else (),
         weight_version=weight_version,
-        cost=observed_cost,
+        cost=cost_hint,
         cancel_event=cancel_event,
     )
     cost = evidence.cost
@@ -357,12 +361,12 @@ def analyze_echo_stats(
         observed_cost,
         area.bounds if provisional else (),
         provisional,
-        comparison_detected,
+        comparison,
         score.current_score,
         score.potential_score,
         f'{score.current_score:.2f}{grade}',
         f'{score.potential_score:.2f}',
-        _rating_rgb(rating),
+        rating_rgb(rating) if rating_rgb is not None else None,
     )
 
 

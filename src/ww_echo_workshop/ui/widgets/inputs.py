@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QAbstractScrollArea,
     QApplication,
 )
-from qfluentwidgets import ComboBox as FluentCombo, EditableComboBox as FluentEditable
 from ww_echo_workshop.resources.search import search_keys
 
 PINYIN_ROLE = int(Qt.UserRole) + 432
@@ -147,21 +146,8 @@ class QDoubleSpinBox(_NoWheel, NativeDoubleSpin):
     pass
 
 
-class _StableComboMenu:
-    """Fluent's text lookup aliases same-name items; bind the actual row instead."""
-
-    def clear(self):
-        self._closeComboMenu()
-        super().clear()
-
-    def setItemText(self, index, text):
-        self._closeComboMenu()
-        super().setItemText(index, text)
-
-
-class ComboBox(_NoWheel, _StableComboMenu, FluentCombo):
-    pass
-
-
-class EditableComboBox(_NoWheel, _StableComboMenu, FluentEditable):
-    pass
+class EditableComboBox(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setEditable(True)
+        self.setInsertPolicy(NativeCombo.NoInsert)

@@ -99,6 +99,14 @@ def bag_region(frame, viewport, rect, side='right'):
     return (x, y, round(dx + area.reference_width * x2) - x, round(dy + area.height * y2) - y)
 
 
+_DETAIL_META_REGIONS = (
+    (0.685, 0.105, 0.965, 0.15),  # Item title.
+    (0.685, 0.175, 0.80, 0.265),  # Grade.
+    (0.69, 0.32, 0.805, 0.419),  # COST, above the first stat row.
+    (0.685, 0.79, 0.94, 0.86),  # Owner.
+)
+
+
 def detail_signature(frame, viewport):
     # Bind the proof to the final frozen panel, not to equality across frames.
     # Bright particles can still change these masks while the text stays fixed.
@@ -106,13 +114,7 @@ def detail_signature(frame, viewport):
     import cv2
 
     digest = hashlib.sha256()
-    for rect in (
-        (0.685, 0.105, 0.965, 0.15),
-        (0.685, 0.175, 0.80, 0.265),
-        (0.68, 0.419, 0.985, 0.715),
-        (0.685, 0.79, 0.94, 0.86),
-        (0.69, 0.32, 0.805, 0.373),
-    ):
+    for rect in (*_DETAIL_META_REGIONS, (0.68, 0.419, 0.985, 0.715)):
         x, y, w, h = bag_region(frame, viewport, rect)
         crop = frame[y : y + h, x : x + w, :3]
         gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
@@ -124,14 +126,17 @@ def detail_signature(frame, viewport):
 def _detail_observation(frame, viewport):
     """Small text/value patches, not the animated model or complete panel.
 
-    Each value row is independent: changing a small digit must not be diluted
-    by the whole stat panel. Low background light does not count as text.
+    A grade, COST or stat name can change while the numeric values stay put.
+    Compare adjacent fields separately so a small glyph change is not diluted
+    by the rest of the text. Low background light does not count as text.
     """
     import cv2
     import numpy as np
 
-    rects = ((0.685, 0.105, 0.965, 0.15), (0.685, 0.79, 0.94, 0.86)) + tuple(
-        (0.87, 0.419 + i * 0.042, 0.979, 0.419 + (i + 1) * 0.042) for i in range(7)
+    rects = _DETAIL_META_REGIONS + tuple(
+        (left, 0.419 + row * 0.042, right, 0.419 + (row + 1) * 0.042)
+        for row in range(7)
+        for left, right in ((0.68, 0.87), (0.87, 0.979))
     )
     result = []
     for rect in rects:
@@ -205,135 +210,28 @@ class ScanProof:
     tokens: tuple
     times: tuple
     signature: str
-    level_tokens: tuple = ()
-    detail_tokens: tuple = ()
-    grade_page: tuple = ()  # (generation, batch, source token), automatic fixed batches only.
+    grade_page: tuple  # (generation, measured first row, grade source token).
 
     def valid(self):
-        if self.grade_page:
-            return (
-                len(self.grade_page) == 3
-                and self.grade_page[0] == self.generation
-                and self.grade_page[1] == self.position[0] // 3
-                and self.grade_page[2] is not None
-                and type(self.level) is int
-                and 0 <= self.level <= 25
-                and len(self.tokens) == len(self.times) == 2
-                and all(t is not None for t in self.tokens)
-                and len(set(self.tokens)) == 2
-                and self.level_tokens == (self.grade_page[2],)
-                and self.detail_tokens == self.tokens
-                and all(type(t) in (int, float) and math.isfinite(t) for t in self.times)
-                and 0 < self.times[1] - self.times[0] <= 5
-                and bool(self.signature)
-            )
         return (
-            type(self.level) is int
+            len(self.position) == 2
+            and all(type(value) is int for value in self.position)
+            and 0 <= self.position[1] < 6
+            and len(self.grade_page) == 3
+            and self.grade_page[0] == self.generation
+            and type(self.grade_page[1]) is int
+            and 0 <= self.grade_page[1] <= self.position[0] < self.grade_page[1] + 5
+            and self.grade_page[2] is not None
+            and type(self.level) is int
             and 0 <= self.level <= 25
-            and len(self.tokens) == len(self.times) == 3
+            and len(self.tokens) == len(self.times) == 2
             and all(t is not None for t in self.tokens)
-            and len(set(self.tokens)) == 3
-            and self.level_tokens == (self.tokens[0], self.tokens[-1])
-            and self.detail_tokens == self.tokens[-2:]
+            and len(set(self.tokens)) == 2
             and all(type(t) in (int, float) and math.isfinite(t) for t in self.times)
-            and all(0 < b - a <= 5 for a, b in zip(self.times, self.times[1:]))
-            and self.times[-1] - self.times[0] >= 0.3 - 1e-6
-            and bool(self.signature)
+            and 0 < self.times[1] - self.times[0] <= 5
+            and isinstance(self.signature, str)
+            and len(self.signature) == 64
         )
-
-
-class ScanFrameGate:
-    def __init__(self):
-        self.reset()
-
-    def reset(self):
-        self.key, self.samples, self.level, self.detail = None, [], None, None
-
-    def needs_level(self, token, acquired_at, position, generation, viewport):
-        """OCR only the first and final confirming frame, never cached evidence."""
-        key = (position, generation, tuple(viewport))
-        if (
-            key != self.key
-            or not self.samples
-            or token is None
-            or type(acquired_at) not in (int, float)
-            or not math.isfinite(acquired_at)
-            or not 0 < acquired_at - self.samples[-1][1] <= 5
-            or acquired_at - self.samples[0][1] > 5
-        ):
-            return True
-        return len(self.samples) >= 2 and acquired_at - self.samples[0][1] >= 0.3 - 1e-6
-
-    def observe(
-        self,
-        frame,
-        viewport,
-        token,
-        acquired_at,
-        position,
-        generation,
-        level,
-        *,
-        level_observed=True,
-    ):
-        if token is None or type(acquired_at) not in (int, float) or not math.isfinite(acquired_at):
-            self.reset()
-            return None
-        # Selection is separately verified by ScanTraversal. Check local text
-        # response without demanding exact equality of the animated panel.
-        # All actual fields are still parsed ONCE from the final frozen image.
-        key = (position, generation, tuple(viewport))
-        if any(token == t for t, _ in self.samples):
-            return None
-        if key != self.key or (
-            self.samples
-            and (
-                not 0 < acquired_at - self.samples[-1][1] <= 5
-                or acquired_at - self.samples[0][1] > 5
-            )
-        ):
-            self.reset()
-            self.key = key
-        detail = _detail_observation(frame, viewport)
-        if self.detail is not None and not _same_detail_observation(self.detail, detail):
-            self.reset()
-            self.key = key
-        if level_observed:
-            if type(level) is not int or not 0 <= level <= 25:
-                self.reset()
-                return None
-            if self.level is not None and level != self.level:
-                self.reset()
-                self.key = key
-            self.level = level
-        elif not self.samples:
-            return None  # A new target requires a real first grade reading.
-        self.detail = detail
-        self.samples.append((token, acquired_at))
-        # Retain the real first-grade frame, not a cached grade attached to a
-        # later middle frame. Only the two latest image observations rotate.
-        if len(self.samples) > 3:
-            self.samples = self.samples[:1] + self.samples[-2:]
-        if (
-            not level_observed
-            or len(self.samples) < 3
-            or self.samples[-1][1] - self.samples[0][1] < 0.3 - 1e-6
-        ):
-            return None
-        # A signature binds the proof to THIS image, not three animated frames.
-        signature = detail_signature(frame, viewport)
-        tokens = tuple(t for t, _ in self.samples)
-        proof = ScanProof(
-            position,
-            generation,
-            self.level,
-            tokens,
-            tuple(t for _, t in self.samples),
-            signature,
-            (tokens[0], tokens[-1]),
-            tokens[-2:],
-        )
-        return proof if proof.valid() else None
 
 
 @dataclass(frozen=True)
@@ -344,9 +242,13 @@ class ScanSnapshot:
 
     @classmethod
     def freeze(cls, frame, viewport, proof):
-        if not proof.valid() or detail_signature(frame, viewport) != proof.signature:
+        if not proof.valid():
             raise ValueError('Unverified scan snapshot')
         frozen = frame.copy()
+        # Host capture may reuse the borrowed buffer while it is copied.
+        # Verify the image that the parser/evidence writer will actually own.
+        if detail_signature(frozen, viewport) != proof.signature:
+            raise ValueError('Unverified scan snapshot')
         frozen.flags.writeable = False
         return cls(frozen, tuple(viewport), proof)
 
@@ -364,10 +266,12 @@ class ScanPipeline:
         diagnostics=None,
         channel='detail',
         cancel_event=None,
+        on_worker_exit=None,
     ):
         self.parse, self.capacity = parse, capacity
         self.timings = timings
         self.diagnostics, self.channel = diagnostics, channel
+        self._on_worker_exit = on_worker_exit
         self.cancelled = cancel_event if cancel_event is not None else threading.Event()
         self._jobs, self._results = queue.Queue(), queue.Queue()
         self._lock = threading.Lock()
@@ -394,15 +298,22 @@ class ScanPipeline:
             return True
 
     def poll(self):
-        try:
-            result = self._results.get_nowait()
-        except queue.Empty:
-            return None
         with self._lock:
+            try:
+                result = self._results.get_nowait()
+            except queue.Empty:
+                return None
             self._count -= 1
         return result
 
     def _run(self):
+        try:
+            self._parse_jobs()
+        finally:
+            if self._on_worker_exit is not None:
+                self._on_worker_exit()
+
+    def _parse_jobs(self):
         while not self.cancelled.is_set():
             try:
                 snapshot, queued_at = self._jobs.get(timeout=0.1)
@@ -419,14 +330,14 @@ class ScanPipeline:
                 value, error = None, exc
             except Exception as exc:
                 value, error = None, exc
-                if self.diagnostics is not None:
+            cancelled = self.cancelled.is_set() or isinstance(error, OperationCancelled)
+            if self.diagnostics is not None:
+                if error is not None and not cancelled:
                     self.diagnostics.exception(
                         self.channel + '_parse',
-                        exc,
+                        error,
                         'scan_levels_failed' if self.channel == 'grade' else 'scan_parse_failed',
                     )
-            cancelled = isinstance(error, OperationCancelled)
-            if self.diagnostics is not None:
                 self.diagnostics.count(
                     self.channel + '_parse_cancelled'
                     if cancelled
@@ -445,19 +356,22 @@ class ScanPipeline:
                     if error is not None
                     else 'parse_successes'
                 )
-            if not self.cancelled.is_set():
-                self._results.put((snapshot, value, error))
+            with self._lock:
+                if not self.cancelled.is_set():
+                    self._results.put((snapshot, value, error))
             # Release the full-resolution source before waiting for another job.
             del snapshot, value, error
 
     def cancel(self):
-        self.cancelled.set()
-        for channel in (self._jobs, self._results):
-            while True:
-                try:
-                    channel.get_nowait()
-                except queue.Empty:
-                    break
+        with self._lock:
+            self.cancelled.set()
+            for channel in (self._jobs, self._results):
+                while True:
+                    try:
+                        channel.get_nowait()
+                    except queue.Empty:
+                        break
+            self._count = 0
 
     def close(self):
         self.cancel()

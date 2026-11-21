@@ -15,17 +15,15 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import (
-    BodyLabel,
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import (
     CaptionLabel,
-    LineEdit,
     PrimaryPushButton,
-    PushButton,
-    SegmentedWidget,
-    isDarkTheme,
-    qconfig,
-    themeColor,
+    is_dark_theme,
+    accent_color,
 )
+from ww_echo_workshop.ui.widgets.navigation import ModeNavigation
+from PySide6.QtWidgets import QLineEdit, QPushButton
 
 from ww_echo_workshop.resources.search import search_matches
 from ww_echo_workshop.core.filters import is_protected
@@ -83,9 +81,9 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(10)
         header = QHBoxLayout()
-        self.back_button = PushButton('返回', self)
+        self.back_button = QPushButton('返回', self)
         self.back_button.clicked.connect(self.page._hide_history)
-        self.cancel_button = PushButton('取消读取', self)
+        self.cancel_button = QPushButton('取消读取', self)
         self.cancel_button.clicked.connect(self.page.cancel_job)
         header.addWidget(self.cancel_button)
         self.build_verification(header)
@@ -96,12 +94,12 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.sidebar = QWidget(self.splitter)
         left = QVBoxLayout(self.sidebar)
         left.setContentsMargins(0, 0, 8, 0)
-        self.tabs = SegmentedWidget(self.sidebar)
+        self.tabs = ModeNavigation(self.sidebar, accessible_name='已保存配装分组')
         for key, label in (('current', '当前配装'), ('history', '备份配装')):
             self.tabs.addItem(key, label, onClick=lambda checked, key=key: self.set_mode(key))
         self.tabs.setCurrentItem(self.mode)
         left.addWidget(self.tabs)
-        self.search = LineEdit(self.sidebar)
+        self.search = QLineEdit(self.sidebar)
         self.search.setPlaceholderText('搜索角色、模版或日期')
         self.search.textChanged.connect(lambda: self.project(force=True))
         left.addWidget(self.search)
@@ -121,7 +119,7 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.avatar.setFixedSize(32, 32)
         self.avatar.setAlignment(Qt.AlignCenter)
         title.addWidget(self.avatar)
-        self.title = BodyLabel('选择一项配装', self.detail)
+        self.title = QLabel('选择一项配装', self.detail)
         self.title.setWordWrap(True)
         title.addWidget(self.title)
         right.addLayout(title)
@@ -129,11 +127,11 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.empty = QWidget(self.stack)
         empty = QVBoxLayout(self.empty)
         empty.addStretch()
-        self.empty_label = BodyLabel('选择左侧角色，查看配装。', self.empty)
+        self.empty_label = QLabel('选择左侧角色，查看配装。', self.empty)
         self.empty_label.setAlignment(Qt.AlignCenter)
         self.empty_label.setWordWrap(True)
         empty.addWidget(self.empty_label)
-        self.empty_action_button = PushButton('去生成配装', self.empty)
+        self.empty_action_button = QPushButton('去生成配装', self.empty)
         self.empty_action_button.clicked.connect(self.page._hide_history)
         empty.addWidget(self.empty_action_button, alignment=Qt.AlignHCenter)
         empty.addStretch()
@@ -142,10 +140,10 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             self.stack,
             grid_type=SavedLoadoutGrid,
             summary_layout=title,
-            panel_service=self.page.runtime.panel,
+            panel_service=self.page.services.panel,
         )
         title.addStretch(1)
-        self.detail_cards.cards.avatar_cache = self.page.runtime.avatars
+        self.detail_cards.cards.avatar_cache = self.page.services.avatars
         self.detail_cards.selected.connect(self._card_selected)
         self.detail_cards.cards.selectionModel().selectionChanged.connect(
             lambda *_: self._schedule_buttons()
@@ -157,7 +155,7 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         actions = QHBoxLayout()
         actions.addWidget(self.action_note, 1)
         actions.addLayout(header)
-        self.replace_button = PushButton('替换优化', self.detail)
+        self.replace_button = QPushButton('替换优化', self.detail)
         self.replace_button.clicked.connect(self._replace)
         from ww_echo_workshop.ui.allocation.action_labels import (
             explain,
@@ -168,22 +166,22 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
 
         explain(self.replace_button, REPLACE_TIP)
         title.addWidget(self.replace_button)
-        self.discard_button = PushButton('取消预览', self.detail)
+        self.discard_button = QPushButton('取消预览', self.detail)
         self.discard_button.clicked.connect(self._discard_preview)
         actions.addWidget(self.discard_button)
-        self.release_button = PushButton('解除保护', self.detail)
+        self.release_button = QPushButton('解除保护', self.detail)
         explain(
             self.release_button,
             '只解除所选声骸的保护，其余声骸保持不变；不删除当前配装，不修改游戏。',
         )
         self.release_button.clicked.connect(self._release_selected)
         title.addWidget(self.release_button)
-        self.remove_button = PushButton('移除配装', self.detail)
+        self.remove_button = QPushButton('移除配装', self.detail)
         explain(self.remove_button, '仅移除当前选择的角色配装；确认前不改变数据。')
         self.remove_button.clicked.connect(self._remove)
         title.addWidget(self.remove_button)
         actions.addStretch(1)
-        self.backup_button = PushButton('另存备份', self.detail)
+        self.backup_button = QPushButton('另存备份', self.detail)
         explain(self.backup_button, BACKUP_TIP)
         self.backup_button.clicked.connect(self._backup)
         actions.addWidget(self.backup_button)
@@ -201,7 +199,7 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.splitter.setStretchFactor(1, 1)
         self.splitter.setSizes([270, 900])
         self._update_palette()
-        qconfig.themeChangedFinished.connect(self._theme_changed)
+        watch_theme(self, self._theme_changed)
 
     @property
     def view_token(self):
@@ -432,7 +430,7 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             self.view_token,
             id(context['payload']) if context else None,
             id(draft),
-            self.page.runtime.avatars.revision,
+            self.page.services.avatars.revision,
             getattr(self.page._current_loadouts, 'inventory_revision', None),
             getattr(self.page._current_loadouts, 'revision', None),
             self._error,
@@ -461,9 +459,9 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
             self.action_note.clear()
             return
         self.title.setText(row['label'])
-        pixmap = lookup_avatar(self.page.runtime.avatars, row['character_id'])
+        pixmap = lookup_avatar(self.page.services.avatars, row['character_id'])
         if pixmap is None:
-            request = getattr(self.page.runtime.avatars, 'request', None)
+            request = getattr(self.page.services.avatars, 'request', None)
             if request is not None:
                 request(row['character_id'])
         self.avatar.setPixmap(
@@ -543,8 +541,8 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         dialog = self._dialog = ReplacementDialog(
             options,
             self.window(),
-            avatar_cache=self.page.runtime.avatars,
-            queries=self.page.runtime.inventory_queries,
+            avatar_cache=self.page.services.avatars,
+            queries=self.page.services.queries,
         )
         dialog.preview_requested.connect(
             lambda item_id: self.page.action(
@@ -639,7 +637,7 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
 
     def _lifecycle_active(self):
         p = self.page
-        return not p._closing and not p.runtime._closed and not p.task._destroyed
+        return not p._closing and not p.services.closed()
 
     def stop_projection(self):
         try:
@@ -715,26 +713,23 @@ class SavedLoadoutsWorkspace(SavedRefresh, SavedListProjection, SavedRoleActions
         self.action_note.setText(self.selection_note())
 
     def _theme_changed(self, *_):
-        if (
-            not self.page._closing
-            and not self.page.runtime._closed
-            and not self.page.task._destroyed
-        ):
+        if not self.page._closing and not self.page.services.closed():
             self._update_palette()
             self._detail_signature = None
             self.project()
 
     def _update_palette(self):
         palette = self.palette()
-        surface = QColor('#202020' if isDarkTheme() else '#fafafa')
-        foreground = QColor('#f4f4f4' if isDarkTheme() else '#202020')
+        colors = colors_for_widget(self)
+        surface = QColor(colors.panel)
+        foreground = QColor(colors.text)
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, surface)
         for role in (QPalette.WindowText, QPalette.Text):
             palette.setColor(role, foreground)
-        accent = themeColor()
+        accent = accent_color(self)
         palette.setColor(
-            QPalette.Highlight, accent.darker(250) if isDarkTheme() else accent.lighter(180)
+            QPalette.Highlight, accent.darker(250) if is_dark_theme(self) else accent.lighter(180)
         )
         palette.setColor(QPalette.HighlightedText, foreground)
         for widget in (self, self.list, self.list.viewport()):

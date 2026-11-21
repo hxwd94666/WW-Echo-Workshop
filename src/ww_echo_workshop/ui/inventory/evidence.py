@@ -15,7 +15,7 @@ def decode_image(data):
 
 
 class EvidenceDialog(QDialog):
-    def __init__(self, reference, evidence, parent=None):
+    def __init__(self, reference, service, parent=None):
         super().__init__(parent)
         self.setWindowTitle('原始截图（滚动查看；不是当前游戏状态）')
         fit_dialog(self, 1000, 700)
@@ -32,7 +32,7 @@ class EvidenceDialog(QDialog):
         buttons = QDialogButtonBox(QDialogButtonBox.Close)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-        self.service = evidence.views
+        self.service = service
         self.job = self.service.submit(reference, decode_image)
         # Only plain job state is captured: parent destruction must not call Qt.
         self.destroyed.connect(lambda *_, job=self.job: job.cancel())

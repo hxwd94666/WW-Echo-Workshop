@@ -2,7 +2,6 @@
 """Explicit constraints -> background solve -> saved retrieval/move checklist."""
 
 from concurrent.futures import ThreadPoolExecutor
-import json
 import threading
 
 from PySide6.QtCore import QObject, Qt, QTimer, Signal, Slot
@@ -12,15 +11,14 @@ from PySide6.QtWidgets import QTableWidgetItem
 from ww_echo_workshop.core.allocation.models import AllocationRequest, RoleRequest
 from ww_echo_workshop.core.loadout import protected_item_ids
 from ww_echo_workshop.application.allocation_preferences import (
-    allocation_settings,
     pending_role_keys,
 )
-from ww_echo_workshop.ui.matching.controller import _StopToken
+from ww_echo_workshop.application.allocation_jobs import AllocationScope
 from ww_echo_workshop.ui.allocation.results import AllocationUX
 from ww_echo_workshop.ui.allocation.projection import AllocationProjection
-from ww_echo_workshop.application.matching.scope import select_match_records
 from ww_echo_workshop.ui.widgets.layout import stat_text
-from qfluentwidgets import isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import watch_theme
+from ww_echo_workshop.ui.widgets.controls import is_dark_theme
 from ww_echo_workshop.ui.widgets.rating_style import rating_colour
 from ww_echo_workshop.ui.allocation.plans import SavedPlanController
 from ww_echo_workshop.ui.allocation.result_replacement import ResultReplacementMixin
@@ -36,14 +34,6 @@ class _Signals(QObject):
     completed = Signal(int, object, str)
     plan_completed = Signal(int, object, str)
     plan_progress = Signal(int, str, int, int)
-
-
-class _AllocationPayload(tuple):
-    def __new__(cls, result, records, weights, reservations, scope_generation):
-        value = super().__new__(cls, (result, records, weights))
-        value.reservations = reservations
-        value.scope_generation = scope_generation
-        return value
 
 
 class AllocationContent(
@@ -67,9 +57,9 @@ class AllocationContent(
     def request_stop(self):
         self.stop_worker()
 
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.services = services
         self.roles = []
         self._result = self._payload = self._snapshot = None
         self._loadout_changes = ()
@@ -117,13 +107,13 @@ class AllocationContent(
         self.timer = QTimer(self)
         self.timer.setInterval(500)
         self.timer.timeout.connect(self.refresh)
-        self.profile.setCurrentIndex(self.profile.findData(task.config.get('InventoryProfileID')))
+        self.profile.setCurrentIndex(self.profile.findData(self.services.profile_id()))
         self.profile.currentIndexChanged.connect(self.load_profile)
         self.load_profile()
-        qconfig.themeChangedFinished.connect(self._update_rating_colours)
+        watch_theme(self, self._update_rating_colours)
 
     def action(self, fn):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             return
         try:
             fn()
@@ -133,7 +123,7 @@ class AllocationContent(
                 self.saved_workspace.show_error(str(error))
 
     def preferences(self):
-        return allocation_settings(self.task.config)
+        return self.services.preferences.read()
 
     def seed_role_requirements(self, editor, key):
         value = self._role_requirements_cache.get(key)
@@ -169,7 +159,7 @@ class AllocationContent(
         key = self.incoming.currentData()
         if key is None:
             raise ValueError('请选择待配置角色。')
-        self.runtime.weights.active.template(*key)
+        self.services.weight_snapshot().template(*key)
         existing = next(
             (index for index, role in enumerate(self.roles) if role.character_id == key[0]), None
         )
@@ -182,7 +172,7 @@ class AllocationContent(
                 'edit-role',
                 dict(
                     profile_id=self.profile.currentData(),
-                    snapshot=self.runtime.weights.active,
+                    snapshot=self.services.weight_snapshot(),
                     roles=tuple(self.roles),
                     editing=True,
                     index=existing,
@@ -197,7 +187,7 @@ class AllocationContent(
             'edit-role',
             dict(
                 profile_id=self.profile.currentData(),
-                snapshot=self.runtime.weights.active,
+                snapshot=self.services.weight_snapshot(),
                 roles=tuple(self.roles),
                 editing=False,
                 index=-1,
@@ -245,64 +235,21 @@ class AllocationContent(
             # A validated frozen plan is read-only; working settings stay untouched.
             self.status.setText('正在查看历史方案；请先返回当前配装再修改设置。')
             return
-        from ww_echo_workshop.application.matching.calculation import normalize_candidate_ids
-
         self._cancel.set()
         self._io_cancel.set()
         self.cancel_current_action()
         self.render_roles()
         try:
-            data = self.preferences()
-            rows = [role.to_dict() for role in self.roles]
-            saved_profile = data['profiles'].get(self.profile.currentData(), {})
-            if self._subset_adjustment:
-                active = {role.character_id for role in self.roles}
-                old = saved_profile.get('roles', [])
-                rows += [
-                    row
-                    for row in old
-                    if row.get('character_id') not in active
-                    and row.get('character_id') not in self._removed_role_ids
-                ]
-            data['profiles'][self.profile.currentData()] = dict(
-                roles=rows,
+            self.services.preferences.save_draft(
+                self.profile.currentData(),
+                roles=tuple(self.roles),
                 fully_tuned=self.tuned.isChecked(),
-                pending_roles=pending_role_keys(
-                    tuple(self.incoming.itemData(i) for i in range(self.incoming.count())), rows
-                ),
-                candidate_item_ids=normalize_candidate_ids(self._candidate_ids),
-            )
-            if 'search_budget' in saved_profile:
-                data['profiles'][self.profile.currentData()]['search_budget'] = dict(
-                    saved_profile['search_budget']
-                )
-            groups = self._priority_groups
-            if (
-                self._subset_adjustment
-                and (self._edit_plans or self._replace_plans)
-                and saved_profile.get('priority_groups')
-            ):
-                # Editing a historical subset must not flatten the untouched
-                # working participants' priority groups when they are retained.
-                keys_by_character = {
-                    row['character_id']: (row['character_id'], row['modal_id']) for row in rows
-                }
-                groups = tuple(
-                    tuple(keys_by_character[key[0]] for key in group if key[0] in keys_by_character)
-                    for group in saved_profile['priority_groups']
-                )
-            if groups:
-                from ww_echo_workshop.application.matching.calculation import (
-                    restrict_priority_groups,
-                )
-
-                data['profiles'][self.profile.currentData()]['priority_groups'] = (
-                    restrict_priority_groups(
-                        groups, tuple((row['character_id'], row['modal_id']) for row in rows)
-                    )
-                )
-            self.task.config['AllocationSettingsJSON'] = json.dumps(
-                data, ensure_ascii=False, allow_nan=False
+                pending=tuple(self.incoming.itemData(i) for i in range(self.incoming.count())),
+                candidate_ids=self._candidate_ids,
+                priority_groups=self._priority_groups,
+                subset_adjustment=self._subset_adjustment,
+                source_plan=bool(self._edit_plans or self._replace_plans),
+                removed_role_ids=self._removed_role_ids,
             )
             self.status.setText('约束已保存；请生成新方案，已有方案不会被覆盖')
         except (ValueError, KeyError, TypeError) as error:
@@ -375,7 +322,7 @@ class AllocationContent(
         self.refresh()
 
     def render_roles(self):
-        snapshot = self.runtime.weights.active
+        snapshot = self.services.weight_snapshot()
         self.roles_table.setRowCount(len(self.roles))
         for index, role in enumerate(self.roles):
             try:
@@ -413,7 +360,7 @@ class AllocationContent(
             'edit-role',
             dict(
                 profile_id=self.profile.currentData(),
-                snapshot=self.runtime.weights.active,
+                snapshot=self.services.weight_snapshot(),
                 roles=tuple(self.roles),
                 editing=editing,
                 index=index,
@@ -438,64 +385,38 @@ class AllocationContent(
         with self._worker_lock:
             self._start_search()
 
+    def allocation_scope(self):
+        return AllocationScope(
+            self._scope_generation,
+            self._candidate_ids,
+            self._candidate_filters,
+            self._edit_plans,
+            self._replace_plans,
+        )
+
     def _start_search(self):
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return
         if self._future is not None or self._io_future is not None or self._editor is not None:
             raise ValueError('请先结束当前搜索/方案作业')
         request = self.request()
-        snapshot = self.runtime.weights.active
+        snapshot = self.services.weight_snapshot()
         self.changed()
         self._generation += 1
         generation = self._generation
         self._cancel = threading.Event()
-        stop = _StopToken(self._cancel, self.runtime)
-        from ww_echo_workshop.application.search_budget import allocation_budget
-
-        budget = allocation_budget(self.task.config, self.profile.currentData())
-        candidate_ids, scope_generation = self._candidate_ids, self._scope_generation
-        candidate_filters = (
-            None if self._candidate_filters is None else dict(self._candidate_filters)
-        )
-        edits, replacements = dict(self._edit_plans), dict(self._replace_plans)
+        budget = self.services.budget(self.profile.currentData())
+        scope = self.allocation_scope()
+        cancel = self._cancel
+        run = self.services.jobs.search
         if self._pool is None:
             self._pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='echo-allocation')
         self.status.setText('后台搜索中；固定库存修订和权重版本，不执行 OCR/装备操作')
 
         def work():
             try:
-                reservations = self.runtime.inventory.loadout_snapshot(
-                    request.profile_id, cancel_event=stop
-                )
-                filtered = (
-                    reservations.records
-                    if candidate_filters is None
-                    else self.runtime.inventory_queries.filter_records(
-                        reservations.records, cancel_event=stop, **candidate_filters
-                    )
-                )
-                records = select_match_records(filtered, candidate_ids, cancel_event=stop)
-                result = self.runtime.allocation.solve(
-                    records,
-                    request,
-                    inventory_revision=reservations.inventory_revision,
-                    snapshot=snapshot,
-                    cancel_event=stop,
-                    seconds=budget.seconds,
-                    max_nodes=budget.nodes,
-                    reservations=reservations,
-                    edit_plans=edits,
-                    replace_plans=replacements,
-                )
-                value, error = (
-                    _AllocationPayload(result, records, snapshot, reservations, scope_generation),
-                    '',
-                )
-                from ww_echo_workshop.application.loadout_diff import plan_changes
-
-                value.change_details = plan_changes(
-                    result, reservations, snapshot, self.runtime.scores, stop
-                )
+                value = run(request, snapshot, budget, scope, cancel_event=cancel)
+                error = ''
             except Exception as caught:
                 value, error = None, str(caught)
             try:
@@ -511,28 +432,27 @@ class AllocationContent(
         if generation != self._generation:
             return
         self._future = None
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return
         if error:
             self.status.setText('搜索结束：' + error)
         else:
-            result, records, snapshot = value
+            result = value.result
             if (
                 self._cancel.is_set()
                 or not self.fresh(result)
-                or getattr(value, 'scope_generation', self._scope_generation)
-                != self._scope_generation
+                or value.scope_generation != self._scope_generation
             ):
                 self.status.setText('库存/权重/约束已变化，旧搜索结果已丢弃；请重新生成')
             else:
                 self._result, self._records, self._snapshot, self._payload = (
                     result,
-                    records,
-                    snapshot,
+                    value.records,
+                    value.weights,
                     None,
                 )
-                self._result_reservations = getattr(value, 'reservations', None)
-                self._loadout_changes = getattr(value, 'change_details', ())
+                self._result_reservations = value.reservations
+                self._loadout_changes = value.change_details
                 self._result_scope_generation = self._scope_generation
                 self.render_result(result.to_dict(), [])
         self.refresh()
@@ -555,17 +475,17 @@ class AllocationContent(
                 cursor = editor.document().find(text)
                 if not cursor.isNull():
                     fmt = QTextCharFormat()
-                    fmt.setForeground(QColor(rating_colour(rating, isDarkTheme())))
+                    fmt.setForeground(QColor(rating_colour(rating, is_dark_theme(self))))
                     cursor.mergeCharFormat(fmt)
         for row in range(self.checklist.rowCount()):
             item = self.checklist.item(row, 3)
             if item is not None and item.data(_RATING_ITEM_ROLE) is not None:
                 item.setForeground(
-                    QColor(rating_colour(item.data(_RATING_ITEM_ROLE), isDarkTheme()))
+                    QColor(rating_colour(item.data(_RATING_ITEM_ROLE), is_dark_theme(self)))
                 )
 
     def _panel_line(self, row, request_role):
-        service = getattr(self.runtime, 'panel', None)
+        service = self.services.panel
         if service is None or len(row.get('item_ids', ())) != 5 or request_role is None:
             return ''
         records = {record.item_id: record for record in self._records}
@@ -667,7 +587,7 @@ class AllocationContent(
         self.status.setText('已请求取消；等待检查点，已提交的保存/进度保持完成')
 
     def refresh(self):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             # start/show may hold the submission lock while executor cleanup
             # owns the stop lock and waits for submission to finish. Do not
             # synchronously join from inside that lock: close on the GUI queue.
@@ -695,7 +615,7 @@ class AllocationContent(
             for button in self.current_buttons:
                 button.setEnabled(False)
             return  # No Qt DB reads while the worker holds a read/commit lock.
-        if self.runtime.weights.active.version != getattr(self, '_template_version', None):
+        if self.services.weight_snapshot().version != getattr(self, '_template_version', None):
             self.render_roles()
         fresh = self.fresh()
         current = self.plan_is_current()
@@ -759,7 +679,7 @@ class AllocationContent(
 
     def showEvent(self, event):
         with self._worker_lock:
-            if not self.runtime._closed and not self.task._destroyed:
+            if not self.services.closed():
                 self._closing = False
                 self.timer.start()
                 self.refresh()

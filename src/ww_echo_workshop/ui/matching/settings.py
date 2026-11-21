@@ -4,8 +4,9 @@ from concurrent.futures import CancelledError
 import threading
 from PySide6.QtWidgets import QVBoxLayout, QWidget
 from ww_echo_workshop.ui.widgets.inputs import QSpinBox
-from qfluentwidgets import BodyLabel, CaptionLabel, PushButton, LineEdit
-from ww_echo_workshop.ui.widgets.inputs import ComboBox
+from PySide6.QtWidgets import QLabel, QPushButton, QLineEdit
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, WorkshopCheckBox
+from ww_echo_workshop.ui.widgets.inputs import QComboBox
 from ww_echo_workshop.application.compute_protocol import ComputeFailure
 from ww_echo_workshop.application.diagnostics import begin_job
 from ww_echo_workshop.application.pins import pin_error_text
@@ -17,7 +18,7 @@ class MatchingRoleSettingsController:
         from ww_echo_workshop.ui.inventory.filters import CheckableSonataList
 
         box = self.edit_controls.role_layout
-        box.addWidget(BodyLabel('此模版适配范围'))
+        box.addWidget(QLabel('此模版适配范围'))
         # 属性仍由角色资料与已保存要求维护，页面不再提供重复编辑入口。
         self.element_rule.hide()
         box.addWidget(self.weight_options)
@@ -28,7 +29,7 @@ class MatchingRoleSettingsController:
         self.managed_sonatas.setMinimumHeight(220)
         self.managed_sonatas.setMaximumHeight(300)
         self.managed_sonatas.itemChanged.connect(self._managed_sonata_edited)
-        self.managed_sonata_search = LineEdit(self)
+        self.managed_sonata_search = QLineEdit(self)
         self.managed_sonata_search.setPlaceholderText('搜索套装（支持拼音）')
         self.managed_sonata_search.setClearButtonEnabled(True)
         self.managed_sonata_search.textChanged.connect(self._filter_managed_sonatas)
@@ -43,11 +44,12 @@ class MatchingRoleSettingsController:
         checked = tuple(
             x.strip() for x in self.sonata_rule.text().replace('，', ',').split(',') if x.strip()
         )
-        state = self.runtime.sonata.active.version, checked
+        snapshot = self.services.sonata_snapshot()
+        state = snapshot.version, checked
         if state == getattr(self, '_managed_sonata_state', None):
             return
         self._managed_sonata_state = state
-        names = {icon.name for icon in self.runtime.sonata.active.icons.values()}
+        names = {icon.name for icon in snapshot.icons.values()}
         names.update(checked)  # Retain historical/custom names, never silently drop.
         blocked = self.managed_sonatas.blockSignals(True)
         try:
@@ -90,24 +92,28 @@ class MatchingRoleSettingsController:
         text = '请选择参与角色右侧的管理按钮'
         if selected:
             try:
-                text = self.runtime.weights.active.template(*key)['name']
+                text = self.services.weight_snapshot().template(*key)['name']
             except (ValueError, KeyError):
                 text = '失效角色：' + '/'.join(key)
         self.managed_role_header.setText(text)
         if hasattr(self, 'managed_avatar'):
             button = self.role_strip.buttons.get(key) if hasattr(self, 'role_strip') else None
-            from qfluentwidgets import FluentIcon
+            from ww_echo_workshop.ui.widgets.controls import standard_icon
 
-            from qfluentwidgets import isDarkTheme
+            from ww_echo_workshop.ui.widgets.controls import is_dark_theme
 
-            avatars = getattr(self.runtime, 'avatars', None)
+            avatars = self.services.avatars
             revision = getattr(avatars, 'revision', None)
-            state = key if selected else None, avatars, revision, isDarkTheme()
+            state = key if selected else None, avatars, revision, is_dark_theme(self)
             if revision is None or state != getattr(self, '_managed_avatar_state', None):
                 self._managed_avatar_state = state
                 cached = avatars.lookup(key[0]) if selected and avatars is not None else None
                 if button is not None:
-                    icon = button.icon() if cached is not None else FluentIcon.PEOPLE.icon()
+                    icon = (
+                        button.icon()
+                        if cached is not None
+                        else standard_icon('SP_FileDialogInfoView')
+                    )
                     self.managed_avatar.setPixmap(icon.pixmap(36, 36))
                 else:
                     self.managed_avatar.clear()
@@ -248,13 +254,10 @@ class MatchingRoleSettingsController:
         key = self.participants.currentData()
         if key not in self.selections() or self._rule_dirty:
             raise ValueError('请选择参与角色，并先修正角色要求的错误，再编辑权重。')
-        from ww_echo_workshop.ui.widgets.template_weights import open_template_weights
-
-        open_template_weights(self.task, key)
+        self.navigation.edit_weights(key)
 
     def _build_calculation_controls(self):
         from PySide6.QtWidgets import QFormLayout
-        from qfluentwidgets import CheckBox
 
         box = self.edit_controls.calculation_layout
         # 左侧集中适配与可选要求，右侧集中五槽配置，避免右栏独自过长。
@@ -270,7 +273,7 @@ class MatchingRoleSettingsController:
         self.cost_layout_note.hide()
         self.cost_layout_note.setWordWrap(True)
         box.addWidget(self.cost_layout_note)
-        box.addWidget(BodyLabel('主词条自选'))
+        box.addWidget(QLabel('主词条自选'))
         from ww_echo_workshop.ui.allocation.requirements import MainRequirementsPicker
 
         self.main_requirements_picker = MainRequirementsPicker(self, title='')
@@ -306,20 +309,20 @@ class MatchingRoleSettingsController:
         note.setWordWrap(True)
         global_box.addWidget(note)
         form = QFormLayout()
-        self.calculation_level = ComboBox()
+        self.calculation_level = QComboBox()
         self.calculation_level.addItem('不限等级', userData=0)
         for level in (5, 10, 15, 20, 25):
             self.calculation_level.addItem(f'+{level} 及以上', userData=level)
         form.addRow('最低等级', self.calculation_level)
-        self.calculation_locked = CheckBox('评分时排除保护声骸')
-        self.calculation_equipped = CheckBox('使用已装备声骸（历史角色归属）')
+        self.calculation_locked = WorkshopCheckBox('评分时排除保护声骸')
+        self.calculation_equipped = WorkshopCheckBox('使用已装备声骸（历史角色归属）')
         form.addRow(self.calculation_locked)
         form.addRow(self.calculation_equipped)
         self.calculation_seconds = QSpinBox()
-        self.calculation_seconds.setRange(1, 120)
+        self.calculation_seconds.setRange(1, 2_147_483_647)
         self.calculation_seconds.setSuffix(' 秒')
         self.calculation_nodes = QSpinBox()
-        self.calculation_nodes.setRange(1, 5000000)
+        self.calculation_nodes.setRange(1, 2_147_483_647)
         form.addRow('整套搜索总时间', self.calculation_seconds)
         form.addRow('整套搜索总节点', self.calculation_nodes)
         global_box.addLayout(form)
@@ -332,7 +335,7 @@ class MatchingRoleSettingsController:
         note.setWordWrap(True)
         global_box.addWidget(note)
         self._sync_calculation_controls()
-        self.reset_calculation_button = PushButton('重置计算选项', self)
+        self.reset_calculation_button = QPushButton('重置计算选项', self)
         self.reset_calculation_button.clicked.connect(lambda: self.action(self._reset_calculation))
         global_box.addWidget(self.reset_calculation_button)
         for widget, signal in (
@@ -343,6 +346,8 @@ class MatchingRoleSettingsController:
             getattr(widget, signal).connect(self._calculation_edited)
         self.calculation_seconds.valueChanged.connect(lambda _: self.action(self._budget_edited))
         self.calculation_nodes.valueChanged.connect(lambda _: self.action(self._budget_edited))
+        self.calculation_seconds.editingFinished.connect(lambda: self.action(self._budget_edited))
+        self.calculation_nodes.editingFinished.connect(lambda: self.action(self._budget_edited))
 
     def _sync_calculation_controls(self):
         options = self._calculation_options
@@ -358,10 +363,8 @@ class MatchingRoleSettingsController:
             blocked = widget.blockSignals(True)
             getattr(widget, setter)(value)
             widget.blockSignals(blocked)
-        from ww_echo_workshop.application.search_budget import allocation_budget
-
         try:
-            budget = allocation_budget(self.task.config, self.profile_box.currentData())
+            budget = self.services.read_budget(self.profile_box.currentData())
         except (ValueError, KeyError, TypeError) as error:
             self._budget_error = str(error)
         else:
@@ -381,15 +384,15 @@ class MatchingRoleSettingsController:
         self.budget_notice.setVisible(bool(self._budget_error))
 
     def _budget_edited(self, *_):
-        from ww_echo_workshop.application.search_budget import SearchBudget, set_allocation_budget
+        from ww_echo_workshop.application.search_budget import SearchBudget
 
         budget = SearchBudget(self.calculation_seconds.value(), self.calculation_nodes.value())
         try:
-            set_allocation_budget(self.task.config, self.profile_box.currentData(), budget)
+            self.services.write_budget(self.profile_box.currentData(), budget)
         except (ValueError, KeyError, TypeError):
             self._sync_calculation_controls()
             raise
-        self.task._panel.feedback.setText('配装搜索预算已保存，下一次生成生效。')
+        self.navigation.budget_saved()
 
     def _calculation_edited(self, *_):
         from ww_echo_workshop.application.matching.calculation import MatchCalculationOptions
@@ -408,9 +411,9 @@ class MatchingRoleSettingsController:
 
         if self._rule_dirty:
             raise ValueError('请先修正当前角色要求的错误，再重置计算选项。')
-        from ww_echo_workshop.application.search_budget import SearchBudget, set_allocation_budget
+        from ww_echo_workshop.application.search_budget import SearchBudget
 
-        set_allocation_budget(self.task.config, self.profile_box.currentData(), SearchBudget())
+        self.services.write_budget(self.profile_box.currentData(), SearchBudget())
         self._calculation_options = MatchCalculationOptions()
         self._calculation_error = ''
         self._sync_calculation_controls()
@@ -472,7 +475,7 @@ class MatchingRoleSettingsController:
             self._autosave_scheduled = True
             # 合并同一选择动作的多个信号，等控件结束更新后再提交。
             QTimer.singleShot(0, self, self._autosave_rule)
-        self.task._panel.refresh_profile_guard()
+        self.navigation.refresh_profile_guard()
         self._refresh_controls()
 
     def _draft_fixed_items(self):
@@ -500,7 +503,7 @@ class MatchingRoleSettingsController:
         finally:
             self._saving_rule = False
             self._preserve_edit_widgets = previous
-            self.task._panel.refresh_profile_guard()
+            self.navigation.refresh_profile_guard()
             self._refresh_controls()
 
     def _rule_save_context(self):
@@ -514,7 +517,7 @@ class MatchingRoleSettingsController:
             self.main_requirements_picker.main_names(),
             self._draft_fixed_items(),
             id(self.item_picker.catalog),
-            self.runtime.weights.active.version,
+            self.services.weight_snapshot().version,
             id(self._role_requirements),
             id(self._cost_layouts),
             id(self._rules),
@@ -535,7 +538,7 @@ class MatchingRoleSettingsController:
         self._rule_save_job = begin_job('matching-rule-save')
         self._rule_save_job.stage('validating')
         try:
-            self._rule_save_request = self.runtime.pin_checks.start(
+            self._rule_save_request = self.services.pin_checks.start(
                 {draft['key']: draft['value']},
                 draft['catalog'],
                 cancel_event=self._rule_save_cancel,
@@ -564,7 +567,7 @@ class MatchingRoleSettingsController:
                 raise OperationCancelled('要求校验已取消')
             if draft['context'] != self._rule_save_context():
                 raise OperationCancelled('要求上下文已变化')
-            errors = self.runtime.pin_checks.response(request)
+            errors = self.services.pin_checks.response(request)
             if errors:
                 _, slot, code = errors[0]
                 raise ValueError(pin_error_text(slot, code))
@@ -591,7 +594,7 @@ class MatchingRoleSettingsController:
             self._rule_save_request = self._active_rule_draft = self._rule_save_job = None
             self._rule_save_timer.stop()
             if not self._closing:
-                self.task._panel.refresh_profile_guard()
+                self.navigation.refresh_profile_guard()
                 self._refresh_controls()
                 self._start_rule_validation()
 
@@ -639,7 +642,7 @@ class MatchingRoleSettingsController:
         )
         from ww_echo_workshop.core.compatibility import CompatibilityRule
 
-        rule = self.runtime.weights.active.compatibility_rule(
+        rule = self.services.weight_snapshot().compatibility_rule(
             key[0], CompatibilityRule(self.element_rule.currentData(), names)
         )
         self._queue_rule_save(
@@ -686,7 +689,7 @@ class MatchingRoleSettingsController:
     def _refresh_resource_selectors(self):
         if not hasattr(self, 'managed_sonatas'):
             return
-        version = self.runtime.sonata.active.version
+        version = self.services.sonata_snapshot().version
         if version == getattr(self, '_resource_selector_versions', None):
             return
         self._resource_selector_versions = version

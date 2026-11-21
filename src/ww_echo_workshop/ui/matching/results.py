@@ -7,11 +7,11 @@ class ComparisonUX:
         self.participants.clear()
         available = tuple(
             (character, modal)
-            for character, modal, _ in self.runtime.weights.active.options.values()
+            for character, modal, _ in self.services.weight_snapshot().options.values()
         )
         for key in dict.fromkeys((*selected, *available)):
             try:
-                label = self.runtime.weights.active.template(*key)['name']
+                label = self.services.weight_snapshot().template(*key)['name']
             except (KeyError, ValueError):
                 label = '失效选择：' + '/'.join(key)
             self.participants.addItem(label, key)
@@ -36,7 +36,7 @@ class ComparisonUX:
             return
         if self._rule_dirty:
             raise ValueError('请先修正当前角色要求的错误，再更换参与角色。')
-        self.runtime.weights.active.template(*key)
+        self.services.weight_snapshot().template(*key)
         self.state.roles = tuple(dict.fromkeys((*self.state.roles, tuple(key))))
         self.state.current_role = tuple(key)
         self.changed()

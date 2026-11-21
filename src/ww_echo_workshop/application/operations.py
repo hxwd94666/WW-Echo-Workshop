@@ -5,4 +5,14 @@ from ww_echo_workshop.core.cancellation import (
     report_progress,
 )
 
-__all__ = ['OperationCancelled', 'checkpoint', 'report_progress']
+__all__ = ['LinkedStop', 'OperationCancelled', 'checkpoint', 'report_progress']
+
+
+class LinkedStop:
+    """Check an operation's cancellation and its owning runtime's shutdown."""
+
+    def __init__(self, local, shutdown):
+        self._local, self._shutdown = local, shutdown
+
+    def is_set(self):
+        return self._shutdown.is_set() or (self._local is not None and self._local.is_set())

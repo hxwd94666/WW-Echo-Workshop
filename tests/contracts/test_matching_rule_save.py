@@ -6,7 +6,6 @@ import unittest
 from unittest.mock import Mock, patch
 
 from PySide6.QtWidgets import QApplication, QWidget
-from PySide6.QtTest import QTest
 
 from ww_echo_workshop.application.pins import PinCheckService
 from ww_echo_workshop.core.compatibility import CompatibilityRule
@@ -73,9 +72,7 @@ class _Editor(MatchingRoleSettingsController, _HostlessWidget):
         self._role_requirements = {self.key: spec}
         self._cost_layouts = {self.key: spec.costs}
         self._rules = {self.key: CompatibilityRule('衍射', ('测试套装',))}
-        self.runtime = SimpleNamespace(
-            pin_checks=service, weights=SimpleNamespace(active=WeightSnapshot.builtin())
-        )
+        self.services = SimpleNamespace(pin_checks=service, weight_snapshot=WeightSnapshot.builtin)
         self.profile_box = SimpleNamespace(currentData=lambda: self.inputs['profile'])
         self.participants = SimpleNamespace(currentData=lambda: self.key)
         self.element_rule = SimpleNamespace(currentData=lambda: '衍射')
@@ -84,7 +81,7 @@ class _Editor(MatchingRoleSettingsController, _HostlessWidget):
         self.main_requirements_picker = SimpleNamespace(main_names=lambda: ((),) * 5)
         self.fixed_items_picker = SimpleNamespace(item_ids=lambda: spec.fixed_item_ids)
         self.item_picker = SimpleNamespace(catalog=(self.record,))
-        self.task = SimpleNamespace(_panel=SimpleNamespace(refresh_profile_guard=Mock()))
+        self.navigation = SimpleNamespace(refresh_profile_guard=Mock())
         self.status = SimpleNamespace(setText=Mock())
         self._calculation_error = ''
         self._rule_save_request = self._pending_rule_draft = self._active_rule_draft = None
@@ -185,11 +182,12 @@ class MatchingRuleSaveContract(unittest.TestCase):
         self.editor.save_preferences.assert_not_called()
 
     def test_real_engine_validation_is_asynchronous_on_gui(self):
-        self.editor.runtime.pin_checks = pin_checks
+        self.editor.services.pin_checks = pin_checks
         with patch.object(pin_checks, 'check', side_effect=AssertionError('blocking GUI check')):
             self.editor.save_rule()
             self.editor.save_preferences.assert_not_called()
             end = time.monotonic() + 4
             while not self.editor.save_preferences.called and time.monotonic() < end:
-                QTest.qWait(10)
+                self.app.processEvents()
+                time.sleep(0.01)
             self.editor.save_preferences.assert_called_once()

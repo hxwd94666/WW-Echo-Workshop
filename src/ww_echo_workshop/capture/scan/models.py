@@ -42,7 +42,12 @@ class BagGrid:
     bottom_confirmed: bool = False  # Knob reaches the measured list-end region.
     single_page: bool = False
     capture_token: object = None  # Fresh host capture, required for edge recovery.
-    anchor_boundary: object = None  # Measured last-selected bottom, possibly clipped.
+
+    @property
+    def at_top(self):
+        return bool(
+            self.tiles and (self.single_page if self.scrollbar is None else self.scrollbar <= 0.15)
+        )
 
     def rows(self):
         return tuple(
@@ -68,6 +73,15 @@ class ScanStatus:
     failed: int = 0
     captured: int = 0
     backlog: int = 0
+
+
+@dataclass(frozen=True)
+class ScanResult:
+    generation: int
+    status: ScanStatus
+    minimum_level: int
+    failed_positions: tuple
+    failure_details: tuple
 
 
 class ScanStartError(ValueError):

@@ -12,7 +12,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import CardWidget, PushButton, isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import CardWidget
+from PySide6.QtWidgets import QPushButton
 
 
 class _CenteredContent(QWidget):
@@ -42,7 +44,7 @@ class RoleSettingsSurface(QWidget):
         super().__init__(parent)
         self.setMinimumWidth(0)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.toggle = PushButton('角色设置', self)
+        self.toggle = QPushButton('角色设置', self)
         self.toggle.setCheckable(True)
         self.toggle.hide()
 
@@ -88,8 +90,7 @@ class RoleSettingsSurface(QWidget):
         body.addWidget(self.scroll, 1)
         self.footer, self.footer_layout = self._sticky_row()
         body.addWidget(self.footer)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeChangedFinished.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
         self._reflow()
 
@@ -132,12 +133,10 @@ class RoleSettingsSurface(QWidget):
                 self.columns.setAlignment(card, alignment)
 
     def update_theme(self, *_):
-        # QScrollArea owns an auto-filled widget, which otherwise keeps the
-        # light palette even after Fluent labels switch to white text. Sync
-        # every structural layer explicitly, without opaque CardWidget QSS.
-        dark = isDarkTheme()
-        background = QColor('#202020' if dark else '#fafafa')
-        text = QColor('#f3f3f3' if dark else '#202020')
+        # Keep the scroll viewport and card surfaces in the same palette.
+        colors = colors_for_widget(self)
+        background = QColor(colors.background)
+        text = QColor(colors.text)
         surfaces = (
             self,
             self.scroll,
@@ -155,17 +154,14 @@ class RoleSettingsSurface(QWidget):
                 palette.setColor(role, background)
             for role in (QPalette.WindowText, QPalette.Text, QPalette.ButtonText):
                 palette.setColor(role, text)
-                palette.setColor(QPalette.Disabled, role, QColor('#858585' if dark else '#8a8a8a'))
+                palette.setColor(QPalette.Disabled, role, QColor(colors.disabled))
             surface.setPalette(palette)
             surface.update()
         self.setAutoFillBackground(True)
         self.scroll.viewport().setAutoFillBackground(True)
         self.scroll_body.setAutoFillBackground(True)
-        # Resolve the short old-theme background transition immediately so a
-        # freshly opened page never flashes light cards behind dark-theme text.
         for card in (self.role_card, self.calculation_card):
-            card.backgroundColorAni.stop()
-            card.setBackgroundColor(card._normalBackgroundColor())
+            card.setAutoFillBackground(True)
 
     def eventFilter(self, watched, event):
         if (

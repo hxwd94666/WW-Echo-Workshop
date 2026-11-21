@@ -12,7 +12,12 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import CaptionLabel, SubtitleLabel, TitleLabel, isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import (
+    CaptionLabel,
+    SubtitleLabel,
+    TitleLabel,
+)
 
 from ww_echo_workshop.ui.widgets.layout import fit_dialog
 from ww_echo_workshop.ui.allocation.changes_cards import (
@@ -142,15 +147,14 @@ class LoadoutChangesDialog(QDialog):
         self.buttons.button(QDialogButtonBox.Close).setText('关闭')
         self.buttons.rejected.connect(self.reject)
         layout.addWidget(self.buttons)
-        qconfig.themeChanged.connect(self._update_theme)
-        qconfig.themeChangedFinished.connect(self._update_theme)
+        watch_theme(self, self._update_theme)
         self._update_theme()
         fit_dialog(self, 1100, 790)
 
     def _update_theme(self, *_):
-        dark = isDarkTheme()
-        surface = QColor('#202020' if dark else '#fafafa')
-        foreground = QColor('#f4f4f4' if dark else '#202020')
+        colors = colors_for_widget(self)
+        surface = QColor(colors.panel)
+        foreground = QColor(colors.text)
         palette = self.palette()
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, surface)
@@ -171,12 +175,8 @@ class LoadoutChangesDialog(QDialog):
             + surface.name()
             + ';}'
             '#loadoutChangeGroup {background:' + surface.name() + ';border:none;}'
-            '#changePairPanel {border:1px solid '
-            + ('#414141' if dark else '#dedede')
-            + ';border-radius:7px;}'
-            '#compactChangeCard {background:'
-            + ('#292929' if dark else '#ffffff')
-            + ';border:none;border-radius:5px;}'
+            '#changePairPanel {border:1px solid ' + colors.border + ';border-radius:7px;}'
+            '#compactChangeCard {background:' + colors.control + ';border:none;border-radius:5px;}'
         )
         for group in self.groups.values():
             group.avatar.setStyleSheet('color:' + foreground.name() + ';background:transparent;')

@@ -219,9 +219,8 @@ impl Problem {
             || !(1..=8).contains(&roles.len())
             || records.len() > 20_000
             || !seconds.is_finite()
-            || !(0.0..=120.0).contains(&seconds)
-            || seconds == 0.0
-            || !(1..=5_000_000).contains(&max_nodes)
+            || seconds <= 0.0
+            || max_nodes == 0
         {
             return Err(error("配装档案、规模或预算错误"));
         }

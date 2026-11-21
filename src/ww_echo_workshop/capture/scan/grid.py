@@ -1,7 +1,32 @@
 # 测量背包可见网格、选框与排序方向。
 from dataclasses import replace
+from itertools import chain
 from ww_echo_workshop.capture.viewport import EchoViewport
 from .models import BagGrid, ScanTile
+
+
+def _scroll_thumb(image, width, pad):
+    import numpy as np
+
+    h = image.shape[0]
+    rail_x, top = round(width * 0.642), round(h * 0.12)
+    rail = image[top : round(h * 0.85), rail_x - pad : rail_x + pad + 1]
+    bright = (rail.min(axis=2) > 170).sum(axis=1) >= max(2, pad // 2)
+    indices = np.flatnonzero(bright)
+    runs = np.split(indices, np.flatnonzero(np.diff(indices) > 1) + 1) if len(indices) else []
+    knobs = [r for r in runs if 0.01 * h <= len(r) <= 0.045 * h]
+    if len(knobs) != 1:
+        return None, False
+    knob = knobs[0]
+    return (top + float(knob.mean())) / h, top + int(knob[-1]) >= h * 0.839
+
+
+def bag_scrollbar(frame, viewport):
+    """Read the measured thumb without refitting grid borders or reading OCR."""
+    area = EchoViewport.checked(viewport, frame.shape[1], frame.shape[0])
+    image = frame[area.y : area.y + area.height, area.x : area.x + area.width, :3]
+    pad = max(3, int(area.height * 0.006 + 0.999))
+    return _scroll_thumb(image, area.reference_width, pad)[0]
 
 
 class BagGridDetector:
@@ -14,103 +39,11 @@ class BagGridDetector:
 
     def __init__(self):
         self._geometry = None
-        self._last_grid = None
-
-    def observe_cached(self, frame, viewport, *, context=()):
-        """Measure fresh small border/rail patches against this batch's lattice.
-
-        No contour fitting in the normal path. A missing/translated border or
-        rail change returns unknown so the caller performs a full measurement.
-        Cached coordinates never substitute for current-frame evidence.
-        """
-        import cv2
-        import numpy as np
-
-        previous = self._last_grid
-        if previous is None or len(previous.tiles) != 18:
-            return None
-        area = EchoViewport.checked(viewport, frame.shape[1], frame.shape[0])
-        if area.bounds != previous.viewport or tuple(context) != previous.context:
-            return None
-        h, w = area.height, area.reference_width
-        pad = max(3, int(h * 0.006 + 0.999))
-        image = frame[area.y : area.y + h, area.x : area.x + round(w), :3]
-        rail_x = round(w * 0.642)
-        rail = image[round(h * 0.12) : round(h * 0.85), rail_x - pad : rail_x + pad + 1]
-        bright = (rail.min(axis=2) > 170).sum(axis=1) >= max(2, pad // 2)
-        indices = np.flatnonzero(bright)
-        runs = np.split(indices, np.flatnonzero(np.diff(indices) > 1) + 1) if len(indices) else []
-        knobs = [r for r in runs if 0.01 * h <= len(r) <= 0.045 * h]
-        scrollbar = (round(h * 0.12) + float(np.mean(knobs[0]))) / h if len(knobs) == 1 else None
-        bottom = len(knobs) == 1 and round(h * 0.12) + int(knobs[0][-1]) >= h * 0.839
-        if (
-            bottom != previous.bottom_confirmed
-            or (scrollbar is None) != (previous.scrollbar is None)
-            or (scrollbar is not None and abs(scrollbar - previous.scrollbar) >= 0.003)
-        ):
-            return None
-        selected = []
-        tiles = []
-        top_shifts = {row: [] for row in range(3)}
-        # Side patches are small, but include enough context for Canny. Gold
-        # is checked on both sides so rarity stripes cannot imply selection.
-        for tile in previous.tiles:
-            ax, ay, cw, ch = tile.bounds
-            x, y = ax - area.x, ay - area.y
-            is_selected = True
-            for edge_x in (x, x + cw):
-                patch = image[y + pad : y + ch - pad, edge_x - 2 * pad : edge_x + 2 * pad + 1]
-                if patch.shape[:2] != (ch - 2 * pad, 4 * pad + 1):
-                    return None
-                edge = cv2.Canny(cv2.cvtColor(patch, cv2.COLOR_BGR2GRAY), 15, 45)
-                if (edge[:, pad : 3 * pad + 1].max(axis=1) > 0).mean() <= 0.55:
-                    return None
-                gold = cv2.inRange(
-                    cv2.cvtColor(patch, cv2.COLOR_BGR2HSV), (15, 60, 160), (40, 255, 255)
-                )
-                is_selected = is_selected and (gold.max(axis=1) > 0).mean() > 0.60
-            if is_selected:
-                selected.append((tile.row, tile.column))
-            else:
-                # Central top edge excludes portrait corners and selected glow.
-                top = image[
-                    y - 2 * pad : y + 2 * pad + 1, x + round(cw * 0.2) : x + round(cw * 0.8)
-                ]
-                if top.shape[0] != 4 * pad + 1:
-                    return None
-                edges = cv2.Canny(cv2.cvtColor(top, cv2.COLOR_BGR2GRAY), 15, 45)
-                strengths = (edges > 0).mean(axis=1)
-                hits = np.flatnonzero(strengths > 0.70)
-                if len(hits):
-                    shift = float(hits[np.argmin(abs(hits - 2 * pad))] - 2 * pad)
-                    if abs(shift) > max(2, round(h * 0.004)):
-                        return None
-                    top_shifts[tile.row].append(shift)
-            body = image[
-                y + round(ch * 0.18) : y + round(ch * 0.65),
-                x + round(cw * 0.2) : x + round(cw * 0.8),
-            ]
-            signature = tuple(
-                int(v) for v in cv2.resize(body, (8, 8), interpolation=cv2.INTER_AREA).ravel()
-            )
-            tiles.append(replace(tile, signature=signature))
-        if any(len(shifts) < 4 for shifts in top_shifts.values()):
-            return None
-        grid = replace(
-            previous,
-            tiles=tuple(tiles),
-            selected=selected[0] if len(selected) == 1 else None,
-            scrollbar=scrollbar,
-            bottom_confirmed=bottom,
-        )
-        self._last_grid = grid
-        return grid
 
     def detect(self, frame, viewport=None, *, context=()):
         import cv2
         import numpy as np
 
-        self._last_grid = None
         if frame is None or frame.ndim != 3 or frame.shape[2] < 3:
             return None
         fh, fw = frame.shape[:2]
@@ -122,13 +55,7 @@ class BagGridDetector:
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         pad = max(3, int(h * 0.006 + 0.999))
         rail_x = round(w * 0.642)
-        rail = image[round(h * 0.12) : round(h * 0.85), rail_x - pad : rail_x + pad + 1]
-        bright = (rail.min(axis=2) > 170).sum(axis=1) >= max(2, pad // 2)
-        indices = np.flatnonzero(bright)
-        runs = np.split(indices, np.flatnonzero(np.diff(indices) > 1) + 1) if len(indices) else []
-        knobs = [r for r in runs if 0.01 * h <= len(r) <= 0.045 * h]
-        scrollbar = (round(h * 0.12) + float(np.mean(knobs[0]))) / h if len(knobs) == 1 else None
-        bottom = len(knobs) == 1 and round(h * 0.12) + int(knobs[0][-1]) >= h * 0.839
+        scrollbar, bottom = _scroll_thumb(image, w, pad)
         contrast = (gray[:, rail_x - pad * 3].astype(float) + gray[:, rail_x + pad * 3]) / 2 - gray[
             :, rail_x
         ]
@@ -291,8 +218,50 @@ class BagGridDetector:
             bottom,
             single_page,
         )
-        self._last_grid = grid
         return grid
+
+
+def wheel_hover_point(grid):
+    """Pick an interior gap between measured neighboring cards, never a guess."""
+    if len(grid.viewport) != 4:
+        return None
+    vx, vy, width, height = grid.viewport
+    margin = max(5, round(height * 0.005))
+    rows = grid.rows()
+    horizontal = (
+        (first, second, 0)
+        for row in rows
+        for first, second in zip(row, row[1:])
+        if second.column == first.column + 1
+    )
+    vertical = (
+        (first, second, 1)
+        for upper, lower in zip(rows, rows[1:])
+        for first in upper
+        for second in lower
+        if second.row == first.row + 1 and second.column == first.column
+    )
+
+    for first, second, axis in chain(horizontal, vertical):
+        a, b = first.bounds, second.bounds
+        cross = 1 - axis
+        gap = a[axis] + a[axis + 2], b[axis]
+        shared = max(a[cross], b[cross]), min(a[cross] + a[cross + 2], b[cross] + b[cross + 2])
+        if gap[1] - gap[0] < 2 * margin or shared[1] - shared[0] < 2 * margin:
+            continue
+        along, across = sum(gap) // 2, sum(shared) // 2
+        x, y = (along, across) if axis == 0 else (across, along)
+        if not (
+            vx + margin <= x <= vx + width - margin and vy + margin <= y <= vy + height - margin
+        ):
+            continue
+        if any(
+            left - margin < x < left + w + margin and top - margin < y < top + h + margin
+            for left, top, w, h in (tile.bounds for tile in grid.tiles)
+        ):
+            continue
+        return x, y
+    return None
 
 
 def bag_sort_direction(frame, viewport):

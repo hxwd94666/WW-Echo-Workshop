@@ -2,15 +2,19 @@
 from ok import og
 from ww_echo_workshop.capture.viewport import EchoViewport
 from ww_echo_workshop.capture.scan.grid import bag_sort_direction
+from ww_echo_workshop.capture.scan.scroll_receipt import (
+    FixedScrollBatch,
+    ROWS_PER_BATCH,
+    WHEEL_INTERVAL,
+    WHEEL_SETTLE,
+)
 
 
 class ScanInput:
-    def _fresh(
-        self, *, allow_paused=False, require_grid=True, observation_only=False, predicate=None
-    ):
+    def _fresh(self, *, require_grid=True, predicate=None):
         # A bounded fresh-frame wait, including after menu/scroll animation.
         for _ in range(5):
-            observed = self._observe(allow_paused=allow_paused, observation_only=observation_only)
+            observed = self._observe()
             if (
                 observed is not None
                 and (observed[-1] is not None or not require_grid)
@@ -71,10 +75,12 @@ class ScanInput:
             return label is not None and str(label.name).strip() in ('等级顺序', 'Level Order')
 
         self.log_info('扫描准备：确认背包列表和排序')
-        self.log_info('扫描输入：前台原生；连续5次24下、第6次25下；固定点击位置')
+        self.log_info('扫描输入：前台原生；每批三行，连续5批24格、第6批25格；固定滚轮及点击点位')
         observed = self._fresh()
         if observed is None:
             return fail('背包列表未识别；请打开背包并回到顶部')
+        if not observed[-1].at_top:
+            return fail('请将声骸背包拉至顶部，再开始扫描')
         # Warm the shared selected-panel/icon path before the first input. This
         # never commits the observation and never fetches remote resources.
         prepared = self._scan_parser.read_record(
@@ -91,11 +97,6 @@ class ScanInput:
         if box is None:
             return fail('排序按钮未识别；请关闭遮挡背包的窗口后重试')
         if not is_level(observed) or self._sort_box(observed, menu=True) is not None:
-            # Re-selecting the active sort can leave the game menu open. Its
-            # dismissal is not proof of a successful sort. Verify the label,
-            # explicitly select the first previously detected tile, then wait
-            # for the closed menu and selected grid on new captured frames.
-            first = min(observed[-1].tiles, key=lambda tile: (tile.row, tile.column))
             if self._sort_box(observed, menu=True) is None:
                 if not self._click_checked(
                     (round(box.x + box.width / 2), round(box.y + box.height / 2))
@@ -113,18 +114,31 @@ class ScanInput:
                 (round(box.x + box.width / 2), round(box.y + box.height / 2))
             ):
                 return None
-            self.log_info('扫描准备：选中第一件声骸并关闭排序菜单')
-            if not self._click_checked(first.center):
-                return None
             observed = self._fresh(
-                predicate=lambda view: (
-                    is_level(view)
-                    and self._sort_box(view, menu=True) is None
-                    and view[-1].selected == (0, 0)
-                )
+                predicate=lambda view: is_level(view) or self._sort_box(view, menu=True) is not None
             )
-            if observed is None:
-                return fail('等级排序或第一件声骸未确认；请回到背包顶部重试')
+            if observed is None or not observed[-1].at_top:
+                return fail('排序后未确认列表顶部；请切换等级排序并回到顶部重试')
+            if self._sort_box(observed, menu=True) is not None:
+                # Some host/game versions keep the menu open. Only use a
+                # fresh, measured top slot above the menu to dismiss it.
+                first = min(observed[-1].tiles, key=lambda tile: (tile.row, tile.column))
+                _, top, _, height = observed[3]
+                if first.row != 0 or first.center[1] >= top + height * 0.52:
+                    return fail('排序菜单遮挡列表；请手动关闭菜单后重试')
+                self.log_info('扫描准备：使用排序后实测首格关闭菜单')
+                if not self._click_checked(first.center):
+                    return None
+                observed = self._fresh(
+                    predicate=lambda view: (
+                        is_level(view)
+                        and view[-1].at_top
+                        and self._sort_box(view, menu=True) is None
+                        and view[-1].selected == (first.row, first.column)
+                    )
+                )
+                if observed is None:
+                    return fail('等级排序或第一件声骸未确认；请回到背包顶部重试')
         else:
             self.log_info('扫描准备：已是等级排序，直接检查降序')
         direction = bag_sort_direction(observed[0], observed[3])
@@ -136,7 +150,10 @@ class ScanInput:
                 return None
             observed = self._fresh(
                 predicate=lambda view: (
-                    is_level(view) and bag_sort_direction(view[0], view[3]) == 'descending'
+                    is_level(view)
+                    and view[-1].at_top
+                    and self._sort_box(view, menu=True) is None
+                    and bag_sort_direction(view[0], view[3]) == 'descending'
                 )
             )
         if observed is None or bag_sort_direction(observed[0], observed[3]) != 'descending':
@@ -146,7 +163,7 @@ class ScanInput:
 
     def _move_scan_pointer(self, x, y):
         """Reuse the host's real-pointer move, never switch its global backend."""
-        if not self._guard():
+        if not self._guard('input'):
             return False
         from types import SimpleNamespace
         from ok.device.interaction_methods.pydirect import PyDirectInteraction
@@ -154,30 +171,24 @@ class ScanInput:
         # The host move checks clickable and converts captured pixels through
         # capture.get_abs_cords. No interaction construction/on_run, activation,
         # input blocking or global FAILSAFE/config mutation is performed here.
-        adapter = SimpleNamespace(capture=og.device_manager.capture_method, clickable=self._guard)
+        adapter = SimpleNamespace(
+            capture=og.device_manager.capture_method, clickable=lambda: self._guard('input')
+        )
         PyDirectInteraction.move(adapter, x, y)
-        return self._guard()
+        return self._guard('input')
 
     def _send_scan_wheel(self, x, y, count):
         """One native wheel step, guarded again after establishing real hover."""
-        if not self._guard():
+        if not self._guard('input'):
             return False
         import mouse
 
         if self._mouse_button_busy(mouse):
             return False
         absolute = og.device_manager.capture_method.get_abs_cords(x, y)
-        position = mouse.get_position()
-        if max(abs(a - b) for a, b in zip(absolute, position)) > 5:
-            if not self._move_scan_pointer(x, y):
-                return False
-            position = mouse.get_position()
-            if max(abs(a - b) for a, b in zip(absolute, position)) > 5:
-                self._scan.pause('鼠标正在操作，扫描已暂停；松开后继续')
-                self._active_runtime.capture.pause()
-                self._mouse_paused = True
-                return False
-        if not self._guard():
+        if not self._pointer_matches(mouse, absolute) and not self._move_scan_pointer(x, y):
+            return False
+        if not self._ready_for_mouse_input(mouse, absolute):
             return False
         mouse.wheel(count)
         self.executor.reset_scene()
@@ -190,7 +201,7 @@ class ScanInput:
         works. Do not change the configured host interaction for other tasks.
         Always release our button, including stop/focus-loss during the hold.
         """
-        if not self._guard():
+        if not self._guard('input'):
             return False
         import mouse
 
@@ -199,20 +210,12 @@ class ScanInput:
         if not self._move_scan_pointer(x, y):
             return False
         self.sleep(0.02)
-        if not self._guard():
+        if not self._guard('input'):
             return False
         absolute = og.device_manager.capture_method.get_abs_cords(x, y)
-        position = mouse.get_position()
-        if max(abs(a - b) for a, b in zip(absolute, position)) > 5:
-            if not self._move_scan_pointer(x, y):
-                return False
-            position = mouse.get_position()
-            if max(abs(a - b) for a, b in zip(absolute, position)) > 5:
-                self._scan.pause('鼠标正在操作，扫描已暂停；松开后继续')
-                self._active_runtime.capture.pause()
-                self._mouse_paused = True
-                return False
-        if not self._guard() or self._mouse_button_busy(mouse):
+        if not self._pointer_matches(mouse, absolute) and not self._move_scan_pointer(x, y):
+            return False
+        if not self._ready_for_mouse_input(mouse, absolute):
             return False
         try:
             mouse.press('left')
@@ -220,97 +223,129 @@ class ScanInput:
         finally:
             mouse.release('left')
             self.executor.reset_scene()
-        return self._guard()
-
-    def _mouse_button_busy(self, mouse):
-        if mouse.is_pressed('left') or mouse.is_pressed('right'):
-            self._scan.pause('鼠标正在操作，扫描已暂停；松开后继续')
-            self._active_runtime.capture.pause()
-            self._mouse_paused = True
-            return True
-        return False
+        return self._guard('input')
 
     @staticmethod
-    def _wheel_point(grid, area):
-        # Stay inside the scrollable list, but between cards: hovering a card
-        # changes its highlight and can spoil the overlap signature afterward.
+    def _pointer_matches(mouse, absolute):
+        return max(abs(a - b) for a, b in zip(absolute, mouse.get_position())) <= 5
+
+    def _ready_for_mouse_input(self, mouse, absolute):
+        # The foreground probe and pointer move can take long enough for
+        # the user to have moved or pressed a button since the first check.
+        if not self._guard('input') or self._mouse_button_busy(mouse):
+            return False
+        if self._pointer_matches(mouse, absolute):
+            return True
+        self._pause_for_mouse()
+        return False
+
+    def _pause_for_mouse(self):
+        self._scan.pause('鼠标正在操作，扫描已暂停；松开后继续', generation=self._generation)
+        self._active_runtime.capture.pause(generation=self._generation)
+        self._mouse_paused = True
+
+    def _mouse_button_busy(self, mouse):
+        busy = mouse.is_pressed('left') or mouse.is_pressed('right')
+        if busy:
+            self._pause_for_mouse()
+        return busy
+
+    @staticmethod
+    def _fixed_wheel_point(grid, area):
         rows = grid.rows()
         if len(rows) >= 2 and len(rows[0]) >= 2:
             left, right = rows[0][:2]
             below = rows[1][0]
-            x = round((left.bounds[0] + left.bounds[2] + right.bounds[0]) / 2)
-            y = round((left.bounds[1] + left.bounds[3] + below.bounds[1]) / 2)
-            if (
-                right.bounds[0] > left.bounds[0] + left.bounds[2]
-                and below.bounds[1] > left.bounds[1] + left.bounds[3]
-            ):
-                return x, y
-        return (area.x + round(area.reference_width * 0.40), area.y + round(area.height * 0.50))
+            right_edge, bottom_edge = left.bounds[0] + left.bounds[2], left.bounds[1] + left.bounds[3]
+            if right.bounds[0] > right_edge and below.bounds[1] > bottom_edge:
+                return round((right_edge + right.bounds[0]) / 2), round(
+                    (bottom_edge + below.bounds[1]) / 2
+                )
+        return area.x + round(area.reference_width * 0.40), area.y + round(area.height * 0.50)
 
-    def _scroll_batch(self, observed):
-        from ww_echo_workshop.capture.scan.levels import wheel_count
+    @staticmethod
+    def _fixed_slot_points(grid, area):
+        rows = grid.rows()
+        first = rows[0][0]
+        x, y = first.center
+        dx = rows[0][1].bounds[0] - first.bounds[0] if len(rows[0]) > 1 else round(
+            area.height * 0.1633
+        )
+        dy = rows[1][0].bounds[1] - first.bounds[1] if len(rows) > 1 else round(
+            area.height * 0.196
+        )
+        return {
+            (row, col): (x + col * dx, y + row * dy)
+            for row in range(ROWS_PER_BATCH)
+            for col in range(6)
+        }
+
+    def _click_scan_slot(self, tile):
+        point = self._slot_points.get((tile.row, tile.column))
+        x, y, width, height = tile.bounds
+        if point is None or not (x < point[0] < x + width and y < point[1] < y + height):
+            self._scan.stop('背包卡片偏离固定点击点位；请重新扫描', generation=self._generation)
+            return False
+        return self._click_checked(point, settle=0.02)
+
+    def _scroll_batch(self, observed=None):
+        from ww_echo_workshop.capture.scan.levels import page_content
 
         if self._pending_scroll is None:
             self._scroll_batches += 1
-            self._pending_scroll = [self._scroll_batches, wheel_count(self._scroll_batches), 0]
-        batch, steps, sent = self._pending_scroll
+            self._pending_scroll = FixedScrollBatch(self._fixed_grid, self._scroll_batches)
+        batch = self._pending_scroll
         self._scan_job.stage('scrolling')
-        point = self._wheel_point(self._fixed_grid, self._fixed_area)
-        for _ in range(steps - sent):
-            while True:
-                observed = self._scroll_ready(observed)
-                if observed is None:
+
+        def pause(message):
+            if self._scan.status.state == 'running':
+                self._scan.pause(message, generation=self._generation)
+                self._active_runtime.capture.pause(generation=self._generation)
+
+        token = observed[1] if observed is not None else self._last_token
+        if batch.remaining:
+            while batch.remaining:
+                if not self._guard() or not self._send_scan_wheel(*self._wheel_position, -1):
                     return
-                if self._move_scan_pointer(*point) and self._send_scan_wheel(*point, -1):
-                    break
-                if self._scan.status.state != 'paused':
-                    return
-            # Pace individual notches so the game can consume each wheel event.
-            self._wheel_steps += 1
-            self._pending_scroll[2] += 1
-            self.sleep(0.08)
-        self.sleep(0.30)
-        observed = self._fresh()
+                batch.input_sent(token)
+                self._wheel_steps += 1
+                self.sleep(WHEEL_INTERVAL)
+            self.sleep(WHEEL_SETTLE)
+        observed = self._fresh(predicate=lambda view: batch.settled(view[-1]))
         if observed is None:
+            batch.require_observation()
+            pause('固定滚动后的列表未确认；请勿移动列表，已收录记录保留')
             return
-        self._scan.fixed_next_page(observed[-1])
+        destination = observed[-1]
+        if batch.incomplete_turn(destination):
+            self._scan.stop('固定滚动未翻满三行；请从列表顶部重新扫描', generation=self._generation)
+            return
+        if not self._guard() or not self._scan.accept_fixed_page(
+            batch.origin, destination, generation=self._generation
+        ):
+            return
+        self._fixed_grid = destination
+        self._page_signature = page_content(observed[0], destination.tiles)
+        self._page += 1
         self._submit_page_levels(observed)
         self._pending_scroll = None
         self._scan_job.stage(
-            'scanning', {'scroll_batches': batch, 'wheel_steps': self._wheel_steps}
+            'scanning', {'scroll_batches': self._scroll_batches, 'wheel_steps': self._wheel_steps}
         )
-        self.log_info(
-            '固定滚动完成：第'
-            + str(batch)
-            + '次；滚轮='
-            + str(steps)
-            + '；不进行金边、重叠或坐标校验'
-        )
+        self.log_info(f'固定滚动完成：第{batch.number}批；滚轮={batch.steps}；行偏移={ROWS_PER_BATCH}')
 
-    def _scroll_ready(self, observed):
-        # Keep already-sent wheel count in this loop, including pause/resume.
-        while not self._guard():
-            if (
-                self._destroyed
-                or self._active_runtime._closed
-                or self._active_runtime.stop_event.is_set()
-                or self.executor.exit_event.is_set()
-            ):
-                self._scan.stop('扫描已取消')
-                return None
-            if self._scan.status.state != 'paused':
-                return None
-            self._resume_fixed_if_requested()
-            self.sleep(0.05)
-        return observed
-
-    def _resume_fixed_if_requested(self):
+    def _resume_page_if_requested(self):
         if getattr(self, '_mouse_paused', False) and self._settings._game_foreground():
             import mouse
 
             if not mouse.is_pressed('left') and not mouse.is_pressed('right'):
-                self._scan.resume_requested = True
+                self._scan.request_resume(generation=self._generation)
                 self._mouse_paused = False
-        if self._scan.resume_requested and self._guard(allow_paused=True):
-            if self._scan.resume(self._fixed_grid):
-                self._active_runtime.capture.resume()
+        if not self._scan.resume_requested or self._observe(operation='resume') is None:
+            return False
+        if not self._guard('resume') or not self._scan.resume(generation=self._generation):
+            return False
+        if self._pending_scroll is not None:
+            self._pending_scroll.require_observation()
+        self._active_runtime.capture.resume(generation=self._generation)
+        return True

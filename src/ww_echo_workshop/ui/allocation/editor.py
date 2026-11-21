@@ -21,7 +21,8 @@ from PySide6.QtWidgets import (
     QListWidgetItem,
     QSizePolicy,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, LineEdit, FluentIcon, PushButton
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, standard_icon
+from PySide6.QtWidgets import QPushButton
 from ww_echo_workshop.ui.widgets.inputs import QComboBox, QDoubleSpinBox, QSpinBox
 from ww_echo_workshop.core.costs import read_cost_layout
 from ww_echo_workshop.ui.allocation.costs import CostLayoutPicker
@@ -46,9 +47,9 @@ class RoleOptionalSection(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
-        self.toggle = PushButton(title, self)
+        self.toggle = QPushButton(title, self)
         self.toggle.setCheckable(True)
-        self.toggle.setIcon(FluentIcon.CHEVRON_DOWN_MED)
+        self.toggle.setIcon(standard_icon('SP_ArrowDown'))
         self.content = QWidget(self)
         self.content_layout = QVBoxLayout(self.content)
         self.content_layout.setContentsMargins(0, 0, 0, 0)
@@ -60,7 +61,9 @@ class RoleOptionalSection(QWidget):
 
     def _show_content(self, expanded):
         self.content.setVisible(expanded)
-        self.toggle.setIcon(FluentIcon.UP if expanded else FluentIcon.CHEVRON_DOWN_MED)
+        self.toggle.setIcon(
+            standard_icon('SP_ArrowUp') if expanded else standard_icon('SP_ArrowDown')
+        )
 
 
 class RoleSonataChoice(QWidget):
@@ -75,7 +78,7 @@ class RoleSonataChoice(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
-        self.search = LineEdit(self)
+        self.search = QLineEdit(self)
         self.search.setPlaceholderText('搜索套装 · 支持拼音 / 首字母')
         self.search.setClearButtonEnabled(True)
         self.table = QListWidget(self)
@@ -147,7 +150,7 @@ class RoleEditorUX:
         layout.addWidget(self.surface)
         self.role_avatar = QLabel(self.surface.header)
         self.role_avatar.setFixedSize(36, 36)
-        self.role_title = BodyLabel('角色配装要求', self.surface.header)
+        self.role_title = QLabel('角色配装要求', self.surface.header)
         self.role_title.setMinimumWidth(0)
         self.role_title.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         self.surface.header_layout.addWidget(self.role_avatar)
@@ -158,7 +161,7 @@ class RoleEditorUX:
         self.error.setMinimumWidth(0)
         self.error.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
         left, right = self.surface.role_layout, self.surface.calculation_layout
-        left.addWidget(BodyLabel('角色与套装', self))
+        left.addWidget(QLabel('角色与套装', self))
         self.template = IdentityCombo(self)
         self.template_positions = {}
         for label, (character, modal, _) in snapshot.options.items():
@@ -192,7 +195,7 @@ class RoleEditorUX:
             default_counts = default_sets(key[0], defaults)
         self.element.setCurrentIndex(self.element.findData(rule.element if rule else ''))
         self.element.hide()  # 保留已保存属性与资料自动推导，不提供重复编辑栏。
-        self.weight_options = PushButton('编辑模版权重', self)
+        self.weight_options = QPushButton('编辑模版权重', self)
         self.weight_options.clicked.connect(self._configure_weights)
         form.addRow(self.weight_options)
         self._sync_element()
@@ -239,7 +242,7 @@ class RoleEditorUX:
         self.set_controls.load(
             rule.sonatas if rule else (), role.set_requirements if role else default_counts
         )
-        left.addWidget(BodyLabel('套装配置', self))
+        left.addWidget(QLabel('套装配置', self))
         left.addWidget(self.set_controls)
         self.sonata_effects_picker = SonataEffectsPicker(self)
         self.sonata_effects_picker.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
@@ -477,7 +480,7 @@ class RoleEditorUX:
                 pixmap.scaled(36, 36, Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
         else:
-            self.role_avatar.setPixmap(FluentIcon.PEOPLE.icon().pixmap(30, 30))
+            self.role_avatar.setPixmap(standard_icon('SP_FileDialogInfoView').pixmap(30, 30))
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -519,11 +522,10 @@ class RoleEditorUX:
             self._syncing = False
 
     def _configure_weights(self):
-        from ww_echo_workshop.ui.widgets.template_weights import open_template_weights
-
         try:
-            task = getattr(self.parentWidget(), 'task', None)
-            open_template_weights(task, self.template.currentData())
+            if self._edit_weights is None:
+                raise ValueError('请在声骸工坊中编辑模版权重。')
+            self._edit_weights(self.template.currentData())
         except (ValueError, KeyError) as error:
             self.error.setText(str(error))
 
@@ -729,13 +731,16 @@ class RoleEditorContent(RoleEditorUX):
         seed_key=None,
         seed_rule=None,
         evidence=None,
+        edit_weights=None,
+        panel_service=None,
     ):
         super().__init__(parent)
+        self._edit_weights = edit_weights
+        self._panel_service = panel_service
         self.build_role_editor(snapshot, catalog, role, seed_key, seed_rule, evidence)
 
     def _base_energy(self, character, weapon_id):
-        runtime = getattr(self.parentWidget(), 'runtime', None)
-        service = getattr(runtime, 'panel', None)
+        service = self._panel_service
         if service is None:
             return 100.0
         try:

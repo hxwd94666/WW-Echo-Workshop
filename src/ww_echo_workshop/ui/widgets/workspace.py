@@ -18,7 +18,8 @@ from ww_echo_workshop.ui.allocation.panel_view import (
 from PySide6.QtCore import QModelIndex, Qt, Signal, Slot
 from PySide6.QtGui import QColor, QPalette, QStandardItem, QStandardItemModel
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-from qfluentwidgets import CaptionLabel, isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
 
 
 class BriefStatus(CaptionLabel):
@@ -99,6 +100,7 @@ class LoadoutCardDelegate(RatedCardDelegate):
             panel,
             option.font,
             bool(option.state & QStyle.State_Selected),
+            widget=option.widget,
         )
 
 
@@ -148,15 +150,15 @@ class LoadoutCards(QWidget):
         self._completed = frozenset()
         self.cards.selectionModel().currentChanged.connect(self.select_card)
         self.cards.pressed.connect(self._card_clicked)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeChangedFinished.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
 
     def update_theme(self, *_):
-        surface = '#202020' if isDarkTheme() else '#f9f9f9'
+        colors = colors_for_widget(self)
+        surface = colors.background
         palette = self.cards.palette()
         for role in (QPalette.WindowText, QPalette.Text):
-            palette.setColor(role, QColor('#f4f4f4' if isDarkTheme() else '#202020'))
+            palette.setColor(role, QColor(colors.text))
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, QColor(surface))
         self.setPalette(palette)

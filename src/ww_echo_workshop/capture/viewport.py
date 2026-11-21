@@ -5,6 +5,9 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 
 
+COMPARISON_SPLIT = 0.775
+
+
 @dataclass(frozen=True)
 class EchoViewport:
     x: int
@@ -48,7 +51,7 @@ class EchoViewport:
 
     def live_regions(self, layout=''):
         """Fixed panels for the last known page; fall back to full-panel OCR."""
-        if layout not in ('enhancement', 'single', 'display', 'tuning', 'comparison'):
+        if layout not in ('enhancement', 'single', 'display', 'bag', 'tuning', 'comparison'):
             return self.ocr_regions()
         if layout == 'comparison':
             return self.ocr_regions()
@@ -57,14 +60,14 @@ class EchoViewport:
             # cropping it made the score flip between current/reference.
             return self.ocr_regions()
         if layout in ('single', 'display', 'bag'):
-            return (
-                (
-                    self.x + round(self.width * 0.74),
-                    self.y + round(self.height * 0.12),
-                    round(self.width * 0.25),
-                    round(self.height * 0.36),
-                ),
-            )
+            right, _ = self.offset('right')
+            # Keep lower stats and owner markers as well as the header; a
+            # cropped main stat alone does not prove the whole detail is read.
+            x1 = round(right + self.reference_width * (0.665 if layout == 'bag' else 0.74))
+            x2 = round(right + self.reference_width * 0.995)
+            y1 = round(self.height * 0.08)
+            y2 = round(self.height * 0.93)
+            return ((x1, self.y + y1, x2 - x1, y2 - y1),)
         return self.ocr_regions()
 
     def ocr_regions(self):
@@ -77,6 +80,22 @@ class EchoViewport:
             (self.x, self.y, panel_width, self.height),
             (self.x + self.width - panel_width, self.y, panel_width, self.height),
         )
+
+    def cost_header_region(self, first_row_y, *, comparison=False, side='right'):
+        """Selected detail header above the first stat, in captured pixels."""
+        start, stop = (
+            (0.52, COMPARISON_SPLIT)
+            if comparison and side == 'left'
+            else (COMPARISON_SPLIT, 0.99)
+            if comparison
+            else (0.68, 0.99)
+        )
+        dx, dy = self.offset('right')
+        x1 = round(dx + self.reference_width * start)
+        x2 = round(dx + self.reference_width * stop)
+        y1 = dy + round(self.height * 0.08)
+        y2 = min(first_row_y, self.y + self.height)
+        return (x1, y1, x2 - x1, y2 - y1) if y2 > y1 else None
 
     def boxes(self, boxes, side):
         dx, dy = self.offset(side)
@@ -97,12 +116,15 @@ def detect_echo_viewport(frame):
     """
     import numpy as np  # Supplied by the host, not needed by portable core imports.
 
-    if frame is None or frame.ndim != 3 or frame.shape[2] < 3:
+    if getattr(frame, 'ndim', None) != 3 or frame.shape[2] < 3:
         return None
     h, w = frame.shape[:2]
     if h <= 0 or w <= 0:
         return None
     rgb = frame[:, :, :3]
+    # A non-black pixel on each outer edge already proves full-frame bounds.
+    if all(edge.max() > 3 for edge in (rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1])):
+        return (0, 0, w, h)
     rows = np.flatnonzero(rgb.max(axis=(1, 2)) > 3)
     cols = np.flatnonzero(rgb.max(axis=(0, 2)) > 3)
     if not len(rows) or not len(cols):

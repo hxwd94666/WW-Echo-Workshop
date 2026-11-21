@@ -44,9 +44,9 @@ class AllocationService:
         if (
             type(seconds) not in (int, float)
             or not math.isfinite(seconds)
-            or not 0 < seconds <= 120
+            or not seconds > 0
             or type(max_nodes) is not int
-            or not 1 <= max_nodes <= 5000000
+            or max_nodes < 1
         ):
             raise ValueError('搜索预算无效')
         if cancel_event is not None and cancel_event.is_set():

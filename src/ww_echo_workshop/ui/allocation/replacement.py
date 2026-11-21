@@ -13,15 +13,13 @@ from PySide6.QtWidgets import (
     QFrame,
     QWidget,
 )
-from qfluentwidgets import (
-    BodyLabel,
+from PySide6.QtWidgets import QLabel, QLineEdit, QPushButton
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import (
     CaptionLabel,
-    LineEdit,
     PrimaryPushButton,
-    PushButton,
     TitleLabel,
-    isDarkTheme,
-    qconfig,
+    is_dark_theme,
 )
 
 from ww_echo_workshop.ui.widgets.layout import fit_dialog
@@ -75,7 +73,7 @@ class ReplacementDialog(QDialog):
         self.setMinimumSize(760, 650)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 16, 20, 16)
-        heading = BodyLabel(f'{options.label} · 槽位 {options.slot_index + 1}', self)
+        heading = QLabel(f'{options.label} · 槽位 {options.slot_index + 1}', self)
         layout.addWidget(heading)
         note = CaptionLabel(f'同 COST {options.old_record.cost} 候选；其余四件保持不变。', self)
         layout.addWidget(note)
@@ -107,7 +105,7 @@ class ReplacementDialog(QDialog):
         self.delta = TitleLabel(self)
         self.delta.setWordWrap(True)
         detail.addWidget(self.delta)
-        self.original_total = BodyLabel(
+        self.original_total = QLabel(
             '原总分 ' + _score_text(options.source_total_cents, options.source_total_rating), self
         )
         self.original_total.setWordWrap(True)
@@ -132,17 +130,17 @@ class ReplacementDialog(QDialog):
         self.comparison_scroll.setWidget(comparison_body)
         layout.addWidget(self.comparison_scroll)
         search = QHBoxLayout()
-        self.search = LineEdit(self)
+        self.search = QLineEdit(self)
         self.search.setPlaceholderText('搜索声骸、套装或词条')
         self.search.textChanged.connect(self._search)
         search.addWidget(self.search, 1)
         self.count_label = CaptionLabel(self)
         search.addWidget(self.count_label)
-        self.all_button = PushButton('清空搜索', self)
+        self.all_button = QPushButton('清空搜索', self)
         self.all_button.clicked.connect(self.search.clear)
         search.addWidget(self.all_button)
         excluded = sum(not row.available for row in options.candidates)
-        self.unavailable_button = PushButton(f'显示不可用（{excluded}）', self)
+        self.unavailable_button = QPushButton(f'显示不可用（{excluded}）', self)
         self.unavailable_button.setCheckable(True)
         self.unavailable_button.setVisible(bool(excluded))
         self.unavailable_button.toggled.connect(lambda _: self._populate())
@@ -167,7 +165,7 @@ class ReplacementDialog(QDialog):
         footer.addWidget(
             CaptionLabel('应用仅预览；可另存备份，或明确设为当前配装后生效。', self), 1
         )
-        self.cancel_button = PushButton('取消', self)
+        self.cancel_button = QPushButton('取消', self)
         self.cancel_button.clicked.connect(self.reject)
         footer.addWidget(self.cancel_button)
         self.apply_button = PrimaryPushButton('应用预览', self)
@@ -175,8 +173,7 @@ class ReplacementDialog(QDialog):
         footer.addWidget(self.apply_button)
         layout.addLayout(footer)
         self._populate()
-        qconfig.themeChanged.connect(self._update_theme)
-        qconfig.themeChangedFinished.connect(self._update_theme)
+        watch_theme(self, self._update_theme)
         self._update_theme()
         fit_dialog(self, 1100, 820)
 
@@ -189,8 +186,9 @@ class ReplacementDialog(QDialog):
             self.comparison_scroll.setMaximumHeight(max(120, min(370, (self.height() - 200) // 2)))
 
     def _update_theme(self, *_):
-        surface = QColor('#202020' if isDarkTheme() else '#fafafa')
-        foreground = QColor('#f4f4f4' if isDarkTheme() else '#202020')
+        colors = colors_for_widget(self)
+        surface = QColor(colors.panel)
+        foreground = QColor(colors.text)
         palette = self.palette()
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, surface)
@@ -220,12 +218,12 @@ class ReplacementDialog(QDialog):
         choice = self.selected_candidate()
         value = choice.delta_cents if choice is not None else None
         colour = (
-            ('#62d6a4' if isDarkTheme() else '#087b4b')
+            ('#62d6a4' if is_dark_theme(self) else '#087b4b')
             if value is not None and value > 0
             else (
-                ('#ff9292' if isDarkTheme() else '#c62828')
+                ('#ff9292' if is_dark_theme(self) else '#c62828')
                 if value is not None and value < 0
-                else ('#d4d4d4' if isDarkTheme() else '#555555')
+                else colors_for_widget(self).muted
             )
         )
         self.delta.setStyleSheet('color: ' + colour + '; font-weight: 600;')

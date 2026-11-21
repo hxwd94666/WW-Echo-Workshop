@@ -27,6 +27,15 @@ def rating_colour(rating, dark=False):
     return (DARK if dark else LIGHT).get(label, '#b7b7b7' if dark else '#656565')
 
 
+def dark_rating_rgb(rating):
+    if rating is None:
+        return None
+    colour = rating_colour(rating, True)
+    if not colour.startswith('#'):
+        return None
+    return tuple(int(colour[i : i + 2], 16) for i in (1, 3, 5))
+
+
 def score_text(points, rating=None, prefix=''):
     return prefix + f'{points:.2f}' + (f' · {rating.label}' if rating is not None else '')
 

@@ -3,18 +3,15 @@
 
 import logging
 from PySide6.QtWidgets import QFileDialog, QHBoxLayout, QMessageBox, QLineEdit
-from qfluentwidgets import CaptionLabel, PushButton
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
+from PySide6.QtWidgets import QPushButton
 from ww_echo_workshop.ui.widgets.inputs import QComboBox
 from ww_echo_workshop.ui.widgets.state import update_text, update_tooltip
 
 
 class ProfileManagementController:
     def build_profile_management(self, section):
-        from ww_echo_workshop.application.profiles import ProfileSettingsService
-
-        self.profile_settings = ProfileSettingsService(
-            self.task.config, self.runtime.inventory, self.runtime.data_dir
-        )
+        self.profile_settings = self.settings_services.profiles
         self._profile_job = None
         self._known_profiles = {}
         self._profile_rename_target = None
@@ -25,7 +22,7 @@ class ProfileManagementController:
         self.profile_manage_box.setToolTip('选择待管理档案；支持拼音搜索，不会切换当前使用的档案。')
         row = QHBoxLayout()
         row.addWidget(self.profile_manage_box, 1)
-        self.delete_profile_button = PushButton('删除档案', section.content)
+        self.delete_profile_button = QPushButton('删除档案', section.content)
         self.delete_profile_button.clicked.connect(self.delete_managed_profile)
         row.addWidget(self.delete_profile_button)
         section.content_layout.addLayout(row)
@@ -35,7 +32,7 @@ class ProfileManagementController:
         self.profile_rename_edit = QLineEdit(section.content)
         self.profile_rename_edit.setMaxLength(80)
         self.profile_rename_edit.setPlaceholderText('所选档案名称')
-        self.rename_profile_button = PushButton('重命名', section.content)
+        self.rename_profile_button = QPushButton('重命名', section.content)
         self.rename_profile_button.clicked.connect(self.rename_profile)
         row.addWidget(self.profile_rename_edit, 1)
         row.addWidget(self.rename_profile_button)
@@ -44,14 +41,14 @@ class ProfileManagementController:
         self.profile_name = QLineEdit(section.content)
         self.profile_name.setMaxLength(80)
         self.profile_name.setPlaceholderText('新档案名称')
-        self.create_profile_button = PushButton('新建档案', section.content)
+        self.create_profile_button = QPushButton('新建档案', section.content)
         self.create_profile_button.clicked.connect(self.create_profile)
         row.addWidget(self.profile_name, 1)
         row.addWidget(self.create_profile_button)
         section.content_layout.addLayout(row)
         row = QHBoxLayout()
-        self.export_profile_button = PushButton('导出此档案', section.content)
-        self.import_profile_button = PushButton('导入档案', section.content)
+        self.export_profile_button = QPushButton('导出此档案', section.content)
+        self.import_profile_button = QPushButton('导入档案', section.content)
         self.export_profile_button.clicked.connect(self.export_managed_profile)
         self.import_profile_button.clicked.connect(self.import_managed_profile)
         row.addWidget(self.export_profile_button)
@@ -60,34 +57,33 @@ class ProfileManagementController:
         section.content_layout.addLayout(row)
         self.profile_status = CaptionLabel(section.content)
         self.profile_status.setWordWrap(True)
-        old = self.proxy.inventory_window.backup_label
+        old = self.inventory_page.backup_label
         old.hide()
         section.content_layout.addWidget(self.profile_status)
         self.profile_status.hide()
-        section.content_layout.addWidget(self.proxy.inventory_window.cancel_backup_button)
-        self.proxy.inventory_window.cancel_backup_button.hide()
+        section.content_layout.addWidget(self.inventory_page.cancel_backup_button)
+        self.inventory_page.cancel_backup_button.hide()
         self.data_location_hint = CaptionLabel('数据保存在本机', section.content)
         self.data_location_hint.setWordWrap(True)
         self.data_location_hint.setToolTip(
-            '插件更新会保留数据；重装或更换运行目录前请导出档案。\n' + str(self.runtime.data_dir)
+            '插件更新会保留数据；重装或更换运行目录前请导出档案。\n'
+            + str(self.profile_settings.data_dir)
         )
         section.content_layout.addWidget(self.data_location_hint)
         self.profile_manage_box.currentIndexChanged.connect(self._sync_profile_editor)
-        self.proxy.inventory_window.profile_box.currentIndexChanged.connect(
-            self._sync_profile_editor
-        )
+        self.inventory_page.profile_box.currentIndexChanged.connect(self._sync_profile_editor)
         self._consume_delete_receipts()
         self._consume_profile_receipts()
         # Startup receipts can change the active ID even when the repository
         # catalog was already loaded. Project it onto the shared header too.
-        self._resync_profile_pages(self.proxy.inventory_window.profile_box.currentData())
+        self._resync_profile_pages(self.inventory_page.profile_box.currentData())
 
     def reload_managed_profiles(self, preferred=None, *, preserve_draft=False):
         selected = preferred or self.profile_manage_box.currentData()
         draft = self.profile_rename_edit.text()
         draft_identity = self._profile_rename_target
         has_draft = preserve_draft and draft != getattr(self, '_profile_rename_baseline', '')
-        profiles = self.runtime.inventory.profiles()
+        profiles = self.profile_settings.inventory.profiles()
         box = self.profile_manage_box
         blocked = box.blockSignals(True)
         box.clear()
@@ -97,7 +93,7 @@ class ProfileManagementController:
         box.setCurrentIndex(index if index >= 0 else 0)
         box.blockSignals(blocked)
         self._known_profiles = profiles
-        self._managed_profiles_revision = self.runtime.inventory.try_revision()
+        self._managed_profiles_revision = self.profile_settings.inventory.try_revision()
         self._sync_managed_editor(force=True)
         if has_draft and self.profile_manage_box.currentData() == draft_identity:
             self.profile_rename_edit.setText(draft)
@@ -117,7 +113,7 @@ class ProfileManagementController:
         combo = self.profile_manage_box
         identity = combo.currentData()
         name = self._known_profiles.get(identity, '')
-        active = self.proxy.inventory_window.profile_box.currentText()
+        active = self.inventory_page.profile_box.currentText()
         update_text(self.current_profile_label, '管理：' + name + ' · 当前：' + active)
         update_tooltip(
             self.current_profile_label, '此处选择待管理档案；在工坊顶部切换当前使用的档案。'
@@ -132,20 +128,20 @@ class ProfileManagementController:
             self._profile_rename_baseline = name
             update_text(self.profile_rename_edit, name)
             self._profile_rename_revision = (
-                self.runtime.inventory.try_revision() if revision is ... else revision
+                self.profile_settings.inventory.try_revision() if revision is ... else revision
             )
 
     def _refresh_managed_controls(self, reason, *, revision=...):
         if not hasattr(self, 'profile_manage_box'):
             return
         if revision is ...:
-            revision = self.runtime.inventory.try_revision()
+            revision = self.profile_settings.inventory.try_revision()
         if (
             not reason
             and revision is not None
             and revision != getattr(self, '_managed_profiles_revision', None)
         ):
-            profiles = self.runtime.inventory.profiles()
+            profiles = self.profile_settings.inventory.profiles()
             if profiles != self._known_profiles:
                 self._resync_profile_pages(
                     self.profile_manage_box.currentData(), preserve_draft=True
@@ -191,7 +187,7 @@ class ProfileManagementController:
         self._profile_message('操作未完成：' + str(error))
 
     def _profile_message(self, text):
-        self._profile_notice = (self.runtime.backups.status.job_id, text)
+        self._profile_notice = (self.settings_services.backups.status.job_id, text)
         self.profile_status.setText(text)
         self.profile_status.show()
 
@@ -206,7 +202,7 @@ class ProfileManagementController:
             if revision is None:
                 raise ValueError('声骸库正在读取，请稍后保存名称。')
             name = self.profile_rename_edit.text().strip()
-            changed = self.runtime.inventory.rename_profile(
+            changed = self.profile_settings.inventory.rename_profile(
                 identity, name, expected_revision=revision
             )
             boxes = [self.profile_manage_box]
@@ -225,7 +221,7 @@ class ProfileManagementController:
             self._profile_message('名称已保存，声骸和配装不变。' if changed else '名称未变化。')
         except (ValueError, OSError) as error:
             self._profile_action_error(error)
-            self._profile_rename_revision = self.runtime.inventory.try_revision()
+            self._profile_rename_revision = self.profile_settings.inventory.try_revision()
 
     def export_managed_profile(self):
         if not self._profile_action_ready():
@@ -259,12 +255,14 @@ class ProfileManagementController:
             return
         try:
             identity = self._managed_identity()
-            if len(self.runtime.inventory.profiles()) <= 1:
+            if len(self.profile_settings.inventory.profiles()) <= 1:
                 raise ValueError('请至少保留一个档案。')
-            revision = self.runtime.inventory.try_revision()
+            revision = self.profile_settings.inventory.try_revision()
             if revision is None:
                 raise ValueError('声骸库正在读取，请稍后删除。')
-            counts = self.runtime.inventory.profile_counts(identity, expected_revision=revision)
+            counts = self.profile_settings.inventory.profile_counts(
+                identity, expected_revision=revision
+            )
             answer = QMessageBox.question(
                 self,
                 '删除档案',
@@ -277,43 +275,45 @@ class ProfileManagementController:
                 return
             self._start_profile_job(
                 'profile-delete',
-                self.runtime.base_data_dir / 'deleted-profiles',
+                self.settings_services.deleted_profile_archives,
                 dict(profile_id=identity, expected_revision=revision),
             )
         except (ValueError, OSError) as error:
             self._profile_action_error(error)
 
     def _start_profile_job(self, kind, path, request):
-        job_id = self.runtime.backups.start(kind, path, workspace_request=request)
+        job_id = self.settings_services.backups.start(kind, path, workspace_request=request)
         self._profile_notice = None
         self._profile_job = (job_id, kind, str(path), request)
         self.refresh_profile_guard()
 
     def _apply_account_settings(self, settings=(), *, removed=None, active=None):
         return self.profile_settings.apply(
-            settings, removed=removed, active=active, cancel_event=self.runtime.stop_event
+            settings, removed=removed, active=active, cancel_event=self.settings_services.stop_event
         )
 
     def _repair_active_profile(self, profiles, preferred=None):
         return self.profile_settings.repair_active(
             profiles,
             preferred=preferred,
-            visible=self.proxy.inventory_window.profile_box.currentData(),
-            cancel_event=self.runtime.stop_event,
+            visible=self.inventory_page.profile_box.currentData(),
+            cancel_event=self.settings_services.stop_event,
         )
 
     def _consume_profile_receipts(self):
-        report = self.profile_settings.consume_import_receipts(cancel_event=self.runtime.stop_event)
+        report = self.profile_settings.consume_import_receipts(
+            cancel_event=self.settings_services.stop_event
+        )
         for message in report.deferred:
             self._profile_message(message)
         return report
 
     def _resync_profile_pages(self, selected, *, activate=False, preserve_draft=False):
-        profiles = self.runtime.inventory.profiles()
+        profiles = self.profile_settings.inventory.profiles()
         if not profiles:
             raise ValueError('请至少保留一个档案。')
-        current = selected if activate else self.task.config.get('InventoryProfileID')
-        inventory = self.proxy.inventory_window
+        current = selected if activate else self.profile_settings.active_id()
+        inventory = self.inventory_page
         if current not in profiles:
             visible = inventory.profile_box.currentData()
             current = visible if visible in profiles else next(iter(profiles))
@@ -363,7 +363,9 @@ class ProfileManagementController:
             self._profile_message('档案列表已同步；当前档案设置保存待重试：' + str(config_error))
 
     def _consume_delete_receipts(self):
-        report = self.profile_settings.consume_delete_receipts(cancel_event=self.runtime.stop_event)
+        report = self.profile_settings.consume_delete_receipts(
+            cancel_event=self.settings_services.stop_event
+        )
         for message in report.deferred:
             self._profile_message(message)
         return report
@@ -372,7 +374,7 @@ class ProfileManagementController:
         job = getattr(self, '_profile_job', None)
         if job is None:
             return
-        state = self.runtime.backups.status
+        state = self.settings_services.backups.status
         if state.busy:
             return
         if state.job_id != job[0]:
@@ -403,7 +405,7 @@ class ProfileManagementController:
                     QMessageBox.No,
                 )
                 if answer == QMessageBox.Yes and self._profile_action_ready():
-                    revision = self.runtime.inventory.try_revision()
+                    revision = self.profile_settings.inventory.try_revision()
                     if revision is None:
                         raise ValueError('声骸库正在读取，请稍后导入。')
                     self._start_profile_job(

@@ -137,7 +137,7 @@ class LivePolicyHintContract(unittest.TestCase):
         runtime = SimpleNamespace(policy=policy)
         hint = LivePolicyHint(debounce=0.3)
         self.assertIn(
-            '分析中', hint.observe(_analysis(), _settings(), Snapshot(), runtime, now=0.0)
+            '计算中', hint.observe(_analysis(), _settings(), Snapshot(), runtime, now=0.0)
         )
         text = hint.observe(_analysis(), _settings(), Snapshot(), runtime, now=1.0)
         self.assertIn('计算中', text)
@@ -194,6 +194,20 @@ class LivePolicyHintContract(unittest.TestCase):
         policy.future.set_result(_result())
         hint.observe(_analysis(5), _settings(), Snapshot(), runtime, now=0.2)
         self.assertEqual(len(policy.calls), 2)
+
+    def test_new_item_does_not_inherit_previous_advice_during_debounce(self):
+        policy = FakePolicy(_result())
+        runtime = SimpleNamespace(policy=policy)
+        hint = LivePolicyHint(debounce=0.3)
+        hint.observe(_analysis(2), _settings(), Snapshot(), runtime, now=0.0)
+        hint.observe(_analysis(2), _settings(), Snapshot(), runtime, now=0.31)
+        self.assertIn(
+            '继续强化', hint.observe(_analysis(2), _settings(), Snapshot(), runtime, now=0.32)
+        )
+        text = hint.observe(_analysis(5), _settings(), Snapshot(), runtime, now=0.40)
+        self.assertEqual('策略：计算中…', text)
+        self.assertIsNone(hint.last_result)
+        self.assertEqual(len(policy.calls), 1)
 
     def test_summary_appends_policy_lines(self):
         analysis = SimpleNamespace(
@@ -283,6 +297,49 @@ class LivePolicyHintContract(unittest.TestCase):
             ],
         )
         self.assertEqual(colours[-4], ((125, 211, 252),))
+
+    def test_header_and_row_budget_are_constant_even_with_one_comparison_side_missing(self):
+        analysis = SimpleNamespace(
+            current_score=21.0,
+            potential_score=30.0,
+            selected_template='测试模版',
+            summary='',
+            score_text='',
+            observed_cost=4,
+            rating_color=None,
+            layout='display',
+            comparison=True,
+        )
+        waiting, wait_colors = live_summary(analysis, policy_enabled=True)
+        ready, ready_colors = live_summary(
+            analysis,
+            analysis,
+            '策略：继续强化\n期望：10调',
+            '策略：已达标',
+            policy_enabled=True,
+        )
+        self.assertEqual(len(ready.splitlines()), len(waiting.splitlines()))
+        self.assertEqual(
+            waiting.splitlines().index('强化策略'), ready.splitlines().index('强化策略')
+        )
+        self.assertEqual(len(wait_colors), len(ready_colors))
+        self.assertIn('-- / 21.00', waiting)
+        self.assertEqual(
+            waiting.splitlines()[-4:],
+            ['左策略：计算中…', '期望：计算中…', '右策略：计算中…', '期望：计算中…'],
+        )
+        self.assertIn('期望：—', ready.splitlines())
+        blocked, _ = live_summary(
+            analysis, policy_text='策略：请先在设置目标分', policy_enabled=True
+        )
+        self.assertEqual(blocked.splitlines()[-2:], ['右策略：请先在设置目标分', '期望：—'])
+        self.assertNotIn('强化策略', live_summary(analysis, policy_enabled=False)[0])
+        analysis.current_score = None
+        identifying, _ = live_summary(analysis, policy_enabled=True)
+        self.assertIn('强化策略', identifying)
+        self.assertEqual(len(waiting.splitlines()), len(identifying.splitlines()))
+        analysis.layout = ''
+        self.assertEqual(('', ()), live_summary(analysis, policy_enabled=True))
 
     def test_request_uses_fixed_template_when_auto_match_disabled(self):
         policy = FakePolicy(_result())

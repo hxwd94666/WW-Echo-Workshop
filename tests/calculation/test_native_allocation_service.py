@@ -1,6 +1,7 @@
 # 验证生产配装门面的真实评分、达标重分配、预检和证据重验通路。
 import copy
 from dataclasses import asdict, replace
+import json
 from pathlib import Path
 import tempfile
 import threading
@@ -11,13 +12,17 @@ from unittest.mock import patch
 from uuid import UUID
 
 from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.allocation_jobs import AllocationJobs, AllocationScope
+from ww_echo_workshop.application.allocation_preferences import AllocationPreferences
 from ww_echo_workshop.application.compute_bridge import plain
 from ww_echo_workshop.application.compute_jobs import ComputeJobs
 from ww_echo_workshop.application.plan_jobs import PlanCommands
+from ww_echo_workshop.application.inventory_query import InventoryQueryService
 from ww_echo_workshop.application.scoring import ScoreService
 from ww_echo_workshop.core.allocation.models import AllocationCancelled, AllocationRequest, SlotRule
 from ww_echo_workshop.core.cancellation import OperationCancelled
 from ww_echo_workshop.core.models import StatValue
+from ww_echo_workshop.core.search_budget import SearchBudget
 from ww_echo_workshop.resources.weights import WeightSnapshot
 from tests.native_runtime import EchoRepository
 from tests.native_runtime import AllocationStore
@@ -68,6 +73,150 @@ class TestNativeAllocationService(unittest.TestCase):
         return self.service.solve(
             self.records, self.request, inventory_revision=7, snapshot=self.snapshot, **options
         )
+
+    def test_page_jobs_keep_scope_and_save_history_and_replacement_contracts(self):
+        with tempfile.TemporaryDirectory() as directory, EchoRepository(directory) as repository:
+            profile = repository.create_profile('离线配装作业')
+            records = tuple(
+                tuned(profile, item_id=str(UUID(int=2000 + index))) for index in range(6)
+            )
+            for record in records:
+                repository.add(record)
+            weights = WeightSnapshot.builtin()
+            queries = InventoryQueryService(compute=self.jobs)
+            store = AllocationStore(directory, plan_evaluator=self.service)
+            plans = PlanCommands(store, repository, allocation=self.service, queries=queries)
+            jobs = AllocationJobs(
+                repository,
+                queries,
+                self.service,
+                self.scores,
+                plans,
+                weight_snapshot=lambda: weights,
+                stop_event=threading.Event(),
+            )
+            spec = role('1304', slots=(SlotRule(1),) * 5, cost_budget=5)
+            request = AllocationRequest(profile, (spec,))
+            selected = [record.item_id for record in records[:5]]
+            scope = AllocationScope(21, selected, dict(cost=1), {}, {})
+            selected[:] = [records[-1].item_id]
+            found = jobs.search(request, weights, SearchBudget(), scope)
+            self.assertEqual((21, records[:5]), (found.scope_generation, found.records))
+            self.assertEqual(
+                {record.item_id for record in records[:5]}, set(found.result.roles[0].item_ids)
+            )
+            self.assertTrue(found.result.exhaustive)
+            self.assertEqual(1, len(found.change_details))
+            cancel = threading.Event()
+            cancel.set()
+            with self.assertRaises(OperationCancelled):
+                jobs.search(request, weights, SearchBudget(), scope, cancel_event=cancel)
+
+            rev = found.reservations.inventory_revision
+            args = dict(
+                profile_id=profile,
+                result=found.result,
+                records=found.records,
+                snapshot=weights,
+                _guard_revision=rev,
+                _guard_weight=weights.version,
+            )
+            before = repository.export_backup()
+            backup = jobs.plan('backup-loadout', args, scope)
+            self.assertEqual(before, repository.export_backup())
+            self.assertTrue(backup.committed)
+            saved = jobs.plan(
+                'save-loadout',
+                dict(
+                    args,
+                    expected_revision=rev,
+                    expected_loadout_revision=found.reservations.revision,
+                ),
+                scope,
+            )
+            self.assertIs(saved.current_committed, True)
+            self.assertEqual(1, len(saved.loadouts.current))
+            historical = jobs.plan(
+                'load', dict(profile_id=profile, plan_id=backup.payload['plan_id']), scope
+            )
+            self.assertEqual(backup.payload, historical.payload)
+            self.assertEqual(weights.to_dict(), historical.payload['weight_snapshot'])
+
+            live = repository.export_backup()
+            slot = 0
+            options = jobs.plan(
+                'replacement-candidates',
+                dict(
+                    payload=saved.payload,
+                    character_id=spec.character_id,
+                    slot_index=slot,
+                ),
+                scope,
+            ).payload
+            replacement = records[-1].item_id
+            preview = jobs.plan(
+                'preview-replacement', dict(options=options, item_id=replacement), scope
+            ).payload
+            expected = list(saved.payload['result']['roles'][0]['item_ids'])
+            expected[slot] = replacement
+            self.assertEqual(tuple(expected), preview.result.roles[0].item_ids)
+            self.assertEqual(live, repository.export_backup())
+            self.assertEqual(historical.payload, store.load(backup.payload['plan_id']))
+            committed = jobs.plan(
+                'save-loadout',
+                dict(
+                    profile_id=profile,
+                    result=preview.result,
+                    records=preview.records,
+                    snapshot=preview.snapshot,
+                    expected_revision=preview.inventory_revision,
+                    expected_loadout_revision=preview.loadout_revision,
+                    replace_plans={spec.character_id: saved.payload['plan_id']},
+                    _guard_weight=weights.version,
+                ),
+                scope,
+            )
+            self.assertIs(committed.current_committed, True)
+            self.assertEqual(expected, list(committed.loadouts.current[0]['item_ids']))
+            self.assertEqual(historical.payload, store.load(backup.payload['plan_id']))
+            print(
+                'ALLOCATION_PAGE_JOBS_OK: frozen5, saved-current, immutable-history, preview-only-slot'
+            )
+
+    def test_subset_draft_preserves_other_roles_priorities_and_budget(self):
+        first, second = role('1304'), role('1109')
+        saved = dict(
+            roles=[first.to_dict(), second.to_dict()],
+            priority_groups=[[list(first.key)], [list(second.key)]],
+            search_budget={'seconds': 17, 'nodes': 2222},
+        )
+        other = dict(roles=[], fully_tuned=False)
+        profile = self.request.profile_id
+        raw = json.dumps(dict(schema_version=1, profiles={profile: saved, 'other': other}))
+        written = []
+        preferences = AllocationPreferences(lambda: raw, written.append)
+        edited = replace(first, target=155)
+        preferences.save_draft(
+            profile,
+            roles=(edited,),
+            fully_tuned=True,
+            pending=(),
+            candidate_ids=(),
+            priority_groups=(),
+            subset_adjustment=True,
+            source_plan=True,
+            removed_role_ids=(),
+        )
+        self.assertEqual(1, len(written))
+        parsed = json.loads(written[0])['profiles']
+        self.assertEqual(other, parsed['other'])
+        draft = parsed[profile]
+        expected_role = json.loads(json.dumps(edited.to_dict()))
+        self.assertEqual(expected_role, draft['roles'][0])
+        self.assertEqual(json.loads(json.dumps(saved['roles'][1])), draft['roles'][1])
+        self.assertEqual(saved['priority_groups'], draft['priority_groups'])
+        self.assertEqual(saved['search_budget'], draft['search_budget'])
+        self.assertEqual([], draft['candidate_item_ids'])
 
     def test_gui_thread_does_not_submit_or_wait_for_native_search(self):
         token = object()

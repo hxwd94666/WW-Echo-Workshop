@@ -2,14 +2,17 @@
 from functools import lru_cache
 from pathlib import Path
 
-from PySide6.QtCore import QRectF, Qt
-from PySide6.QtGui import QIcon, QImage, QPixmap
-from qfluentwidgets import FluentIconBase, Theme, isDarkTheme
+from PySide6.QtCore import QCoreApplication
+from PySide6.QtGui import QGuiApplication, QIcon, QImage, QPixmap
+from ww_echo_workshop.ui.widgets.controls import is_dark_theme
+
+
+_ICON_PATH = str(Path(__file__).with_name('assets') / 'workshop.png')
 
 
 @lru_cache(maxsize=2)
 def _workshop_icon(dark):
-    image = QImage(str(Path(__file__).with_name('assets') / 'workshop.png'))
+    image = QImage(_ICON_PATH)
     if image.isNull():
         raise ValueError('声骸工坊图标资源缺失或损坏')
     if not dark:
@@ -18,18 +21,7 @@ def _workshop_icon(dark):
     return QIcon(QPixmap.fromImage(image))
 
 
-class WorkshopIcon(FluentIconBase):
-    """One shared mask, two cached theme palettes; no per-frame file reads."""
-
-    def icon(self, theme=Theme.AUTO, color=None):
-        dark = isDarkTheme() if theme == Theme.AUTO else theme == Theme.DARK
-        # 品牌图保留眼部与面部的明暗差，不将两者染成同一主题色。
-        return QIcon(_workshop_icon(dark))
-
-    def render(self, painter, rect, theme=Theme.AUTO, indexes=None, **attributes):
-        # 侧栏默认槽位为16像素，居中扩至20像素以接近相邻栏目图标。
-        bounds = QRectF(rect)
-        if 0 < min(bounds.width(), bounds.height()) <= 20:
-            extra = min(bounds.width(), bounds.height()) / 8
-            bounds.adjust(-extra, -extra, extra, extra)
-        self.icon(theme, attributes.get('fill')).paint(painter, bounds.toRect(), Qt.AlignCenter)
+def workshop_icon():
+    if not isinstance(QCoreApplication.instance(), QGuiApplication):
+        return QIcon()
+    return QIcon(_workshop_icon(is_dark_theme()))

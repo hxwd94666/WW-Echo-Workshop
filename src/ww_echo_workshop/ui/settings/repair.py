@@ -1,7 +1,10 @@
 # 展示控制记录修复预览并交由应用服务执行。
 """One emergency repair form, also available before runtime initialization."""
 
-from PySide6.QtCore import QTimer
+from collections.abc import Callable
+from dataclasses import dataclass
+
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
@@ -17,16 +20,19 @@ from ww_echo_workshop.ui.widgets.inputs import QComboBox
 from ww_echo_workshop.ui.settings.help import add_diagnostics
 
 
+@dataclass(frozen=True)
+class RepairControls:
+    service: RepairService
+    startup_error: str
+    available: Callable[[], bool]
+    prepare_apply: Callable[[], str]
+
+
 class ControlRepairContent:
-    def __init__(self, task, parent=None):
+    def __init__(self, controls: RepairControls, parent=None):
         super().__init__(parent)
-        self.task = task
-        runtime = task.runtime
-        self.service = RepairService(
-            task.config.config_file,
-            stop_event=runtime.stop_event if runtime is not None else None,
-            compute=runtime.compute if runtime is not None else None,
-        )
+        self.controls = controls
+        self.service = controls.service
         self.preview = None
         self.closed = False
         self._rendered_receipt = None
@@ -41,10 +47,10 @@ class ControlRepairContent:
         layout.addWidget(notice)
         self.state_label = QLabel(
             '插件启动遇到问题，请先预览。'
-            if task.startup_error
+            if controls.startup_error
             else '仅在遇到启动故障时使用此工具。'
         )
-        self.state_label.setToolTip(task.startup_error)
+        self.state_label.setToolTip(controls.startup_error)
         self.state_label.setWordWrap(True)
         layout.addWidget(self.state_label)
         row = QHBoxLayout()
@@ -93,7 +99,7 @@ class ControlRepairContent:
         return self.service.future
 
     def _accepting(self):
-        return not self.closed and not self.task._destroyed and self.service.accepting
+        return not self.closed and self.controls.available() and self.service.accepting
 
     def invalidate(self):
         if self.future is not None:
@@ -148,12 +154,10 @@ class ControlRepairContent:
         )
         if answer != QMessageBox.Yes:
             return
-        runtime = self.task.runtime
-        if runtime is not None and not runtime._closed:
-            if runtime.backups.status.busy:
-                self.status_label.setText('先完成或取消库存/工作区后台作业，再修复')
-                return
-            runtime.capture.stop()
+        reason = self.controls.prepare_apply()
+        if reason:
+            self.status_label.setText(reason)
+            return
         try:
             self.service.request_apply(self.preview)
             self.preview = None
@@ -217,12 +221,14 @@ class ControlRepairContent:
         self.closed = True
         self.timer.stop()
         self.diagnostics.close()
-        if getattr(self.task, 'control_repair_window', None) is self:
-            self.task.control_repair_window = None
         super().closeEvent(event)
 
 
 class ControlRepairWindow(ControlRepairContent, QDialog):
     """The embedded settings and standalone fallback share this exact form."""
 
-    pass
+    windowClosed = Signal()
+
+    def closeEvent(self, event):
+        super().closeEvent(event)
+        self.windowClosed.emit()

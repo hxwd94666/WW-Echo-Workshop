@@ -137,6 +137,10 @@ class ScanProgressOverlay(QWidget):
             self.close()
             return
         scan = runtime.scan.status
+        if scan.state == 'preparing':
+            # The host may skip every trigger while no frame is available.
+            self.task.expire_queued_scan()
+            scan = runtime.scan.status
         state = scan.state
         if state not in ('preparing', 'running', 'paused', 'draining', 'finished', 'interrupted'):
             self.hide()
@@ -255,7 +259,7 @@ class ManualProgressOverlay(ScanProgressOverlay):
         overlay = self._overlay_task()
         queue = getattr(overlay, '_manual_queue', None)
         backlog = queue.qsize() if queue is not None else 0
-        pending = len(getattr(overlay, '_manual_pending', ()))
+        pending = int(runtime.capture.is_manual_frozen(runtime.capture.single_request))
         if capture.mode != 'manual':
             self.hide()
             self.timer.stop()

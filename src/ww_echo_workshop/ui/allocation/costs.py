@@ -11,7 +11,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, TogglePushButton
+from PySide6.QtWidgets import QLabel
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, TogglePushButton
 from ww_echo_workshop.core.costs import (
     COST_OPTIONS,
     DEFAULT_COST_LAYOUT,
@@ -32,8 +33,8 @@ class CostLayoutPicker(QWidget):
         layout.setSpacing(8)
         layout.setSizeConstraint(QLayout.SetNoConstraint)
         heading = QHBoxLayout()
-        self.title_label = BodyLabel('五槽 COST', self)
-        self.total_label = BodyLabel(self)
+        self.title_label = QLabel('五槽 COST', self)
+        self.total_label = QLabel(self)
         heading.addWidget(self.title_label)
         heading.addWidget(self.total_label)
         heading.addStretch()

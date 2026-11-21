@@ -1,4 +1,8 @@
 # 提供声骸库卡片筛选多选及内嵌核对页面。
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -9,13 +13,28 @@ from PySide6.QtWidgets import (
     QMenu,
     QMessageBox,
 )
-from qfluentwidgets import CaptionLabel, PushButton, LineEdit
-from ww_echo_workshop.ui.widgets.inputs import ComboBox
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
+from PySide6.QtWidgets import QPushButton, QLineEdit
+from ww_echo_workshop.application.inventory_intake import InventoryIntake
+from ww_echo_workshop.application.matching.inventory import MatchInventorySession
+from ww_echo_workshop.ui.widgets.inputs import QComboBox
 from ww_echo_workshop.ui.inventory.controller import InventoryContent
 from ww_echo_workshop.ui.widgets.layout import Disclosure
 from ww_echo_workshop.ui.inventory.cards import EchoCardGrid, EchoCardWidget
 from ww_echo_workshop.ui.inventory.review import InventoryReviewController
 from ww_echo_workshop.ui.inventory.intake_feedback import InventoryIntakeFeedback
+
+if TYPE_CHECKING:
+    from ww_echo_workshop.application.backup_jobs import BackupService
+    from ww_echo_workshop.application.evidence_jobs import EvidenceViewJobs
+    from ww_echo_workshop.application.inventory import InventoryReader, InventoryService
+    from ww_echo_workshop.application.inventory_query import InventoryQueryService
+    from ww_echo_workshop.application.inventory_review import ReviewChoices
+    from ww_echo_workshop.application.quality_jobs import QualityCheckService
+    from ww_echo_workshop.application.quick_score import QuickScoreService
+    from ww_echo_workshop.core.models import EchoRecord
+    from ww_echo_workshop.resources.avatars import AvatarCache
+    from ww_echo_workshop.resources.sonata import SonataSnapshot
 
 
 def put(layout, widget, stretch=0):
@@ -23,17 +42,49 @@ def put(layout, widget, stretch=0):
     return widget
 
 
-class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, InventoryContent, QWidget):
-    _intake_ui = True
-    _table_type = EchoCardGrid
-    _combo_type = ComboBox
-    _button_type = PushButton
+@dataclass(frozen=True)
+class InventoryNavigation:
+    profile_switch_error: Callable[[str | None], str]
+    profile_changed: Callable[[], None]
+    has_edit_draft: Callable[[], bool]
+    refresh_profile_guard: Callable[[], None]
+    refresh_status: Callable[[], None]
+    show_feedback: Callable[[str], None]
+    candidate_session: Callable[[], MatchInventorySession | None]
+    apply_candidates: Callable[[bool], None]
+    cancel_candidates: Callable[[], None]
+    open_inventory: Callable[[], bool]
+    open_shortcuts: Callable[[], None]
 
-    def __init__(self, task, parent=None):
+
+@dataclass(frozen=True)
+class InventoryPageServices:
+    inventory: 'InventoryService'
+    queries: 'InventoryQueryService'
+    new_reader: Callable[[], 'InventoryReader']
+    intake: InventoryIntake
+    backups: 'BackupService'
+    evidence: 'EvidenceViewJobs'
+    review_choices: Callable[['EchoRecord'], 'ReviewChoices']
+    quality_checks: 'QualityCheckService'
+    quick_score: 'QuickScoreService'
+    sonata_snapshot: Callable[[], 'SonataSnapshot']
+    avatars: 'AvatarCache'
+    closed: Callable[[], bool]
+    profile_id: Callable[[], str]
+    set_profile: Callable[[str], None]
+    comparison_preferences: Callable[[], str]
+
+
+class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, InventoryContent, QWidget):
+    def __init__(
+        self, services: InventoryPageServices, parent=None, *, navigation: InventoryNavigation
+    ):
+        self.navigation = navigation
         self._editor = None
         self._match_selection_restoring = False
         self._embedded_ready = False
-        super().__init__(task, parent)
+        super().__init__(services, parent)
         self._accepted_profile = self.profile_box.currentData()
         self._embedded_ready = True
         self.show_details()
@@ -50,23 +101,22 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(12)
-        self.profile_box = ComboBox(self)
+        self.profile_box = QComboBox(self)
         self.filter_box = ChoiceState(self)
         self.filter_box.addItems(['全部', '待核对', '已确认'])
-        self.profile_create = ActionState('新建档案')
-        self.start_button = PushButton('开始收录', self)
-        self.pause_button = PushButton('暂停 / 继续', self)
-        self.stop_button = PushButton('结束收录', self)
+        self.start_button = QPushButton('开始收录', self)
+        self.pause_button = QPushButton('暂停 / 继续', self)
+        self.stop_button = QPushButton('结束收录', self)
         for button, fn in (
             (self.start_button, self.start_capture),
             (self.pause_button, self.pause_capture),
             (self.stop_button, self.finish_capture),
         ):
             button.clicked.connect(lambda checked=False, action=fn: self.action(action))
-        self.intake_mode = ComboBox(self)
+        self.intake_mode = QComboBox(self)
         self.intake_mode.addItem('手动收录', userData='manual')
         self.intake_mode.addItem('自动扫描', userData='automatic')
-        self.scan_level = ComboBox(self)
+        self.scan_level = QComboBox(self)
         for level in SCAN_LEVELS:
             self.scan_level.addItem(f'+{level}', userData=str(level))
         self.intake_mode.currentIndexChanged.connect(self._intake_mode_changed)
@@ -75,16 +125,15 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.backup_label = TextState()
         self.status_label = TextState()
         self.reading_label = TextState()
-        self.cancel_backup_button = PushButton('取消数据操作', self)
-        self.cancel_backup_button.clicked.connect(self.runtime.backups.cancel)
+        self.cancel_backup_button = QPushButton('取消数据操作', self)
+        self.cancel_backup_button.clicked.connect(self.services.backups.cancel)
         self.cancel_read_button = ActionState()
-        self.clear_library_button = PushButton('清空声骸库', self)
+        self.clear_library_button = QPushButton('清空声骸库', self)
         self.clear_library_button.clicked.connect(lambda: self.action(self.clear_library))
-        self.evidence_button = PushButton('查看原图', self)
+        self.evidence_button = QPushButton('查看原图', self)
         self.evidence_button.clicked.connect(lambda: self.action(self.open_selected_evidence))
-        self.table = EchoCardGrid(
-            self, show_score_footer=True, queries=self.runtime.inventory_queries
-        )
+        self.table = EchoCardGrid(self, show_score_footer=True, queries=self.services.queries)
+        self.table.avatar_cache = self.services.avatars
         # 原生筛选是后台作业：投影变化后刷新选择栏，不假设同步可见集合。
         self.table.proxy.stateChanged.connect(self._on_projection_changed)
         self.table.projectionChanged.connect(self._restore_match_selection)
@@ -93,9 +142,9 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.details = QTextEdit(self)
         self.details.setReadOnly(True)
-        self.confirm_button = PushButton('这是另一件', self)
-        self.upgrade_button = PushButton('更新旧件', self)
-        self.ignore_button = PushButton('忽略本次观察', self)
+        self.confirm_button = QPushButton('这是另一件', self)
+        self.upgrade_button = QPushButton('更新旧件', self)
+        self.ignore_button = QPushButton('忽略本次观察', self)
         for button, callback in (
             (self.confirm_button, self.confirm_selected),
             (self.upgrade_button, self.upgrade_selected),
@@ -119,13 +168,13 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.match_selection_note = CaptionLabel('点击声骸可多选')
         self.match_selection_note.setWordWrap(True)
         select_row.addWidget(self.match_selection_note, 1)
-        self.match_select_all_button = PushButton('全选')
+        self.match_select_all_button = QPushButton('全选')
         self.match_select_all_button.clicked.connect(
             lambda: self.action(self._select_all_match_items)
         )
-        self.match_apply_selected = PushButton('确定选择')
-        self.match_apply_filtered = PushButton('使用筛选结果')
-        self.match_cancel = PushButton('取消选择')
+        self.match_apply_selected = QPushButton('确定选择')
+        self.match_apply_filtered = QPushButton('使用筛选结果')
+        self.match_cancel = QPushButton('取消选择')
         for button in (
             self.match_select_all_button,
             self.match_apply_filtered,
@@ -134,14 +183,12 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         ):
             select_row.addWidget(button)
         self.match_apply_selected.clicked.connect(
-            lambda: self.action(lambda: self.task._panel.finish_inventory_selection())
+            lambda: self.action(lambda: self.navigation.apply_candidates(False))
         )
         self.match_apply_filtered.clicked.connect(
-            lambda: self.action(lambda: self.task._panel.finish_inventory_selection(filtered=True))
+            lambda: self.action(lambda: self.navigation.apply_candidates(True))
         )
-        self.match_cancel.clicked.connect(
-            lambda: self.action(self.task._panel.cancel_inventory_selection)
-        )
+        self.match_cancel.clicked.connect(lambda: self.action(self.navigation.cancel_candidates))
         outer.addWidget(self.match_selection_bar)
         self.match_selection_bar.hide()
         root.addWidget(self.inventory_body, 1)
@@ -150,7 +197,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         root.addWidget(self.editor_area, 1)
         self.editor_area.hide()
         row = QHBoxLayout()
-        self.search_box = LineEdit()
+        self.search_box = QLineEdit()
         self.search_box.setPlaceholderText('搜索名称、套装、词条')
         self.search_box.setClearButtonEnabled(True)
         put(row, self.search_box, 1)
@@ -159,7 +206,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self.search_timer.setInterval(150)
         self.search_box.textChanged.connect(lambda: self.search_timer.start())
         self.search_timer.timeout.connect(self._apply_search)
-        self.filter_button = PushButton('筛选', self.inventory_body)
+        self.filter_button = QPushButton('筛选', self.inventory_body)
         self.filter_button.setAccessibleName('声骸库筛选')
         put(row, self.filter_button)
         put(row, self.clear_library_button)
@@ -178,10 +225,6 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         status_row.addWidget(self.compact_status)
         status_row.addWidget(self.pending_summary)
         self.operation_hint = CaptionLabel('右键声骸可进行操作，支持多选批量操作')
-        hint_font = self.operation_hint.font()
-        hint_font.setPointSizeF(8)
-        self.operation_hint.setFont(hint_font)
-        self.operation_hint.setStyleSheet('color: #888888;')
         self.operation_hint.setWordWrap(True)
         status_row.addWidget(self.operation_hint, 1)
         outer.addLayout(status_row)
@@ -193,10 +236,11 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         body = QVBoxLayout(detail)
         body.setContentsMargins(10, 0, 0, 0)
         body.setSpacing(12)
-        self.back_to_grid = PushButton('返回声骸库')
+        self.back_to_grid = QPushButton('返回声骸库')
         self.back_to_grid.clicked.connect(self._return_grid)
         body.addWidget(self.back_to_grid)
         self.image = EchoCardWidget()
+        self.image.avatar_cache = self.services.avatars
         put(body, self.image)
         put(body, self.evidence_button)
         self.evidence_button.setText('查看原图')
@@ -236,16 +280,15 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
 
     def profile_changed(self):
         if not getattr(self, '_embedded_ready', False):
-            return super().profile_changed()
+            return
         target = self.profile_box.currentData()
-        reason = self.task._panel.profile_switch_error(target)
+        reason = self.navigation.profile_switch_error(target)
         if reason:
             previous = self.profile_box.blockSignals(True)
             self.profile_box.setCurrentIndex(self.profile_box.findData(self._accepted_profile))
             self.profile_box.blockSignals(previous)
-            self.task._panel.feedback.setText(reason)
-            self.task._panel.feedback.show()
-            self.task._panel.refresh_profile_guard()
+            self.navigation.show_feedback(reason)
+            self.navigation.refresh_profile_guard()
             return
         self.table.clearSelection()
         from PySide6.QtCore import QModelIndex
@@ -254,28 +297,13 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self._accepted_profile = target
         # Guard already excludes other-profile capture. Navigation to the
         # active capture profile must not stop that same-profile session.
-        self.task.config['InventoryProfileID'] = target or ''
+        self.services.set_profile(target or '')
         self.refresh(force=True)
-        panel = self.task._panel
-        panel.feedback.hide()
-        current = next(
-            (
-                name
-                for name, page in panel._owned_pages.items()
-                if page is panel.stack.currentWidget()
-            ),
-            None,
-        )
-        if current and current != 'inventory':
-            # The shared selector is visible on every page. Do not leave the
-            # current result/plan attached to its hidden legacy profile field.
-            panel.navigate(current)
+        self.navigation.profile_changed()
 
     def new_profile(self, *, name=None):
-        panel = self.task._panel
-        if panel.has_edit_draft() or not self.profile_box.isEnabled():
-            panel.feedback.setText('请先保存或取消编辑，并结束当前作业，再新建档案。')
-            panel.feedback.show()
+        if self.navigation.has_edit_draft() or not self.profile_box.isEnabled():
+            self.navigation.show_feedback('请先保存或取消编辑，并结束当前作业，再新建档案。')
             return
         super().new_profile(name=name)
         self._accepted_profile = self.profile_box.currentData()
@@ -284,9 +312,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         try:
             super().start_capture()
         except (ValueError, KeyError, OSError, RuntimeError) as error:
-            panel = self.task._panel
-            panel.feedback.setText(str(error))
-            panel.feedback.show()
+            self.navigation.show_feedback(str(error))
             return
         self._show_capture_feedback()
 
@@ -299,13 +325,11 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         self._show_capture_feedback()
 
     def _show_capture_feedback(self):
-        panel = self.task._panel
-        if not self.task._capture_ready() or self.runtime.capture.status.state == 'stopped':
-            panel.feedback.setText(self.capture_help.text())
-            panel.feedback.show()
+        if not self.services.intake.ready or self.services.intake.status.state == 'stopped':
+            self.navigation.show_feedback(self.capture_help.text())
         else:
-            panel.feedback.hide()
-        panel.refresh_status()
+            self.navigation.show_feedback('')
+        self.navigation.refresh_status()
 
     def show_details(self):
         selected = self.selected()
@@ -366,8 +390,10 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         record = row[0]
         revision = self._mutation_revision()
         profile = self.profile_box.currentData()
-        repository = self.runtime.inventory
-        impact = repository.selection_impact(profile, (identity,), expected_revision=revision)
+        service = self.services.inventory
+        change = service.prepare_selection(
+            profile, (identity,), 'unlock' if record.locked else 'lock', expected_revision=revision
+        )
         reservation = self.inventory_model.claims.get(identity, '')
         if reservation and not record.locked:
             QMessageBox.information(
@@ -377,13 +403,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
                 + '。请在已保存配装中选择该声骸解除保护；此处不会释放配装占用。',
             )
             return
-        repository.mutate_selection(
-            profile,
-            (identity,),
-            'unlock' if record.locked else 'lock',
-            expected_revision=revision,
-            expected_loadout_revision=impact['loadout_revision'],
-        )
+        service.apply_selection(change, profile_id=self.profile_box.currentData())
         self.refresh(force=True)
 
     def _refresh(self, *, force=False):
@@ -410,8 +430,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         return super()._mutation_revision()
 
     def _match_session(self):
-        panel = getattr(self.task, '_panel', None)
-        session = getattr(panel, '_match_inventory_session', None)
+        session = self.navigation.candidate_session()
         return session if session is not None and session.active else None
 
     def _on_projection_changed(self):
@@ -618,19 +637,21 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
         if not identities:
             return
         revision = self._mutation_revision()
-        repository = self.runtime.inventory
-        impact = repository.selection_impact(profile, identities, expected_revision=revision)
+        service = self.services.inventory
+        change = service.prepare_selection(
+            profile, identities, operation, expected_revision=revision
+        )
         if operation == 'delete':
             message = f'删除选中的 {len(identities)} 件声骸？仅删除本地记录，不改动游戏背包。'
-            if impact['loadouts']:
+            if change.affected_loadouts:
                 message += (
                     '\n涉及当前配装：'
-                    + '、'.join(impact['loadouts'])
+                    + '、'.join(change.affected_loadouts)
                     + '。将解除这些配装的预留，保留历史方案。'
                 )
-            if impact['related_pending']:
+            if change.related_pending:
                 message += (
-                    f'\n同时移除 {impact["related_pending"]} 条依赖这些声骸的重复／升级待判定记录。'
+                    f'\n同时移除 {change.related_pending} 条依赖这些声骸的重复／升级待判定记录。'
                 )
             answer = QMessageBox.question(
                 self, '删除声骸', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.No
@@ -639,13 +660,7 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
                 return
         if not self._selection_ready() or profile != self.profile_box.currentData():
             raise ValueError('档案或当前作业已变化，请重新选择。')
-        repository.mutate_selection(
-            profile,
-            identities,
-            operation,
-            expected_revision=revision,
-            expected_loadout_revision=impact['loadout_revision'],
-        )
+        service.apply_selection(change, profile_id=self.profile_box.currentData())
         if operation == 'delete':
             self.table.clearSelection()
         self.refresh(force=True)
@@ -699,10 +714,10 @@ class InventoryPage(InventoryIntakeFeedback, InventoryReviewController, Inventor
             self.compact_status.setToolTip(self.reading_label.text())
             if self._editor is not None:
                 self.profile_box.setEnabled(False)
-            self.task._panel.refresh_profile_guard()
+            self.navigation.refresh_profile_guard()
 
     def _refresh_sonata_options(self):
-        snapshot = self.runtime.sonata.active
+        snapshot = self.services.sonata_snapshot()
         key = id(self._rows), id(snapshot), getattr(snapshot, 'version', None)
         if getattr(self, '_sonata_options_key', None) != key:
             self.library_filters.refresh_sonatas(snapshot, (row[0] for row in self._rows))

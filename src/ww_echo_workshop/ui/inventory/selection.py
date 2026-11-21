@@ -5,7 +5,7 @@ from copy import deepcopy
 class PendingInventorySelection:
     def __init__(self, panel, *, filtered, selected_ids, job=None):
         self.panel = panel
-        self.inventory = panel.proxy.inventory_window
+        self.inventory = panel.inventory_page
         self.proxy = self.inventory.table.proxy
         self.session = panel._match_inventory_session
         self.requester = panel._match_origin

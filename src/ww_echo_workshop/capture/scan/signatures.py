@@ -7,47 +7,27 @@ def _signature_distance(a, b):
     return sum(abs(x - y) for x, y in zip(a, b)) / len(a)
 
 
-def _near_signature(a, b):
-    return _signature_distance(a, b) <= 9
-
-
-def _same_row(a, b, *, highlighted=()):
-    return 0 < len(a) == len(b) and all(
-        x.column == y.column
-        and (x.column in highlighted or _near_signature(x.signature, y.signature))
-        for x, y in zip(a, b)
-    )
-
-
-def _matching_rows(a, b, shift=0, *, target=None, stationary_noise=False):
+def _matching_stationary_rows(a, b):
     """Compare content anchors, excluding only known selection/hover glow.
 
     No list position is inferred from the excluded cells. At least three other
-    cells must remain as strict image anchors, including for a scroll overlap.
+    cells must remain as strict image anchors.
     Small lists without enough anchors retain the original strict comparison.
     """
     old, new = a.rows(), b.rows()
-    shared = min(len(old) - shift, len(new))
-    if shared <= 0:
+    if not old or len(old) != len(new):
         return False
-    old_highlights = {p for p in (a.selected, target) if p is not None}
-    new_highlights = {p for p in (b.selected, target) if p is not None}
-    pairs = [(old[shift + i], new[i]) for i in range(shared)]
+    pairs = list(zip(old, new))
     exclusions = [
         tuple(
             x.column
             for x, y in zip(left, right)
-            if (x.row, x.column) in old_highlights or (y.row, y.column) in new_highlights
+            if (x.row, x.column) == a.selected or (y.row, y.column) == b.selected
         )
         for left, right in pairs
     ]
     if sum(len(left) - len(skip) for (left, _), skip in zip(pairs, exclusions)) < 3:
         exclusions = [() for _ in pairs]
-    if not stationary_noise:
-        return all(
-            _same_row(left, right, highlighted=skip)
-            for (left, right), skip in zip(pairs, exclusions)
-        )
     # Only a geometrically stationary page can use this consensus. Refitting
     # borders and game lighting slightly change thumbnail pixels, including
     # unselected cards. Do not let a single marginal RGB mismatch veto an
@@ -98,7 +78,6 @@ def _scroll_overlap(a, b, shift):
     old, new = a.rows(), b.rows()
     shared = min(len(old) - shift, len(new))
     pairs = [(old[shift + i], new[i]) for i in range(max(0, shared))]
-    highlights = []
     distances = []
     translations = []
     geometry = True
@@ -109,34 +88,20 @@ def _scroll_overlap(a, b, shift):
             or len(left) != len(right)
             or any(x.column != y.column for x, y in zip(left, right))
         ):
-            return dict(
-                mean=float('inf'), worst=float('inf'), anchors=0, geometry=False, excluded=[]
-            )
+            return dict(mean=float('inf'), worst=float('inf'), anchors=0, geometry=False)
         for x, y in zip(left, right):
             translations.append(x.bounds[1] - y.bounds[1])
             geometry &= all(abs(x.bounds[i] - y.bounds[i]) <= tolerance for i in (0, 2, 3))
-            if (x.row, x.column) == a.selected or (y.row, y.column) == b.selected:
-                highlights.append((x.row, x.column, y.row, y.column))
-            else:
+            if (x.row, x.column) != a.selected and (y.row, y.column) != b.selected:
                 distances.append(_signature_distance(x.signature, y.signature))
     if translations:
         geometry &= max(translations) - min(translations) <= tolerance
-    if shift and len(old) > 1 and translations:
-        pitch = old[1][0].bounds[1] - old[0][0].bounds[1]
-        geometry &= (
-            pitch > 0
-            and (shift - 0.5) * pitch
-            < sum(translations) / len(translations)
-            < (shift + 0.5) * pitch
-        )
     mean = sum(distances) / len(distances) if distances else float('inf')
     return dict(
         mean=mean,
         worst=max(distances, default=float('inf')),
         anchors=len(distances),
         geometry=bool(geometry),
-        excluded=highlights,
-        outliers=sum(d > 18 for d in distances),
     )
 
 
@@ -146,7 +111,7 @@ def _same_grid(a, b):
         and a.viewport == b.viewport
         and len(a.rows()) == len(b.rows())
         and _same_geometry(a, b)
-        and _matching_rows(a, b, stationary_noise=True)
+        and _matching_stationary_rows(a, b)
         and a.selected == b.selected
         and (
             (a.scrollbar is None and b.scrollbar is None)

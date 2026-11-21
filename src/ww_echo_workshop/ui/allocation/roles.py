@@ -25,12 +25,12 @@ class AllocationRoleController:
         keys = [key for key in order if key in keys] + [key for key in keys if key not in order]
         self.role_navigation.set_entries(
             ((key, key in pending) for key in keys),
-            self.runtime.weights.active,
+            self.services.weight_snapshot(),
             current=self._workspace_key,
-            avatars=self.runtime.avatars,
+            avatars=self.services.avatars,
             groups=self._priority_groups,
         )
-        self._workspace_avatar_revision = self.runtime.avatars.revision
+        self._workspace_avatar_revision = self.services.avatars.revision
         self._workspace_key = self.role_navigation.current_key
         self._focus_workspace_role(self._workspace_key)
         self.pending_notice.setText(f'待确认 {len(pending)} 个角色；点击齿轮设置装备要求。')
@@ -53,7 +53,7 @@ class AllocationRoleController:
         return keys
 
     def _priority_edit_error(self):
-        if self._closing or self.runtime._closed or self.task._destroyed:
+        if self._closing or self.services.closed():
             return '配装页面已停止，请重新打开。'
         if (
             self._future is not None
@@ -65,7 +65,7 @@ class AllocationRoleController:
             return '请先完成或取消当前作业与确认操作，再修改配装优先级。'
         if self._editor is not None:
             return '请先保存或取消装备要求编辑，再修改配装优先级。'
-        if self.runtime.backups.status.busy:
+        if self.services.backup_busy():
             return '请先完成或取消数据作业，再修改配装优先级。'
         if getattr(self, '_saved_view', False):
             return '请先返回当前配装，再调整新方案的配装优先级。'
@@ -163,12 +163,12 @@ class AllocationRoleController:
         previous = picker.currentData()
         blocked = picker.blockSignals(True)
         picker.clear()
-        for label, (character, modal, _) in self.runtime.weights.active.options.items():
+        for label, (character, modal, _) in self.services.weight_snapshot().options.items():
             picker.addItem(label, (character, modal))
         picker.setCurrentIndex(picker.findData(previous) if previous else -1)
         picker.blockSignals(blocked)
         restore_combo_search(picker, draft)
-        self._allocation_picker_version = self.runtime.weights.active.version
+        self._allocation_picker_version = self.services.weight_snapshot().version
 
     def _choose_allocation_role(self, index):
         if index < 0:
@@ -180,7 +180,7 @@ class AllocationRoleController:
         if reason:
             raise ValueError(reason)
         key = tuple(key)
-        template = self.runtime.weights.active.template(*key)
+        template = self.services.weight_snapshot().template(*key)
         pending = self._sync_pending_role_draft()
         selected = tuple(role.key for role in self.roles) + pending
         existing = next((value for value in selected if value[0] == key[0]), None)
@@ -285,12 +285,11 @@ class AllocationRoleController:
         def active():
             return (
                 not self._closing
-                and not self.runtime._closed
-                and not self.task._destroyed
+                and not self.services.closed()
                 and receipt[0] == self._io_generation
                 and not receipt[1].is_set()
                 and context['profile_id'] == self.profile.currentData()
-                and context['snapshot'].version == self.runtime.weights.active.version
+                and context['snapshot'].version == self.services.weight_snapshot().version
                 and context['roles'] == tuple(self.roles)
                 and context.get('scope_generation', self._scope_generation)
                 == self._scope_generation
@@ -304,7 +303,7 @@ class AllocationRoleController:
         if not active() or self._editor is not None:
             clear_pending()
             return
-        revision = self.runtime.inventory.try_revision()
+        revision = self.services.try_revision()
         if revision is None:
             if retries == 0:
                 logging.getLogger('ok.EchoAllocationRoles').info(
@@ -336,16 +335,17 @@ class AllocationRoleController:
             catalog=context['catalog'],
             seed_key=context.get('seed_key'),
             seed_rule=context.get('seed_rule'),
-            evidence=self.runtime.evidence,
+            edit_weights=self.navigation.edit_weights,
+            panel_service=self.services.panel,
         )
         self.seed_role_requirements(
             editor, context['role'].key if context['role'] is not None else context.get('seed_key')
         )
         if hasattr(editor, 'set_resources'):
             editor.set_resources(
-                avatars=self.runtime.avatars,
-                sonata=self.runtime.sonata.active,
-                effects=self.runtime.sonata_effects.active,
+                avatars=self.services.avatars,
+                sonata=self.services.sonata_snapshot(),
+                effects=self.services.effects_snapshot(),
             )
         managed = getattr(self, '_managed_role_editor_key', None)
         identity = context['role'].key if context['role'] is not None else context.get('seed_key')
@@ -371,7 +371,7 @@ class AllocationRoleController:
             self.editor_area.takeWidget()
             editor.deleteLater()
             self.editor_area.hide()
-            if self._closing or self.runtime._closed or self.task._destroyed:
+            if self._closing or self.services.closed():
                 return
             self.pages.show()
             self.result_toolbar.show()
@@ -386,7 +386,7 @@ class AllocationRoleController:
             if not active():
                 editor.error.setText('数据已变化，未保存；取消后重新打开编辑。')
                 return
-            revision = self.runtime.inventory.try_revision()
+            revision = self.services.try_revision()
             if revision is None:
                 editor.error.setText('库存正在读取，请稍后再保存。')
                 return

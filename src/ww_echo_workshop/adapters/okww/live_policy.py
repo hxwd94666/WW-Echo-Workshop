@@ -3,6 +3,7 @@ import json
 from types import SimpleNamespace
 import time
 
+from ww_echo_workshop.application.hud_state import HUD_POLICY_BUSY
 from ww_echo_workshop.application.policy import build_payload, costs_from_config, request_key
 from ww_echo_workshop.core.policy import PolicyError, format_probability
 from ww_echo_workshop.core.policy_presets import default_scoring
@@ -14,6 +15,7 @@ DECISION_LABELS = {
     'reroll': '重抽',
 }
 LAYOUTS = ('enhancement', 'tuning', 'bag', 'display', 'single')
+_BUSY_TEXT = '策略：' + HUD_POLICY_BUSY
 
 
 class LivePolicyHint:
@@ -35,10 +37,10 @@ class LivePolicyHint:
 
     @property
     def last_result(self):
-        return self._result
+        return self._result if self._pending_signature is None else None
 
     def detail_lines(self):
-        result = self._result
+        result = self.last_result
         if result is None:
             return ()
         lines = ['策略详情']
@@ -86,9 +88,7 @@ class LivePolicyHint:
                 self._pending_signature = signature
                 self._pending_since = now
             if now - self._pending_since < self._debounce:
-                if self._result is not None:
-                    return self._format(self._result)
-                return '策略：分析中…'
+                return _BUSY_TEXT
             self._signature = signature
             self._pending_signature = None
             self._result = None
@@ -99,7 +99,7 @@ class LivePolicyHint:
             self._pending_signature = None
         if self._future is not None:
             if not self._future.done():
-                return '策略：计算中…'
+                return _BUSY_TEXT
             future, future_signature = self._future, self._future_signature
             self._future = None
             self._future_signature = None
@@ -114,7 +114,7 @@ class LivePolicyHint:
         if self._error_signature == signature:
             return '策略：' + self._error
         if now - self._changed_at < self._debounce:
-            return '策略：分析中…'
+            return _BUSY_TEXT
         try:
             self._future = runtime.policy.submit(payload)
             self._future_signature = signature
@@ -122,7 +122,7 @@ class LivePolicyHint:
             self._error = getattr(error, 'message', str(error))
             self._error_signature = signature
             return '策略：' + self._error
-        return '策略：计算中…'
+        return _BUSY_TEXT
 
     def _build(self, analysis, settings, snapshot):
         system = settings.get('策略评分体系', 'workshop_xwuid')

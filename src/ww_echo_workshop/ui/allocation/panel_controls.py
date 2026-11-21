@@ -1,6 +1,6 @@
 # 构造角色设置中的共鸣效率范围控件。
 from PySide6.QtWidgets import QHBoxLayout, QSizePolicy, QWidget
-from qfluentwidgets import CaptionLabel
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
 from ww_echo_workshop.ui.widgets.inputs import QDoubleSpinBox
 
 

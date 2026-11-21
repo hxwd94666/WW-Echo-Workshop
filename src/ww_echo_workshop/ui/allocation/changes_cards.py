@@ -9,7 +9,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, isDarkTheme
+from PySide6.QtWidgets import QLabel
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, is_dark_theme
 
 from ww_echo_workshop.ui.inventory.card_data import project_card
 from ww_echo_workshop.ui.widgets.rating import apply_rating_colour
@@ -20,17 +21,17 @@ def points(cents, rating):
     return score_text(cents / 100, rating) if cents is not None else '未计算'
 
 
-def delta_colour(cents):
+def delta_colour(cents, widget):
     if cents is None or cents == 0:
-        return '#b7b7b7' if isDarkTheme() else '#656565'
+        return '#b7b7b7' if is_dark_theme(widget) else '#656565'
     if cents > 0:
-        return '#69d69d' if isDarkTheme() else '#087849'
-    return '#ff999f' if isDarkTheme() else '#ba3340'
+        return '#69d69d' if is_dark_theme(widget) else '#087849'
+    return '#ff999f' if is_dark_theme(widget) else '#ba3340'
 
 
 def set_delta(label, cents, *, prefix=''):
     label.setText(prefix + (f'{cents / 100:+.2f} 分' if cents is not None else '—'))
-    label.setStyleSheet('color:' + delta_colour(cents) + ';font-weight:600;')
+    label.setStyleSheet('color:' + delta_colour(cents, label) + ';font-weight:600;')
 
 
 class CompactChangeCard(QFrame):
@@ -50,10 +51,9 @@ class CompactChangeCard(QFrame):
         layout.setSpacing(3)
         header = QHBoxLayout()
         header.setSpacing(6)
-        self.name = BodyLabel(self.data.title, self)
+        self.name = QLabel(self.data.title, self)
         self.name.setWordWrap(True)
         font = self.name.font()
-        font.setPixelSize(12)
         font.setBold(True)
         self.name.setFont(font)
         header.addWidget(self.name, 1)
@@ -88,7 +88,7 @@ class CompactChangeCard(QFrame):
             empty = CaptionLabel(self.data.empty_sub, self)
             empty.setWordWrap(True)
             layout.addWidget(empty)
-        self.score = BodyLabel(points(item.score_cents, self.rating), self)
+        self.score = QLabel(points(item.score_cents, self.rating), self)
         layout.addWidget(self.score)
         self.update_colours()
 

@@ -58,10 +58,10 @@ class MatchCalculationOptions:
             raise ValueError('最低等级选项无效')
         if type(self.exclude_locked) is not bool or type(self.include_equipped) is not bool:
             raise ValueError('计算范围选项无效')
-        if type(self.seconds) is not int or not 1 <= self.seconds <= 120:
-            raise ValueError('搜索时间须为 1–120 秒')
-        if type(self.nodes) is not int or not 1 <= self.nodes <= 5000000:
-            raise ValueError('搜索节点上限无效')
+        if type(self.seconds) is not int or self.seconds < 1:
+            raise ValueError('搜索时间须为正整数秒')
+        if type(self.nodes) is not int or self.nodes < 1:
+            raise ValueError('搜索节点须为正整数')
 
     @classmethod
     def from_dict(cls, row):

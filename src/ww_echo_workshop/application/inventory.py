@@ -154,6 +154,17 @@ def game_status_labels(record):
     return tuple(labels)
 
 
+@dataclass(frozen=True)
+class InventorySelectionChange:
+    profile_id: str
+    item_ids: tuple[str, ...]
+    action: str
+    inventory_revision: int
+    loadout_revision: int
+    affected_loadouts: tuple[str, ...]
+    related_pending: int
+
+
 class InventoryService:
     """库存查询与显式修改用例；SQL、CAS及保护事务仍由存储实现。"""
 
@@ -202,9 +213,21 @@ class InventoryService:
     def profile_counts(self, profile, *, expected_revision):
         return self._repository.profile_counts(profile, expected_revision=expected_revision)
 
-    def selection_impact(self, profile, identities, *, expected_revision):
-        return self._repository.selection_impact(
-            profile, identities, expected_revision=expected_revision
+    def prepare_selection(self, profile_id, item_ids, action, *, expected_revision):
+        if action not in ('lock', 'unlock', 'delete'):
+            raise ValueError('未知声骸操作。')
+        item_ids = tuple(dict.fromkeys(item_ids))
+        impact = self._repository.selection_impact(
+            profile_id, item_ids, expected_revision=expected_revision
+        )
+        return InventorySelectionChange(
+            profile_id,
+            item_ids,
+            action,
+            expected_revision,
+            impact['loadout_revision'],
+            impact['loadouts'],
+            impact['related_pending'],
         )
 
     def _mutate(self, action, function):
@@ -281,16 +304,16 @@ class InventoryService:
             ),
         )
 
-    def mutate_selection(
-        self, profile, identities, action, *, expected_revision, expected_loadout_revision
-    ):
+    def apply_selection(self, change: InventorySelectionChange, *, profile_id):
+        if profile_id != change.profile_id:
+            raise ValueError('当前档案已变化，请重新选择。')
         return self._mutate(
             'selection',
             lambda: self._repository.mutate_selection(
-                profile,
-                identities,
-                action,
-                expected_revision=expected_revision,
-                expected_loadout_revision=expected_loadout_revision,
+                change.profile_id,
+                change.item_ids,
+                change.action,
+                expected_revision=change.inventory_revision,
+                expected_loadout_revision=change.loadout_revision,
             ),
         )

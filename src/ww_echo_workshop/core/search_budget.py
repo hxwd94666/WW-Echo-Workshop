@@ -13,10 +13,10 @@ class SearchBudget:
     nodes: int = 200000
 
     def __post_init__(self):
-        if type(self.seconds) is not int or not 1 <= self.seconds <= 120:
-            raise ValueError('配装搜索时间须为 1–120 秒。')
-        if type(self.nodes) is not int or not 1 <= self.nodes <= 5000000:
-            raise ValueError('配装搜索节点须为 1–5000000。')
+        if type(self.seconds) is not int or self.seconds < 1:
+            raise ValueError('配装搜索时间须为正整数秒。')
+        if type(self.nodes) is not int or self.nodes < 1:
+            raise ValueError('配装搜索节点须为正整数。')
 
     @classmethod
     def from_dict(cls, row):

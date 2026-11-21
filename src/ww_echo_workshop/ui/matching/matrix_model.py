@@ -113,9 +113,9 @@ class MatrixModel(QAbstractTableModel):
         if role == Qt.UserRole + 1:
             return score.score.current_score if score and score.score else float('-inf')
         if role == Qt.ForegroundRole and score:
-            from qfluentwidgets import isDarkTheme
+            from ww_echo_workshop.ui.widgets.controls import is_dark_theme
 
-            dark = isDarkTheme()
+            dark = is_dark_theme(self)
             rating = getattr(score.score, 'rating', None)
             if rating is not None:
                 return QColor(rating_colour(rating, dark))

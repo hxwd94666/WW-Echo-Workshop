@@ -112,7 +112,7 @@
    ```text
    D:\ok-ww\data\apps\ok-ww\working\ok_import\ww-echo-workshop
    ```
-3. 启动 OKWW，选择开始运行，然后打开左侧 **声骸工坊**。
+3. 启动 OKWW，从左侧打开 **声骸工坊**。较早的 2.x 宿主若只显示导入任务列表，请点击任务卡里的 **打开声骸工坊**。浏览库存和离线资料无需连接游戏；实时评分和收录需要先在 OKWW 中连接游戏捕获。
 
 安装后的目录结构：
 
@@ -133,7 +133,9 @@
 
 ## 参与开发
 
-源码要求 **Python 3.11+**。界面验收组合为 Python 3.12、ok-script 2.0.8、PySide6 6.11.1、Fluent Widgets 1.11.3。Rust 计算引擎使用锁定的 1.98.0 工具链，插件用户无需安装 Rust。
+源码要求 **Python 3.11+**。界面使用 Qt Widgets，适配时分别验证使用完整 Qt 的 ok-script 2.x 和使用精简 Qt 的 ok-script 3.x。当前运行验收范围见[适配方案](docs/maintainer/refactor-okww-3-plan.md#6-验证记录)。Rust 计算引擎使用锁定的 1.98.0 工具链，插件用户无需安装 Rust。
+
+以下命令使用旧宿主开发环境。新版宿主用另一套虚拟环境安装 `.[okww-3,dev]`，其中的精简 Qt 与完整 PySide6 使用独立环境。
 
     py -3.12 -m venv .venv
     .venv/Scripts/python.exe -m pip install -e ".[ui,okww,dev]"

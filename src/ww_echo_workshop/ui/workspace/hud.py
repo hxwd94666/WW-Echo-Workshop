@@ -1,6 +1,5 @@
 # 实时评分透明悬浮窗：默认可拖拽，锁定后鼠标穿透，详情展开设置。
 import html
-import json
 import time
 
 from PySide6.QtCore import QEvent, QObject, QPoint, QSize, Qt, QTimer, Signal
@@ -15,15 +14,22 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QPushButton,
+    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 
-from ww_echo_workshop.application.policy import costs_from_config
+from ww_echo_workshop.application.live_preferences import LiveOption as Option
+from ww_echo_workshop.application.hud_state import (
+    HUD_COMPARISON_SEPARATOR_RGB,
+    HUD_POLICY_BUSY,
+    HUD_POLICY_HEADER,
+)
 from ww_echo_workshop.core.policy_presets import SYSTEMS
 from ww_echo_workshop.ui.widgets.roles import RolePicker
 
 DEFAULT_FONT_SIZE = 15
+_WAITING_SCORE_ROWS = (('等待新的评分画面…', None),)
 _CHECK_STYLE = (
     'QCheckBox { color: #f4f4f4; background: rgba(42, 48, 60, 165);'
     ' border-radius: 5px; padding: 3px 6px; }'
@@ -110,13 +116,39 @@ class NoWheelGuard(QObject):
         return event.type() == QEvent.Wheel or super().eventFilter(source, event)
 
 
+class _PolicyLine(QLabel):
+    """Reserve one line vertically without affecting the original HUD width."""
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._full_text = ''
+        self.setTextFormat(Qt.PlainText)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Fixed)
+
+    def set_value(self, text):
+        self._full_text = text
+        self.setAccessibleName(text)
+        self.setFixedHeight(self.fontMetrics().height() + 1)
+        self._elide()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._elide()
+
+    def _elide(self):
+        width = self.contentsRect().width()
+        text = self.fontMetrics().elidedText(self._full_text, Qt.ElideRight, width)
+        self.setText(text)
+        self.setToolTip(self._full_text if text != self._full_text else '')
+
+
 class HudWindow(QWidget):
     unlock_requested = Signal()
 
-    def __init__(self, task, runtime, parent=None):
+    def __init__(self, preferences, weight_snapshot, parent=None):
         super().__init__(parent)
-        self.task = task
-        self.runtime = runtime
+        self.preferences = preferences
+        self._weight_snapshot = weight_snapshot
         self._locked = False
         self._details = False
         self._drag = None
@@ -178,20 +210,22 @@ class HudWindow(QWidget):
         grid.setHorizontalSpacing(8)
         grid.setVerticalSpacing(5)
         self.live_check = QCheckBox('实时评分', self.edit_panel)
-        self.live_check.setChecked(bool(task.config.get('启用声骸评分', True)))
-        self.live_check.toggled.connect(lambda checked: self._write('启用声骸评分', bool(checked)))
+        self.live_check.setChecked(bool(preferences.get(Option.DISPLAY_SCORE, True)))
+        self.live_check.toggled.connect(
+            lambda checked: self.preferences.set(Option.DISPLAY_SCORE, bool(checked))
+        )
         self.auto_check = QCheckBox('跟随角色', self.edit_panel)
-        self.auto_check.setChecked(bool(task.config.get('自动匹配评分模板', False)))
+        self.auto_check.setChecked(bool(preferences.get(Option.FOLLOW_ROLE, False)))
         self.auto_check.toggled.connect(
-            lambda checked: self._write('自动匹配评分模板', bool(checked))
+            lambda checked: self.preferences.set(Option.FOLLOW_ROLE, bool(checked))
         )
         self.policy_check = QCheckBox('策略建议', self.edit_panel)
-        self.policy_check.setChecked(bool(task.config.get('启用强化策略', False)))
+        self.policy_check.setChecked(bool(preferences.get(Option.SHOW_POLICY, False)))
         self.policy_check.toggled.connect(
-            lambda checked: self._write('启用强化策略', bool(checked))
+            lambda checked: self.preferences.set(Option.SHOW_POLICY, bool(checked))
         )
         self.hud_follow_check = QCheckBox('悬浮窗位置变换（仅适配2K）', self.edit_panel)
-        self.hud_follow_check.setChecked(bool(task.config.get('策略悬浮窗自动定位', False)))
+        self.hud_follow_check.setChecked(bool(preferences.get(Option.HUD_AUTO_POSITION, False)))
         self.hud_follow_check.toggled.connect(self._position_changed)
         checks_row = QWidget(self.edit_panel)
         checks_row.setObjectName('hudChecks')
@@ -213,7 +247,7 @@ class HudWindow(QWidget):
         self.font_size.setRange(12.0, 32.0)
         self.font_size.setDecimals(0)
         self.font_size.setSingleStep(1.0)
-        self.font_size.setValue(float(task.config.get('策略悬浮窗字号') or DEFAULT_FONT_SIZE))
+        self.font_size.setValue(float(preferences.get(Option.HUD_FONT_SIZE) or DEFAULT_FONT_SIZE))
         self.font_size.valueChanged.connect(self._font_changed)
         grid.addWidget(self.font_size, 1, 1)
         grid.addWidget(QLabel('评分体系', self.edit_panel), 1, 2)
@@ -222,7 +256,7 @@ class HudWindow(QWidget):
         for key, spec in SYSTEMS.items():
             if key != 'qq_bot':
                 self.scoring.addItem(spec['label'], userData=key)
-        index = self.scoring.findData(task.config.get('策略评分体系', 'workshop_xwuid'))
+        index = self.scoring.findData(preferences.get(Option.SCORING_SYSTEM, 'workshop_xwuid'))
         self.scoring.setCurrentIndex(index if index >= 0 else 0)
         self.scoring.currentIndexChanged.connect(self._scoring_changed)
         grid.addWidget(self.scoring, 1, 3)
@@ -235,28 +269,25 @@ class HudWindow(QWidget):
             ('联合（实验）', 'joint'),
         ):
             self.mode.addItem(label, userData=value)
-        index = self.mode.findData(task.config.get('强化策略模式', 'auto'))
+        index = self.mode.findData(preferences.get(Option.POLICY_MODE, 'auto'))
         self.mode.setCurrentIndex(index if index >= 0 else 0)
         self.mode.currentIndexChanged.connect(
-            lambda _: self._write('强化策略模式', self.mode.currentData())
+            lambda _: self.preferences.set(Option.POLICY_MODE, self.mode.currentData())
         )
         grid.addWidget(self.mode, 2, 1)
         grid.addWidget(QLabel('目标分', self.edit_panel), 2, 2)
         self.target = QDoubleSpinBox(self.edit_panel)
         self.target.setRange(0.0, 655.35)
         self.target.setDecimals(1)
-        self.target.setValue(float(task.config.get('强化策略目标分') or 0.0))
+        self.target.setValue(float(preferences.get(Option.TARGET) or 0.0))
         self.target.valueChanged.connect(
-            lambda value: self._write('强化策略目标分', round(float(value), 1))
+            lambda value: self.preferences.set(Option.TARGET, round(float(value), 1))
         )
         grid.addWidget(self.target, 2, 3)
         self.role_picker = None
-        weights = getattr(getattr(self.runtime, 'weights', None), 'active', None)
+        weights = self._weight_snapshot()
         if weights is not None:
-            configured = (
-                task.config.get('TemplateCharacterID'),
-                task.config.get('TemplateModalID'),
-            )
+            configured = preferences.role_key()
             self.role_picker = RolePicker(
                 weights, self.edit_panel, configured if all(configured) else None
             )
@@ -268,7 +299,7 @@ class HudWindow(QWidget):
         res_grid.setContentsMargins(0, 0, 0, 0)
         self.resource_boxes = []
         for idx, (label, value) in enumerate(
-            zip(('胚子', '调谐器', '密音筒', '频整器'), costs_from_config(self.task.config))
+            zip(('胚子', '调谐器', '密音筒', '频整器'), preferences.costs())
         ):
             box = QDoubleSpinBox(resources)
             box.setRange(0.0, 1_000_000_000.0)
@@ -319,38 +350,32 @@ class HudWindow(QWidget):
         self._restore_position()
         self.normal()
 
-    def _write(self, key, value):
-        self.task.config[key] = value
-
     def _font_size(self):
         try:
             return max(
-                12, min(32, int(self.task.config.get('策略悬浮窗字号') or DEFAULT_FONT_SIZE))
+                12,
+                min(32, int(self.preferences.get(Option.HUD_FONT_SIZE) or DEFAULT_FONT_SIZE)),
             )
         except (TypeError, ValueError):
             return DEFAULT_FONT_SIZE
 
     def _font_changed(self, value):
-        self._write('策略悬浮窗字号', int(value))
+        self.preferences.set(Option.HUD_FONT_SIZE, int(value))
         self._apply_font()
 
     def _apply_font(self):
-        for label in self._line_labels:
-            font = label.font()
-            font.setPixelSize(self._font_size())
-            label.setFont(font)
+        self.set_rows(self._rows, force=True)
 
     def _scoring_changed(self, *_):
         system = self.scoring.currentData() or 'workshop_xwuid'
-        self._write('策略评分体系', system)
+        self.preferences.set(Option.SCORING_SYSTEM, system)
         self.target.setRange(
             0.0,
             50.0 if system == 'workshop_xwuid' else (65535.0 if system == 'fixed' else 655.35),
         )
 
     def _resource_changed(self, *_):
-        values = [round(float(box.value()), 3) for box in self.resource_boxes]
-        self._write('强化策略资源权重', json.dumps(values, separators=(',', ':')))
+        self.preferences.save_costs(box.value() for box in self.resource_boxes)
 
     def _apply_role(self):
         if self.role_picker is None:
@@ -359,12 +384,10 @@ class HudWindow(QWidget):
         if key is None:
             return
         try:
-            template = self.runtime.weights.active.template(*key)
+            template = self._weight_snapshot().template(*key)
         except (AttributeError, KeyError, ValueError):
             return
-        self.task.config['TemplateCharacterID'] = key[0]
-        self.task.config['TemplateModalID'] = key[1]
-        self.task.config['角色评分模板'] = template['name']
+        self.preferences.save_role(key, template['name'])
 
     def _apply_style(self):
         if self._locked:
@@ -383,19 +406,10 @@ class HudWindow(QWidget):
         )
 
     def _restore_position(self):
-        raw = self.task.config.get('策略悬浮窗位置', '')
-        try:
-            data = json.loads(raw) if raw else {}
-            x = int(data.get('x', 80))
-            y = int(data.get('y', 120))
-        except (TypeError, ValueError, json.JSONDecodeError):
-            x, y = 80, 120
-        self.move(QPoint(x, y))
+        self.move(QPoint(*self.preferences.position()))
 
     def _save_position(self):
-        self.task.config['策略悬浮窗位置'] = json.dumps(
-            {'x': self.x(), 'y': self.y()}, ensure_ascii=False, separators=(',', ':')
-        )
+        self.preferences.save_position(self.x(), self.y())
 
     def _fit(self):
         self.layout().activate()
@@ -414,7 +428,7 @@ class HudWindow(QWidget):
             self.move(x, y)
 
     def move_for_layout(self, layout, viewport):
-        if not self.task.config.get('策略悬浮窗自动定位', False):
+        if not self.preferences.get(Option.HUD_AUTO_POSITION, False):
             return
         if self._locked or self._details or self._drag is not None:
             return
@@ -450,53 +464,68 @@ class HudWindow(QWidget):
     def _format_row(cls, text, colour):
         if not colour:
             return str(text), 'color: #f4f4f4;', False
+        if isinstance(colour, (tuple, list)) and len(colour) == 2 and ' / ' in str(text):
+            left, right = str(text).split(' / ', 1)
+            left_color, right_color = (cls._rgb(item) or (244, 244, 244) for item in colour)
+            return (
+                f'<span style="color: rgb{left_color};">{html.escape(left)}</span>'
+                f'<span style="color: rgb{HUD_COMPARISON_SEPARATOR_RGB};"> / </span>'
+                f'<span style="color: rgb{right_color};">{html.escape(right)}</span>',
+                'background: transparent;',
+                True,
+            )
         if isinstance(colour, (tuple, list)) and colour and isinstance(colour[0], (tuple, list)):
             parts = [cls._rgb(item) for item in colour]
             parts = [item for item in parts if item is not None]
-            if len(parts) >= 2 and ' / ' in str(text):
-                left, right = str(text).split(' / ', 1)
-                return (
-                    f'<span style="color: rgb{parts[0]};">{html.escape(left)}</span>'
-                    f' / <span style="color: rgb{parts[1]};">{html.escape(right)}</span>',
-                    'background: transparent;',
-                    True,
-                )
             colour = parts[0] if parts else None
         rgb = cls._rgb(colour)
         if rgb is None:
             return str(text), 'color: #f4f4f4;', False
         return str(text), 'color: rgb(%d, %d, %d);' % rgb, False
 
-    def set_rows(self, rows):
+    def set_rows(self, rows, *, force=False):
         rows = tuple(rows or ())
-        if rows == self._rows:
+        if not force and rows == self._rows:
             return
-        count_changed = len(rows) != len(self._line_labels)
+        policy_start = next(
+            (index for index, (text, _) in enumerate(rows) if text == HUD_POLICY_HEADER), len(rows)
+        )
+        rebuild = len(rows) != len(self._line_labels) or any(
+            isinstance(label, _PolicyLine) != (index >= policy_start)
+            for index, label in enumerate(self._line_labels)
+        )
         self._rows = rows
-        if count_changed:
+        px = self._font_size()
+        if rebuild:
             for label in self._line_labels:
+                self.lines_layout.removeWidget(label)
+                label.hide()
                 label.deleteLater()
             self._line_labels = []
         for index, (text, colour) in enumerate(rows):
-            if count_changed:
-                label = QLabel(self.lines_host)
-                label.setWordWrap(True)
+            if rebuild:
+                policy_line = index >= policy_start
+                label = _PolicyLine(self.lines_host) if policy_line else QLabel(self.lines_host)
+                label.setWordWrap(not policy_line)
                 label.setTextInteractionFlags(Qt.NoTextInteraction)
                 label.installEventFilter(self)
                 self.lines_layout.addWidget(label)
                 self._line_labels.append(label)
             label = self._line_labels[index]
             display, style, rich = self._format_row(text, colour)
+            font = label.font()
+            font.setPixelSize(px)
+            label.setFont(font)
+            label.setStyleSheet(style)
+            if isinstance(label, _PolicyLine):
+                label.set_value(text)
+                continue
             if label.text() != display:
                 label.setTextFormat(Qt.RichText if rich else Qt.PlainText)
                 label.setText(display)
             elif bool(label.textFormat() == Qt.RichText) != rich:
                 label.setTextFormat(Qt.RichText if rich else Qt.PlainText)
-            label.setStyleSheet(style)
-            font = label.font()
-            font.setPixelSize(self._font_size())
-            label.setFont(font)
-        if count_changed:
+        if rebuild or force:
             self._needs_fit = True
         if self.isVisible() and self._drag is None:
             self._fit()
@@ -533,7 +562,7 @@ class HudWindow(QWidget):
         self.normal()
 
     def _position_changed(self, checked):
-        self._write('策略悬浮窗自动定位', bool(checked))
+        self.preferences.set(Option.HUD_AUTO_POSITION, bool(checked))
         if checked:
             self._last_layout = None
 
@@ -644,11 +673,13 @@ class HudWindow(QWidget):
 
 
 class HudController(QObject):
-    def __init__(self, task, runtime, parent=None):
+    def __init__(self, preferences, parent=None, *, weight_snapshot, state, closed):
         super().__init__(parent)
-        self.task = task
-        self.runtime = runtime
-        self.window = HudWindow(task, runtime)
+        self.preferences = preferences
+        self._weight_snapshot = weight_snapshot
+        self._state = state
+        self._closed = closed
+        self.window = HudWindow(preferences, weight_snapshot)
         self.window.unlock_requested.connect(self._rebuild_window)
         self._hidden_since = 0.0
         self.timer = QTimer(self)
@@ -658,17 +689,16 @@ class HudController(QObject):
         self.refresh()
 
     def _mode(self):
-        return self.task.config.get('策略浮层模式', 'qt')
+        return self.preferences.get(Option.HUD_MODE, 'qt')
 
     def reset_auto_position(self):
         self.window._last_layout = None
 
     def refresh(self):
-        state = getattr(self.runtime, 'hud_state', None)
-        if state is None:
+        if self._state is None:
             self.window.hide()
             return
-        snapshot = state.snapshot()
+        snapshot = self._state.snapshot()
         if self._mode() == 'qt' and snapshot['visible']:
             self.window.set_rows(snapshot['rows'])
             self.window.show()
@@ -681,13 +711,13 @@ class HudController(QObject):
 
     def _rebuild_window(self):
         old = self.window
-        rows = old._rows
+        rows = self._state.snapshot()['rows'] if self._state is not None else ()
         position = old.pos()
         layout = old._last_layout
         old.close()
-        window = HudWindow(self.task, self.runtime)
+        window = HudWindow(self.preferences, self._weight_snapshot)
         window._last_layout = layout
-        window.set_rows(rows)
+        window.set_rows(rows or self._waiting_rows())
         window.move(position)
         window.unlock_requested.connect(self._rebuild_window)
         self.window = window
@@ -702,18 +732,32 @@ class HudController(QObject):
         else:
             self.window.lock()
 
+    def _waiting_rows(self):
+        if not self.preferences.get(Option.SHOW_POLICY, False):
+            return _WAITING_SCORE_ROWS
+        return (
+            *_WAITING_SCORE_ROWS,
+            (HUD_POLICY_HEADER, None),
+            ('策略：' + HUD_POLICY_BUSY, None),
+            ('期望：' + HUD_POLICY_BUSY, None),
+        )
+
     def _tick(self):
-        if getattr(self.runtime, '_closed', False):
+        if self._closed():
             self.timer.stop()
             self.window.close()
             return
-        state = getattr(self.runtime, 'hud_state', None)
-        if state is None or self._mode() != 'qt' or not self.task.config.get('启用声骸评分', True):
+        if (
+            self._state is None
+            or self._mode() != 'qt'
+            or not self.preferences.get(Option.DISPLAY_SCORE, True)
+        ):
             self.window.hide()
             return
-        snapshot = state.snapshot()
+        snapshot = self._state.snapshot()
         if not snapshot['visible']:
             if self.window._details or self.window._drag is not None:
+                self.window.set_rows(self._waiting_rows())
                 if not self.window.isVisible():
                     self.window.show()
                 return

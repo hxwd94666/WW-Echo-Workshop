@@ -67,8 +67,11 @@ class NativeKeyReader:
 
 
 class ShortcutService:
-    def __init__(self, foreground, dispatch, *, reader=None, stop_event=None, autostart=True):
+    def __init__(
+        self, foreground, dispatch, *, context, reader=None, stop_event=None, autostart=True
+    ):
         self.foreground, self.dispatch = foreground, dispatch
+        self.context = context
         self.reader = reader or NativeKeyReader()
         self.runtime_stop = stop_event or threading.Event()
         self._stop = threading.Event()
@@ -110,6 +113,7 @@ class ShortcutService:
             if self._stop.is_set() or self.runtime_stop.is_set() or not self._bindings:
                 return ()
             focused = bool(self.foreground())
+            context = self.context() if focused else None
             keys = (
                 set(MODIFIERS.values())
                 | WINDOWS_KEYS
@@ -119,7 +123,7 @@ class ShortcutService:
             actions = self._detector.sample(self._bindings, pressed, focused, now)
             generation = self.generation
         for action in actions:
-            self.dispatch(generation, action)
+            self.dispatch(generation, action, context)
         return actions
 
     def _run(self):

@@ -2,31 +2,6 @@
 import time
 
 
-def live_digest(frame):
-    try:
-        return hash(frame[::32, ::32].tobytes())
-    except (AttributeError, TypeError):
-        return None
-
-
-def analysis_key(analysis):
-    """Stable identity for live HUD rows; one-frame OCR jitter must not flip scores."""
-
-    def rows(values):
-        return tuple(
-            (getattr(row, 'stat_name', ''), round(float(getattr(row, 'value', 0.0)), 2))
-            for row in values
-        )
-
-    return (
-        getattr(analysis, 'layout', ''),
-        getattr(analysis, 'selected_template', ''),
-        tuple(getattr(analysis, 'selected_ids', ()) or ()),
-        rows(getattr(analysis, 'main_rows', ())),
-        rows(getattr(analysis, 'sub_rows', ())),
-    )
-
-
 def combat_task(task):
     """Whether the host is actively running automatic combat."""
     return (

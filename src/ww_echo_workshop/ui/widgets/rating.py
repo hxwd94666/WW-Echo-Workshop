@@ -18,7 +18,13 @@ from PySide6.QtWidgets import (
     QStyle,
     QApplication,
 )
-from qfluentwidgets import CaptionLabel, PushButton, TitleLabel, isDarkTheme, qconfig, themeColor
+from ww_echo_workshop.ui.widgets.controls import (
+    CaptionLabel,
+    TitleLabel,
+    is_dark_theme,
+)
+from ww_echo_workshop.ui.widgets.workshop_palette import DARK, colors_for_widget, watch_theme
+from PySide6.QtWidgets import QPushButton
 from ww_echo_workshop.ui.inventory.cards import (
     EchoCardDelegate,
     EchoCardWidget,
@@ -38,15 +44,14 @@ HISTORY_SCORE_ROLE = int(Qt.UserRole) + 21
 
 
 def apply_rating_colour(widget, rating):
-    widget.setStyleSheet('color: ' + rating_colour(rating, isDarkTheme()) + ';')
+    widget.setStyleSheet('color: ' + rating_colour(rating, is_dark_theme(widget)) + ';')
 
 
 class RatingValueLabel(TitleLabel):
     def __init__(self, text='', parent=None):
-        super().__init__(parent=parent)
-        self.setText(text)
+        super().__init__(text, parent)
         self.rating = None
-        qconfig.themeChangedFinished.connect(self.update_rating_colour)
+        watch_theme(self, self.update_rating_colour)
 
     def update_rating_colour(self, *_):
         apply_rating_colour(self, self.rating)
@@ -64,7 +69,7 @@ class RatingValueLabel(TitleLabel):
         self.update_rating_colour()
 
 
-class RatingStandardsButton(PushButton):
+class RatingStandardsButton(QPushButton):
     """Explicit, compact viewer for the actual current/historical thresholds."""
 
     def __init__(self, parent=None):
@@ -151,9 +156,9 @@ class RatingStandardsButton(PushButton):
         outer.addWidget(buttons)
 
         def update_theme(*_):
-            dark = isDarkTheme()
-            surface = QColor('#202020' if dark else '#fafafa')
-            foreground = QColor('#f4f4f4' if dark else '#202020')
+            colors = colors_for_widget(dialog)
+            surface = QColor(colors.panel)
+            foreground = QColor(colors.text)
             palette = dialog.palette()
             for role in (QPalette.Window, QPalette.Base):
                 palette.setColor(role, surface)
@@ -169,16 +174,7 @@ class RatingStandardsButton(PushButton):
                 apply_rating_colour(label, level)
                 apply_rating_colour(threshold, level)
 
-        bound = [True]
-
-        def disconnect_theme(*_):
-            if bound[0]:
-                qconfig.themeChangedFinished.disconnect(update_theme)
-                bound[0] = False
-
-        qconfig.themeChangedFinished.connect(update_theme)
-        dialog.finished.connect(disconnect_theme)
-        dialog.destroyed.connect(disconnect_theme)
+        watch_theme(dialog, update_theme)
         update_theme()
         screen = dialog.screen() or QApplication.primaryScreen()
         available = screen.availableGeometry() if screen is not None else QRect(0, 0, 800, 600)
@@ -291,7 +287,7 @@ class RatedEchoCardWidget(EchoCardWidget):
         )
         line = QFontMetrics(self.font()).height() + 8
         rect = self.rect().adjusted(14, 10, -14, -10)
-        painter.setPen(QColor(rating_colour(self.rating, isDarkTheme())))
+        painter.setPen(QColor(rating_colour(self.rating, is_dark_theme(self))))
         painter.drawText(
             QRect(rect.x(), rect.bottom() - line, rect.width(), line),
             Qt.AlignLeft | Qt.AlignVCenter,
@@ -326,7 +322,9 @@ class RatedCardDelegate(EchoCardDelegate):
         line = QFontMetrics(option.font).height() + 8
         painter.save()
         painter.setFont(option.font)
-        painter.setPen(QColor(rating_colour(index.data(FOOTER_RATING_ROLE), isDarkTheme())))
+        painter.setPen(
+            QColor(rating_colour(index.data(FOOTER_RATING_ROLE), is_dark_theme(option.widget)))
+        )
         painter.drawText(
             QRect(inside.x(), inside.bottom() - line, inside.width(), line),
             Qt.AlignLeft | Qt.AlignVCenter,
@@ -349,16 +347,9 @@ class HistoryScoreDelegate(QStyledItemDelegate):
         painter.save()
         painter.setRenderHint(QPainter.Antialiasing)
         selected = bool(option.state & QStyle.State_Selected)
-        painter.setPen(
-            themeColor() if selected else QColor('#464646' if isDarkTheme() else '#dedede')
-        )
-        painter.setBrush(
-            QColor(
-                ('#29313a' if isDarkTheme() else '#e8eff5')
-                if selected
-                else ('#232323' if isDarkTheme() else '#ffffff')
-            )
-        )
+        colors = colors_for_widget(option.widget)
+        painter.setPen(QColor(colors.accent if selected else colors.border))
+        painter.setBrush(QColor(colors.hover if selected else colors.panel))
         painter.drawRoundedRect(option.rect.adjusted(2, 2, -2, -2), 6, 6)
         if not opt.icon.isNull():
             opt.icon.paint(
@@ -370,7 +361,7 @@ class HistoryScoreDelegate(QStyledItemDelegate):
         painter.setFont(option.font)
         line = QFontMetrics(option.font).height() + 5
         for i, text in enumerate(lines[:2]):
-            painter.setPen(QColor('#eeeeee' if isDarkTheme() else '#202020'))
+            painter.setPen(QColor(colors.text))
             painter.drawText(
                 QRect(rect.x(), rect.y() + i * line, rect.width(), line),
                 Qt.AlignLeft | Qt.AlignVCenter,
@@ -381,7 +372,7 @@ class HistoryScoreDelegate(QStyledItemDelegate):
         width = max(1, rect.width() // len(visible))
         for points, label in visible:
             text = f'{points:.2f}' + (f' · {label}' if label else '')
-            painter.setPen(QColor(rating_colour(label, isDarkTheme())))
+            painter.setPen(QColor(rating_colour(label, colors is DARK)))
             painter.drawText(
                 QRect(x, rect.y() + 2 * line, width, line),
                 Qt.AlignLeft | Qt.AlignVCenter,

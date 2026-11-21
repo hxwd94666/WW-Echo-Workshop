@@ -14,7 +14,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import CaptionLabel, PushButton, isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
+from PySide6.QtWidgets import QPushButton
 
 from ww_echo_workshop.ui.inventory.cards import EchoCardGrid
 from ww_echo_workshop.ui.widgets.rating import lookup_avatar
@@ -86,17 +88,17 @@ class RoleResultGroup(QWidget):
         self.loadout = LoadoutCards(
             self, grid_type=_FullHeightGrid, summary_layout=header, panel_service=panel_service
         )
-        self.changes_button = PushButton('变动', self.header)
+        self.changes_button = QPushButton('变动', self.header)
         self.changes_button.setEnabled(False)
         header.addWidget(self.changes_button)
-        self.replace_button = PushButton('替换优化', self.header)
+        self.replace_button = QPushButton('替换优化', self.header)
         self.replace_button.setEnabled(False)
         header.addStretch(1)
         header.addWidget(self.replace_button)
         from ww_echo_workshop.ui.allocation.action_labels import explain, APPLY_TIP, BACKUP_TIP
 
-        self.backup_button = PushButton('备份方案', self.header)
-        self.save_button = PushButton('设为当前配装', self.header)
+        self.backup_button = QPushButton('备份方案', self.header)
+        self.save_button = QPushButton('设为当前配装', self.header)
         explain(self.backup_button, BACKUP_TIP)
         explain(self.save_button, APPLY_TIP)
         header.addWidget(self.backup_button)
@@ -132,7 +134,7 @@ class RoleResultGroup(QWidget):
             self.avatar.setText(self._avatar_label[:1] or '角')
             self.avatar.setStyleSheet(
                 'border-radius: 15px; background: '
-                + ('#454545; color: #eeeeee;' if isDarkTheme() else '#e8e8e8; color: #555555;')
+                + f'{colors_for_widget(self).control}; color: {colors_for_widget(self).text};'
             )
 
     def set_role(self, row, records, completed, snapshot, request_role=None):
@@ -206,8 +208,7 @@ class GroupedLoadoutResults(QScrollArea):
         self._layout_timer.timeout.connect(self._relayout)
         self.viewport().installEventFilter(self)
         self.verticalScrollBar().sliderPressed.connect(self._user_scrolled)
-        qconfig.themeChangedFinished.connect(self.update_theme)
-        qconfig.themeChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
 
     @property
@@ -235,10 +236,11 @@ class GroupedLoadoutResults(QScrollArea):
 
     def update_theme(self, *_):
         palette = self.palette()
-        surface = QColor('#202020' if isDarkTheme() else '#f9f9f9')
+        colors = colors_for_widget(self)
+        surface = QColor(colors.background)
         for role in (QPalette.Window, QPalette.Base):
             palette.setColor(role, surface)
-        palette.setColor(QPalette.WindowText, QColor('#f4f4f4' if isDarkTheme() else '#202020'))
+        palette.setColor(QPalette.WindowText, QColor(colors.text))
         self.setPalette(palette)
         self.viewport().setPalette(palette)
         self.body.setPalette(palette)

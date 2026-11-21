@@ -3,7 +3,7 @@
 
 from PySide6.QtCore import QEvent, QObject, QTimer
 from PySide6.QtWidgets import QWidget
-from qfluentwidgets import MessageBox
+from ww_echo_workshop.ui.widgets.controls import confirm_action
 from ok import Logger, og
 from ok.core.events import communicate
 
@@ -168,10 +168,9 @@ class EchoAssistantTab(QObject):
         manager = getattr(og, 'task_manager', None)
         if manager is None or 'ww-echo-workshop' not in manager.imported_scripts:
             return
-        confirm = MessageBox(
-            '移除声骸工坊', '移除插件？已收录的声骸、截图和档案会保留。', self._window
-        )
-        if confirm.exec():
+        if confirm_action(
+            self._window, '移除声骸工坊', '移除插件？已收录的声骸、截图和档案会保留。'
+        ):
             manager.delete_imported_script('ww-echo-workshop')
 
     def activate_page(self):

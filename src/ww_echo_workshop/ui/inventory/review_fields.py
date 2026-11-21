@@ -1,56 +1,11 @@
 # 提供核对字段的本地候选和严格搜索选择框。
-from collections import Counter
-from dataclasses import dataclass
-
-from ww_echo_workshop.core.filters import sonata_options
-from ww_echo_workshop.resources.echo_names import builtin_echo_names
+from ww_echo_workshop.application.inventory_review import owner_label
 from ww_echo_workshop.ui.widgets.inputs import QComboBox
-
-
-OwnerValue = tuple[str, str, str]
-
-
-@dataclass(frozen=True)
-class ReviewChoices:
-    names: tuple[str, ...]
-    sonatas: tuple[str, ...]
-    owners: tuple[tuple[str, OwnerValue], ...]
-
-    @classmethod
-    def from_runtime(cls, runtime, record):
-        records = (*runtime.inventory.list(record.profile_id), record)
-        names = tuple(
-            sorted(
-                {
-                    *runtime.game_catalog.active.echo_names,
-                    *(row.name.strip() for row in records if row.name.strip()),
-                }
-            )
-        )
-        characters = {k: v['name'] for k, v in runtime.game_catalog.active.characters.items()}
-        counts = Counter(characters.values())
-        owners = [('未装备', ('', 'unequipped', ''))]
-        for identity, name in sorted(characters.items(), key=lambda row: (row[1], row[0])):
-            label = name if counts[name] == 1 else f'{name}（{identity}）'
-            owners.append((label, (name, 'equipped', identity)))
-        return cls(names, sonata_options(runtime.sonata.active, records), tuple(owners))
-
-    @classmethod
-    def from_record(cls, record):
-        owner = (record.owner, record.owner_state, record.owner_character_id)
-        owners = [('未装备', ('', 'unequipped', ''))]
-        if owner != owners[0][1]:
-            owners.append((_retained_label(owner), owner))
-        return cls(
-            tuple(dict.fromkeys((*builtin_echo_names(), *((record.name,) if record.name else ())))),
-            (record.sonata,) if record.sonata else (),
-            tuple(owners),
-        )
 
 
 def _retained_label(value):
     if isinstance(value, tuple):
-        return '保留原值：' + value[0] if value[0] else '未记录'
+        return owner_label(value)
     return '保留原值：' + str(value)
 
 

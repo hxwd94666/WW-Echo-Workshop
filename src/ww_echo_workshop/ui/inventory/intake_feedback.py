@@ -8,7 +8,8 @@ from PySide6.QtWidgets import (
     QTreeWidgetItem,
     QVBoxLayout,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, PushButton
+from PySide6.QtWidgets import QLabel, QPushButton
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
 from ww_echo_workshop.ui.widgets.layout import fit_dialog
 
 
@@ -62,8 +63,7 @@ class InventoryIntakeFeedback:
         self.match_apply_filtered.setText(f'使用筛选结果 ({len(visible)})')
 
     def show_scan_failures(self):
-        scan = self.runtime.scan
-        snapshot = scan.failure_snapshot()
+        snapshot = self.services.intake.failure_snapshot()
         if snapshot['profile_id'] != self.profile_box.currentData():
             raise ValueError('失败记录属于其他档案，请先切回对应档案。')
         if snapshot['state'] in ('preparing', 'running', 'paused', 'draining'):
@@ -73,7 +73,7 @@ class InventoryIntakeFeedback:
         dialog.setPalette(self.palette())
         dialog.setAutoFillBackground(True)
         layout = QVBoxLayout(dialog)
-        heading = BodyLabel(f'未收录失败 {snapshot["total"]} 件 · 已收录声骸保留', dialog)
+        heading = QLabel(f'未收录失败 {snapshot["total"]} 件 · 已收录声骸保留', dialog)
         layout.addWidget(heading)
         note = CaptionLabel(
             '位置按本次扫描的原列表计数；请保持相同排序和筛选，重新定位后获取新画面。', dialog
@@ -100,7 +100,7 @@ class InventoryIntakeFeedback:
             layout.addWidget(overflow)
         row = QHBoxLayout()
         for label, mode in (('前往手动重新获取', 'manual'), ('前往重新扫描', 'automatic')):
-            button = PushButton(label, dialog)
+            button = QPushButton(label, dialog)
 
             def navigate(_checked=False, target=mode):
                 try:
@@ -125,7 +125,7 @@ class InventoryIntakeFeedback:
     def prepare_reacquisition(self, snapshot, mode):
         if mode not in ('manual', 'automatic'):
             raise ValueError('请选择重新获取方式。')
-        current = self.runtime.scan.failure_snapshot()
+        current = self.services.intake.failure_snapshot()
         if (snapshot['profile_id'], snapshot['generation']) != (
             current['profile_id'],
             current['generation'],
@@ -133,16 +133,13 @@ class InventoryIntakeFeedback:
             raise ValueError('扫描批次已变化，请重新打开失败清单。')
         if snapshot['profile_id'] != self.profile_box.currentData() or not self._selection_ready():
             raise ValueError('请先完成当前编辑或作业，再重新获取。')
-        panel = self.task._panel
-        panel.navigate('inventory')
-        if panel.stack.currentWidget() is not self:
+        if not self.navigation.open_inventory():
             raise ValueError('请先保存或取消当前编辑，再返回声骸库。')
-        self.task.config['IntakeMode'] = mode
+        self.services.intake.set_mode(mode)
         self.refresh_capture_controls()
         self.start_button.setFocus(Qt.OtherFocusReason)
-        panel.feedback.setText(
+        self.navigation.show_feedback(
             '已切到手动收录；在游戏中定位失败声骸后重新收录，仍需新画面核对。'
             if mode == 'manual'
             else '已切到自动扫描；保持原筛选、回到列表顶部后点击开始扫描。'
         )
-        panel.feedback.show()

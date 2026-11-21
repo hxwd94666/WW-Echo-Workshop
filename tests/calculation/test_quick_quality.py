@@ -10,9 +10,7 @@ from unittest.mock import Mock, PropertyMock, patch
 
 from ww_echo_workshop.application.quick_score import (
     QuickScoreStale,
-    refresh_record,
-    score_one,
-    validate_context,
+    QuickScoreService,
 )
 from ww_echo_workshop.core.cancellation import OperationCancelled
 from ww_echo_workshop.core.models import EchoRecord
@@ -27,22 +25,20 @@ def record_fixture():
     )
 
 
-def runtime_fixture(record, directory):
+def service_fixture(record, directory):
     weights = WeightProvider(directory)
     repository = SimpleNamespace(record=record, revision=7)
     repository.get = Mock(side_effect=lambda _: repository.record)
-    return SimpleNamespace(
-        repository=repository,
-        weights=weights,
-        scores=ScoreService(weights),
-        inventory_queries=inventory_queries,
-        stop_event=threading.Event(),
-        _closed=False,
-        inventory=SimpleNamespace(
-            try_revision=lambda: repository.revision, get=lambda _: repository.record
-        ),
-        avatars=None,
+    repository.try_revision = lambda: repository.revision
+    stopped = threading.Event()
+    scorer = QuickScoreService(
+        repository,
+        inventory_queries,
+        ScoreService(weights),
+        weight_snapshot=lambda: weights.active,
+        closed=stopped.is_set,
     )
+    return repository, scorer
 
 
 class QuickQuality(unittest.TestCase):
@@ -50,7 +46,7 @@ class QuickQuality(unittest.TestCase):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
         self.record = record_fixture()
-        self.runtime = runtime_fixture(self.record, self.directory.name)
+        self.repository, self.scorer = service_fixture(self.record, self.directory.name)
         _, _, facts = inventory_queries.review(((self.record, 'item', ()),))
         self.quality = facts[0]
 
@@ -69,19 +65,19 @@ class QuickQuality(unittest.TestCase):
                 side_effect=AssertionError('Python usability'),
             ),
         ):
-            result = score_one(self.runtime, self.record, ('1304', 'default'))
+            result = self.scorer.score_one(self.record, ('1304', 'default'))
             self.assertEqual(29.96, result.comparison.score.current_score)
             self.assertEqual('', result.notice)
-            validate_context(self.runtime, self.record, self.runtime.weights.active)
+            self.scorer.validate_context(self.record, self.scorer.weight_snapshot())
             for bad in (
                 replace(self.record, review='pending'),
                 replace(self.record, main_stats=()),
             ):
-                self.runtime.repository.record = bad
+                self.repository.record = bad
                 with self.assertRaisesRegex(ValueError, '核对'):
-                    score_one(self.runtime, bad, ('1304', 'default'))
+                    self.scorer.score_one(bad, ('1304', 'default'))
             with self.assertRaises(QuickScoreStale):
-                validate_context(self.runtime, self.record, self.runtime.weights.active)
+                self.scorer.validate_context(self.record, self.scorer.weight_snapshot())
 
     def test_refresh_reuses_identical_frozen_facts_and_queries_changed_record_once(self):
         with (
@@ -95,13 +91,13 @@ class QuickQuality(unittest.TestCase):
                 inventory_queries.compute, 'submit', wraps=inventory_queries.compute.submit
             ) as submit,
         ):
-            self.runtime.repository.record = replace(self.record)
-            state = refresh_record(self.runtime, self.record, self.quality, revision=7)
+            self.repository.record = replace(self.record)
+            state = self.scorer.refresh_record(self.record, self.quality, revision=7)
             self.assertIs(self.quality, state.quality)
             submit.assert_not_called()
             bad = replace(self.record, main_stats=())
-            self.runtime.repository.record, self.runtime.repository.revision = bad, 8
-            state = refresh_record(self.runtime, self.record, self.quality, revision=8)
+            self.repository.record, self.repository.revision = bad, 8
+            state = self.scorer.refresh_record(self.record, self.quality, revision=8)
             self.assertIs(bad, state.quality.record)
             self.assertFalse(state.quality.usable)
             self.assertIn('main:expected_two_slots', state.quality.issues)
@@ -109,22 +105,22 @@ class QuickQuality(unittest.TestCase):
 
     def test_revision_race_cancellation_and_missing_record_do_not_publish_stale_quality(self):
         with self.assertRaises(QuickScoreStale):
-            refresh_record(self.runtime, self.record, self.quality, revision=6)
+            self.scorer.refresh_record(self.record, self.quality, revision=6)
         cancel = threading.Event()
         cancel.set()
         with self.assertRaises(OperationCancelled):
-            refresh_record(self.runtime, self.record, self.quality, revision=7, cancel_event=cancel)
-        self.runtime.repository.record = replace(self.record, note='changed')
+            self.scorer.refresh_record(self.record, self.quality, revision=7, cancel_event=cancel)
+        self.repository.record = replace(self.record, note='changed')
         original = inventory_queries.review
 
         def race(*args, **kwargs):
             result = original(*args, **kwargs)
-            self.runtime.repository.revision = 8
+            self.repository.revision = 8
             return result
 
         with patch.object(inventory_queries, 'review', side_effect=race):
             with self.assertRaises(QuickScoreStale):
-                refresh_record(self.runtime, self.record, self.quality, revision=7)
-        self.runtime.repository.record = None
-        state = refresh_record(self.runtime, self.record, self.quality, revision=8)
+                self.scorer.refresh_record(self.record, self.quality, revision=7)
+        self.repository.record = None
+        state = self.scorer.refresh_record(self.record, self.quality, revision=8)
         self.assertIsNone(state.quality)

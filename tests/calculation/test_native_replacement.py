@@ -113,9 +113,17 @@ class TestNativeReplacement(unittest.TestCase):
                         preview = replacement_preview(
                             options, case['selected'], live, plan_evaluator=self.service
                         )
-                        self.assertEqual(case['preview'], preview_value(preview))
+                        # The frozen pre-Rust request predates these four fields.
+                        # Check the exact legacy defaults as well as every frozen value.
+                        expected = copy.deepcopy(case['preview'])
+                        for role in expected['result']['request']['roles']:
+                            role.setdefault('weapon_id', '')
+                            role.setdefault('energy_regen_min', 100.0)
+                            role.setdefault('energy_regen_max', None)
+                            role.setdefault('base_energy_regen', 100.0)
+                        self.assertEqual(expected, preview_value(preview))
                         self.assertEqual(
-                            canonical_json(case['preview']), canonical_json(preview_value(preview))
+                            canonical_json(expected), canonical_json(preview_value(preview))
                         )
                         self.assertNotEqual(preview.result.plan_id, payload['plan_id'])
                         frozen = source_payload(

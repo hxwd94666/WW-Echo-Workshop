@@ -11,7 +11,9 @@ from PySide6.QtWidgets import (
     QLabel,
     QVBoxLayout,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, PushButton, isDarkTheme
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget
+from PySide6.QtWidgets import QPushButton
 
 PANEL_ROLE = int(Qt.UserRole) + 30
 STATS = (
@@ -128,14 +130,14 @@ def build_panel_data(row, request_role, records, service):
     return PanelCardData(rows, _weapon_rows(detail.weapon, weapon_id), tuple(parts))
 
 
-def paint_panel_card(painter, rect, data, font, selected=False):
-    dark = isDarkTheme()
-    surface = QColor('#202020' if dark else '#f5f5f5')
-    text = QColor('#eeeeee' if dark else '#202020')
-    muted = QColor('#9a9a9a' if dark else '#666666')
+def paint_panel_card(painter, rect, data, font, selected=False, *, widget=None):
+    colors = colors_for_widget(widget)
+    surface = QColor(colors.panel)
+    text = QColor(colors.text)
+    muted = QColor(colors.muted)
     painter.save()
     painter.setRenderHint(QPainter.Antialiasing)
-    border = QColor('#333333' if dark else '#dedede')
+    border = QColor(colors.accent if selected else colors.border)
     painter.setBrush(surface)
     painter.setPen(QPen(border, 1.5 if selected else 1))
     painter.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 8, 8)
@@ -147,10 +149,6 @@ def paint_panel_card(painter, rect, data, font, selected=False):
     else:
         title_font.setPointSizeF(title_font.pointSizeF() + 3)
     subtitle_font = QFont(font)
-    if subtitle_font.pixelSize() > 0:
-        subtitle_font.setPixelSize(max(9, subtitle_font.pixelSize() - 1))
-    else:
-        subtitle_font.setPointSizeF(max(8.0, subtitle_font.pointSizeF() - 1.0))
     title_line = QFontMetrics(title_font).height() + 6
     subtitle_line = QFontMetrics(subtitle_font).height() + 2
     row_line = QFontMetrics(font).height() + 5
@@ -171,9 +169,9 @@ def paint_panel_card(painter, rect, data, font, selected=False):
     x = inside.x() + 4
     block = inside.width() - 8
     block_top = top + title_line + subtitle_line
-    separator = QColor('#303030' if dark else '#d8d8d8')
+    separator = QColor(colors.border)
     value_font = QFont(font)
-    value_font.setBold(True)
+    value_font.setWeight(QFont.Normal)
     for index, (label, value) in enumerate(data.rows[:shown]):
         y = block_top + index * row_line
         if index:
@@ -205,7 +203,7 @@ class PanelDetailsDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 18, 20, 16)
         layout.setSpacing(10)
-        title = BodyLabel('角色面板', self)
+        title = QLabel('角色面板', self)
         font = title.font()
         font.setBold(True)
         if font.pixelSize() > 0:
@@ -222,26 +220,24 @@ class PanelDetailsDialog(QDialog):
             row, column = divmod(index, 2)
             grid.addWidget(CaptionLabel(label, self), row, column * 2)
             cell = QLabel(value, self)
-            cell.setStyleSheet('font-weight: 600;')
+            value_font = cell.font()
+            value_font.setWeight(QFont.Normal)
+            cell.setFont(value_font)
             grid.addWidget(cell, row, column * 2 + 1)
         grid.setColumnStretch(1, 1)
         grid.setColumnStretch(3, 1)
         layout.addLayout(grid)
-        self.source_button = PushButton('展开详情', self)
+        self.source_button = QPushButton('展开详情', self)
         self.source_button.setFixedWidth(112)
         self.source_button.clicked.connect(self._toggle_sources)
         layout.addWidget(self.source_button, alignment=Qt.AlignRight)
         self.source_box = QFrame(self)
         self.source_box.setObjectName('PanelSourceBox')
-        border = '#444444' if isDarkTheme() else '#d8d8d8'
-        self.source_box.setStyleSheet(
-            f'QFrame#PanelSourceBox {{ border: 1px solid {border}; border-radius: 6px; }}'
-        )
         source_layout = QVBoxLayout(self.source_box)
         source_layout.setContentsMargins(12, 10, 12, 10)
         source_layout.setSpacing(6)
         if data.detail:
-            source_title = BodyLabel('来源', self.source_box)
+            source_title = QLabel('来源', self.source_box)
             source_font = source_title.font()
             source_font.setBold(True)
             if source_font.pixelSize() > 0:

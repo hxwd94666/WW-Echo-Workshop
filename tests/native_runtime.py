@@ -260,7 +260,8 @@ class InventoryFilters(ProductionInventoryFilters):
 
 
 def analyze_echo_stats(*args, **kwargs):
-    from ww_echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats as analyze
+    from ww_echo_workshop.capture.stat_observation import analyze_echo_stats as analyze
+    from ww_echo_workshop.ui.widgets.rating_style import dark_rating_rgb
     from ww_echo_workshop.application.live_selection import LiveSelection
     from ww_echo_workshop.application.templates import DEFAULT_TEMPLATE
     from ww_echo_workshop.resources.weights import WeightSnapshot
@@ -278,6 +279,7 @@ def analyze_echo_stats(*args, **kwargs):
         )
 
     kwargs.setdefault('template_resolver', resolver)
+    kwargs.setdefault('rating_rgb', dark_rating_rgb)
     return analyze(
         *args, **kwargs, observation_service=_observations, weight_version=snapshot.version
     )

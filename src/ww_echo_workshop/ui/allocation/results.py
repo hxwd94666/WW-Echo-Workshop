@@ -18,20 +18,22 @@ class AllocationUX:
         self._start_plan_job(
             'precheck',
             dict(
-                profile_id=request.profile_id, request=request, snapshot=self.runtime.weights.active
+                profile_id=request.profile_id,
+                request=request,
+                snapshot=self.services.weight_snapshot(),
             ),
         )
         self.precheck_hint.setText('后台检查完整候选池；旧统计仅作历史参考，可取消。')
 
     def precheck_fresh(self):
-        if self._precheck is None or self.runtime._closed:
+        if self._precheck is None or self.services.closed():
             return False
         try:
             profile, revision, version, request_version, report = self._precheck
             return (
                 profile == self.profile.currentData()
                 and revision == self.inventory_revision()
-                and version == self.runtime.weights.active.version
+                and version == self.services.weight_snapshot().version
                 and request_version == self.request_version()
                 and report.get('scope_generation', self._scope_generation) == self._scope_generation
             )
@@ -60,7 +62,7 @@ class AllocationUX:
             return False
         if (
             profile != self.profile.currentData()
-            or version != self.runtime.weights.active.version
+            or version != self.services.weight_snapshot().version
             or request_version != self.request_version()
             or report.get('scope_generation', self._scope_generation) != self._scope_generation
         ):
@@ -146,8 +148,7 @@ class AllocationUX:
         """A delayed GUI receipt belongs to exactly one still-live IO request."""
         return (
             not self._closing
-            and not self.runtime._closed
-            and not self.task._destroyed
+            and not self.services.closed()
             and self._editor is None
             and self._future is None
             and self._io_future is None
@@ -236,7 +237,23 @@ class AllocationUX:
         lines.append('保存不等于已装备，请在游戏中手动装备。')
         self.outcome.setPlainText('\n'.join(lines))
         if hasattr(self, 'outcome_label'):
-            self.outcome_label.setText(lines[-2])
+            notice = lines[-2]
+            status = getattr(self, 'status', None)
+            duplicate = bool(
+                limited
+                and status is not None
+                and getattr(status, 'isVisible', lambda: False)()
+                and status.text() == notice
+            )
+            if duplicate:
+                clear = getattr(status, 'clear', None)
+                if callable(clear):
+                    clear()
+                else:
+                    status.setVisible(False)
+            # Keep the result summary in result_actions so the notice shares
+            # the same row as the batch action buttons.
+            self.outcome_label.setText(notice)
             self.outcome_label.setToolTip('\n'.join(lines))
             self.outcome_label.setVisible(True)
         self.precheck_panel.toggle.setChecked(False)

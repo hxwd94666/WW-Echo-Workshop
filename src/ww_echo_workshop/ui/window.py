@@ -7,14 +7,13 @@ from ww_echo_workshop.ui.widgets.layout import fit_dialog
 
 class ModeWindow(QDialog):
     mode = 'inventory'
-    owner_attribute = None
 
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None, *, on_close):
         super().__init__(parent)
-        self._task = task
+        self._on_close = on_close
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setWindowTitle('声骸工坊')
-        self.panel = EchoAssistantPanel(task, self)
+        self.panel = EchoAssistantPanel(services, self)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.panel)
@@ -32,12 +31,9 @@ class ModeWindow(QDialog):
 
     def closeEvent(self, event):
         self.panel.close()
-        attribute = self.owner_attribute or self.mode + '_window'
-        if getattr(self._task, attribute, None) is self:
-            setattr(self._task, attribute, None)
+        self._on_close(self)
         super().closeEvent(event)
 
 
 class AssistantWindow(ModeWindow):
     mode = 'workspace'
-    owner_attribute = 'assistant_window'

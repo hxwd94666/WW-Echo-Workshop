@@ -3,7 +3,7 @@ from dataclasses import replace
 import json
 import math
 
-from ww_echo_workshop.capture.viewport import EchoViewport
+from ww_echo_workshop.capture.viewport import COMPARISON_SPLIT, EchoViewport
 
 
 def evidence_bounds(analysis, width, height):
@@ -19,7 +19,7 @@ def evidence_bounds(analysis, width, height):
     # Both display and dual-Echo mode collect the selected right-hand item.
     left, top = (0.665, 0.08) if layout == 'bag' else (0.755, 0.105)
     if getattr(analysis, 'comparison', False):
-        left = 0.775
+        left = COMPARISON_SPLIT
     dx, dy = area.offset('right')
     x1, y1 = round(dx + area.reference_width * left), round(dy + area.height * top)
     x2, y2 = round(dx + area.reference_width * 0.995), round(dy + area.height * 0.93)

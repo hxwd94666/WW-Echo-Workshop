@@ -4,10 +4,23 @@
 import threading
 import time
 
+from ok.device.capture_methods.base import BaseWindowsCaptureMethod
 from ok.util.logger import Logger
 
 
 logger = Logger.get_logger(__name__)
+
+
+def _desktop_selection(manager):
+    preferred = manager.get_preferred_device()
+    key = getattr(manager, 'config', {}).get('preferred', '')
+    if preferred is None:
+        # The old pc_<hwnd> entry may already have disappeared during a restart.
+        if isinstance(key, str) and (key == 'pc' or key.startswith('pc_')):
+            return key, None, False
+    elif preferred.get('device') == 'windows':
+        return key, preferred.get('real_hwnd'), True
+    return None
 
 
 class CaptureRecoveryMonitor:
@@ -18,14 +31,17 @@ class CaptureRecoveryMonitor:
         interval=1.0,
         retry_delay=5.0,
         stale_frame_delay=10.0,
-        allow_paused=None,
+        *,
+        owner_task=None,
+        allowed=None,
     ):
         self.device_manager = device_manager
         self.exit_event = exit_event
         self.interval = interval
         self.retry_delay = retry_delay
         self.stale_frame_delay = stale_frame_delay
-        self.allow_paused = allow_paused
+        self.owner_task = owner_task
+        self.allowed = allowed
         self._score_frame_time = 0.0
         self._last_attempt = float('-inf')
         self._last_hwnd = 0
@@ -55,6 +71,23 @@ class CaptureRecoveryMonitor:
             except Exception as error:
                 logger.error('Echo capture recovery check failed', error)
 
+    def _may_refresh(self, executor):
+        if (
+            executor is None
+            or (self.owner_task is not None and self.owner_task.executor is not executor)
+            or self.exit_event.is_set()
+            or self._stop_event.is_set()
+            or executor.paused
+            or getattr(executor, '_exclusive_owner', None) is not None
+            or getattr(executor, 'onetime_task_queue', ())
+        ):
+            return False
+        current = getattr(executor, 'current_task', None)
+        return bool(
+            (current is None or current is self.owner_task)
+            and (self.allowed is None or self.allowed())
+        )
+
     def poll(self):
         """Refresh a started capture if its target or latest frame is stale."""
         manager = self.device_manager
@@ -72,36 +105,40 @@ class CaptureRecoveryMonitor:
 
         executor = getattr(manager, 'executor', None)
         capture = getattr(manager, 'capture_method', None)
-        if executor is None or (
-            executor.paused and not (self.allow_paused and self.allow_paused())
-        ):
+        if not self._may_refresh(executor):
             return False
+        if capture is not None and not isinstance(capture, BaseWindowsCaptureMethod):
+            return False
+        choice = _desktop_selection(manager)
+        if choice is None:
+            return False
+        signature = getattr(window, 'capture_target_signature', None)
         now = time.monotonic()
         hwnd_changed = self._last_hwnd not in (0, hwnd)
-        self._last_hwnd = hwnd
-        preferred = manager.get_preferred_device()
-        preferred_hwnd = preferred.get('real_hwnd') if preferred else None
-        wrong_selection = preferred is None or (
-            preferred.get('device') == 'windows' and preferred_hwnd not in (None, 0, hwnd)
-        )
+        wrong_selection = not choice[2] or choice[1] not in (None, 0, hwnd)
         connected = capture is not None and capture.connected()
         last_frame = max(getattr(executor, '_last_frame_time', 0), self._score_frame_time)
-        current_task = getattr(executor, 'current_task', None)
-        another_task_running = current_task is not None and current_task.__class__.__name__ not in (
-            'EchoStatOverlayTask',
-            'WWEchoWorkshopOverlayTask',
-        )
         stale_frame = (
             last_frame > 0
             and time.time() - last_frame >= self.stale_frame_delay
-            and not another_task_running
             and getattr(window, 'visible', True)
         )
         if not (hwnd_changed or wrong_selection or not connected or stale_frame):
+            self._last_hwnd = hwnd
             return False
         if now - self._last_attempt < self.retry_delay:
             return False
-        self._last_attempt = now
+        if (
+            getattr(manager, 'executor', None) is not executor
+            or getattr(manager, 'capture_method', None) is not capture
+            or getattr(manager, 'hwnd_window', None) is not window
+            or getattr(window, 'hwnd', None) != hwnd
+            or getattr(window, 'capture_target_signature', None) != signature
+            or _desktop_selection(manager) != choice
+            or not self._may_refresh(executor)
+        ):
+            return False
+        self._last_attempt, self._last_hwnd = now, hwnd
         reason = (
             'new game HWND'
             if hwnd_changed
@@ -121,5 +158,7 @@ class CaptureRecoveryMonitor:
                 capture.close()
             except Exception as error:
                 logger.error('Failed to close stale Echo capture', error)
+        if not self._may_refresh(executor):
+            return False
         manager.refresh()
         return True

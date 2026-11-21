@@ -61,7 +61,7 @@ class AllocationProjection:
 
     def inventory_revision(self):
         revision = getattr(self, '_refresh_revision', _UNSET)
-        return self.runtime.inventory.try_revision() if revision is _UNSET else revision
+        return self.services.try_revision() if revision is _UNSET else revision
 
     @contextmanager
     def refresh_projection(self):
@@ -70,7 +70,7 @@ class AllocationProjection:
             return
         busy = self._future is not None or self._io_future is not None
         self._refresh_revision = (
-            None if busy or self.runtime._closed else self.runtime.inventory.try_revision()
+            None if busy or self.services.closed() else self.services.try_revision()
         )
         try:
             yield
@@ -78,7 +78,7 @@ class AllocationProjection:
             del self._refresh_revision
 
     def fresh(self, result=None):
-        if self.runtime._closed:
+        if self.services.closed():
             return False
         data = self.result_data() if result is None else result
         if data is None:
@@ -88,7 +88,7 @@ class AllocationProjection:
         try:
             return (
                 data['inventory_revision'] == self.inventory_revision()
-                and data['weight_version'] == self.runtime.weights.active.version
+                and data['weight_version'] == self.services.weight_snapshot().version
                 and (
                     self._result is None
                     or data['plan_id'] != self._result.plan_id

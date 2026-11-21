@@ -1,6 +1,6 @@
 # 验证原生库存查询同时返回选择范围和空候选原因，保留旧反馈优先级。
-import ast
 import copy
+from dataclasses import replace
 import json
 from pathlib import Path
 import threading
@@ -12,16 +12,16 @@ from ww_echo_workshop.application.compute_protocol import ComputeFailure
 from ww_echo_workshop.application.inventory_query import InventoryQueryService
 from ww_echo_workshop.application.matching.feedback import (
     feedback_from_code,
-    MatchRequirementsError,
-    validate_match_requirements,
 )
 from ww_echo_workshop.application.operations import OperationCancelled
-from ww_echo_workshop.application.pins import prepare_pin_catalog
+from ww_echo_workshop.application.match_projection import MatchProjectionService
+from ww_echo_workshop.application.matching.jobs import MatchingRequest, MatchingService
+from ww_echo_workshop.core.compatibility import CompatibilityRule
 from ww_echo_workshop.core.models import EchoRecord, StatValue
 from ww_echo_workshop.resources.weights import WeightSnapshot
-from tests.native_runtime import _jobs
+from tests.calculation.test_quick_quality import record_fixture
+from tests.native_runtime import ScoreService, _jobs, pin_checks
 
-ROOT = Path(__file__).resolve().parents[2]
 FIXTURE = Path(__file__).with_name('fixtures') / 'matching_scope.json'
 
 
@@ -103,68 +103,93 @@ class TestMatchingScopeQuery(unittest.TestCase):
         with self.assertRaises(ValueError):
             queries.matching_scope(records_for(case), selected_ids='not-an-id-set')
 
-    def test_actual_candidate_worker_publishes_native_feedback_without_rescoring(self):
-        # Execute the actual catalogue-only worker body; this is not a real Qt/host gate.
-        source = ROOT / 'src/ww_echo_workshop/ui/matching/controller.py'
-        tree = ast.parse(source.read_text('utf-8'))
-        controller = next(
-            n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'ComparisonContent'
+    def _matching_job(self, records, *, scores=None, stop=None):
+        inventory = SimpleNamespace(inventory_snapshot=Mock(return_value=(7, records, {})))
+        queries = InventoryQueryService(compute=_jobs)
+        snapshot = WeightSnapshot.builtin()
+        service = MatchingService(
+            inventory,
+            queries,
+            scores if scores is not None else ScoreService(SimpleNamespace(active=snapshot)),
+            MatchProjectionService(compute=_jobs),
+            pin_checks,
+            stop if stop is not None else threading.Event(),
         )
-        start = next(
-            n
-            for n in controller.body
-            if isinstance(n, ast.FunctionDef) and n.name == '_start_comparison'
-        )
-        calculate = next(
-            n for n in start.body if isinstance(n, ast.FunctionDef) and n.name == 'calculate'
-        )
-        payload_type = next(
-            n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == '_ComparisonPayload'
-        )
+        return service, inventory, snapshot
+
+    def test_actual_candidate_job_returns_native_feedback_without_scoring(self):
         case = json.loads(FIXTURE.read_text('utf-8'))['cases'][5]
         records = records_for(case)
-        queries = InventoryQueryService(compute=_jobs)
-        completed = Mock()
-        inventory = SimpleNamespace(inventory_snapshot=Mock(return_value=(7, records, {})))
-        owner = SimpleNamespace(
-            runtime=SimpleNamespace(
-                inventory=inventory,
-                inventory_queries=queries,
-                scores=Mock(),
-            ),
-            _signals=SimpleNamespace(completed=SimpleNamespace(emit=completed)),
+        scores = Mock()
+        service, inventory, snapshot = self._matching_job(records, scores=scores)
+        request = MatchingRequest(
+            records[0].profile_id,
+            snapshot,
+            'frozen',
+            (('1304', 'default'),),
+            case['selected_ids'],
+            {},
+            {},
+            {},
+            catalogue_only=True,
         )
-        env = dict(
-            __name__=__name__,
-            self=owner,
-            profile=records[0].profile_id,
-            requirements={},
-            snapshot=WeightSnapshot.builtin(),
-            stop=threading.Event(),
-            selected_ids=case['selected_ids'],
-            filters={},
-            rules={},
-            selections=(('1304', 'default'),),
-            _catalogue_only=True,
-            generation=3,
-            defaults_version='frozen',
-            prepare_pin_catalog=prepare_pin_catalog,
-            feedback_from_code=feedback_from_code,
-            validate_match_requirements=validate_match_requirements,
-            ComparisonCancelled=OperationCancelled,
-            OperationCancelled=OperationCancelled,
-            MatchRequirementsError=MatchRequirementsError,
+        result = service.run(request)
+        inventory.inventory_snapshot.assert_called_once()
+        self.assertIs(request, result.request)
+        self.assertEqual(
+            (7, (), (), None), (result.revision, result.records, result.scores, result.projections)
         )
-        exec(
-            compile(
-                ast.Module(body=[payload_type, calculate], type_ignores=[]), str(source), 'exec'
-            ),
-            env,
+        self.assertEqual(case['feedback']['text'], result.feedback.text)
+        scores.compare.assert_not_called()
+
+    def test_explicit_job_freezes_ids_and_preserves_native_order_and_score(self):
+        original = record_fixture()
+        prefix = '22222222-2222-4222-8222-'
+        late, early, excluded = (
+            replace(original, item_id=prefix + f'{index:012}') for index in (3, 1, 2)
         )
-        env['calculate']()
-        completed.assert_called_once()
-        generation, payload, error = completed.call_args.args
-        self.assertEqual((3, ''), (generation, error))
-        self.assertEqual((), payload[3])
-        self.assertEqual(case['feedback']['text'], payload.feedback.text)
-        owner.runtime.scores.compare.assert_not_called()
+        service, _, snapshot = self._matching_job((late, early, excluded))
+        key = ('1304', 'default')
+        ids = [late.item_id, early.item_id]
+        filters = {'text': ''}
+        request = MatchingRequest(
+            original.profile_id,
+            snapshot,
+            'frozen',
+            (key,),
+            ids,
+            filters,
+            {key: CompatibilityRule()},
+            {},
+        )
+        ids[:] = [excluded.item_id]
+        filters['text'] = '不再冻结输入内'
+        result = service.run(request)
+        self.assertEqual((late, early), result.records)
+        self.assertEqual((late, early, excluded), result.catalog)
+        self.assertEqual([29.96, 29.96], [cell.score.current_score for cell in result.scores])
+        self.assertEqual(['B', 'B'], [cell.score.rating.label for cell in result.scores])
+        self.assertTrue(result.projections.matches(result.records, (key,), result.scores))
+        self.assertEqual(
+            [early.item_id, late.item_id],
+            [result.records[entry[0]].item_id for entry in result.projections.views[0].entries],
+        )
+        print('MATCH_JOB_FROZEN_OK: 29.96/B, source rows preserved, ties ordered by UUID')
+
+    def test_cancelled_job_does_not_read_or_publish(self):
+        original = record_fixture()
+        stop = threading.Event()
+        service, inventory, snapshot = self._matching_job((original,), stop=stop)
+        request = MatchingRequest(original.profile_id, snapshot, '', (), None, {}, {}, {}, True)
+        stop.set()
+        with self.assertRaises(OperationCancelled):
+            service.run(request)
+        inventory.inventory_snapshot.assert_not_called()
+        stop.clear()
+        cancel = threading.Event()
+        inventory.inventory_snapshot.side_effect = lambda *args, **kwargs: (
+            cancel.set() or (7, (original,), {})
+        )
+        with self.assertRaises(OperationCancelled):
+            service.run(request, cancel_event=cancel)
+        inventory.inventory_snapshot.assert_called_once()

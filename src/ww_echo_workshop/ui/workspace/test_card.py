@@ -1,5 +1,4 @@
 # 工作台强化测试卡：手动构造声骸并异步求解，不写库存或角色设置。
-import json
 from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 
@@ -12,11 +11,16 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import BodyLabel, CaptionLabel, CardWidget, PrimaryPushButton, PushButton
+from PySide6.QtWidgets import QLabel, QPushButton
+from ww_echo_workshop.ui.widgets.controls import (
+    CaptionLabel,
+    CardWidget,
+    PrimaryPushButton,
+    SubtitleLabel,
+)
 
-from ww_echo_workshop.application.policy import build_payload, costs_from_config
-from ww_echo_workshop.application.policy_ui_state import PolicyUiStateStore
-from ww_echo_workshop.application.preset_catalog import PresetCatalog
+from ww_echo_workshop.application.live_preferences import LiveOption as Option
+from ww_echo_workshop.application.policy import build_payload
 from ww_echo_workshop.core.policy import (
     POLICY_SOURCE,
     PolicyError,
@@ -25,7 +29,7 @@ from ww_echo_workshop.core.policy import (
 )
 from ww_echo_workshop.core.policy_presets import SYSTEMS, default_scoring
 from ww_echo_workshop.core.scoring import MAX_MAINSTAT_VALUES, SUBSTAT_TIERS
-from ww_echo_workshop.ui.widgets.inputs import ComboBox, QDoubleSpinBox
+from ww_echo_workshop.ui.widgets.inputs import QComboBox, QDoubleSpinBox
 from ww_echo_workshop.ui.widgets.roles import RolePicker
 from ww_echo_workshop.ui.workspace.preset_picker import PresetPickerDialog
 
@@ -43,35 +47,40 @@ def _main_stats(cost):
 class PolicyTestCard(CardWidget):
     preset_changed = Signal()
 
-    def __init__(self, parent=None, *, task):
+    def __init__(
+        self,
+        parent=None,
+        *,
+        preferences,
+        weight_snapshot,
+        live_snapshot,
+        presets,
+        state_store,
+        solve,
+    ):
         super().__init__(parent)
-        self.task = task
-        self.runtime = task.runtime
+        self.preferences = preferences
+        self._weight_snapshot = weight_snapshot
+        self._live_snapshot = live_snapshot
+        self._solve = solve
         self._loading = True
-        self._state_store = PolicyUiStateStore(getattr(self.runtime, 'data_dir', '.'))
-        self._preset_catalog = PresetCatalog(getattr(self.runtime, 'data_dir', '.'))
+        self._state_store = state_store
+        self._preset_catalog = presets
         self._future = None
         self._last_result = None
         self._pool = ThreadPoolExecutor(max_workers=1, thread_name_prefix='policy-test')
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 14, 16, 14)
         layout.setSpacing(10)
-        heading = BodyLabel('声骸强化测试', self)
-        font = heading.font()
-        font.setBold(True)
-        font.setPointSize(11)
-        heading.setFont(font)
+        heading = SubtitleLabel('声骸强化测试', self)
         layout.addWidget(heading)
 
-        snapshot = self.runtime.weights.active
-        configured = (
-            task.config.get('TemplateCharacterID'),
-            task.config.get('TemplateModalID'),
-        )
+        snapshot = self._weight_snapshot()
+        configured = self.preferences.role_key()
         self.picker = RolePicker(snapshot, self, configured if all(configured) else None)
         layout.addWidget(self.picker)
 
-        self.scoring = ComboBox(self)
+        self.scoring = QComboBox(self)
         self.scoring.setMinimumWidth(180)
         self.scoring.addItem('XWUID（工坊默认）', userData='workshop_xwuid')
         for key, spec in SYSTEMS.items():
@@ -81,11 +90,11 @@ class PolicyTestCard(CardWidget):
         self.scoring.setAccessibleName('策略评分体系')
 
         row = QHBoxLayout()
-        row.addWidget(BodyLabel('评分体系', self))
+        row.addWidget(QLabel('评分体系', self))
         row.addWidget(self.scoring, 2)
         row.addSpacing(8)
-        row.addWidget(BodyLabel('COST', self))
-        self.cost = ComboBox(self)
+        row.addWidget(QLabel('COST', self))
+        self.cost = QComboBox(self)
         self.cost.setAccessibleName('声骸 COST')
         for cost in (1, 3, 4):
             self.cost.addItem(f'{cost}C', userData=cost)
@@ -103,10 +112,10 @@ class PolicyTestCard(CardWidget):
         self.preset_name = CaptionLabel('未选择', self.preset_box)
         self.preset_name.setWordWrap(True)
         preset_row.addWidget(self.preset_name, 1)
-        self.preset_button = PushButton('选择预设', self.preset_box)
+        self.preset_button = QPushButton('选择预设', self.preset_box)
         self.preset_button.clicked.connect(self._pick_preset)
         preset_row.addWidget(self.preset_button)
-        self.preset_match = PushButton('从当前角色匹配', self.preset_box)
+        self.preset_match = QPushButton('从当前角色匹配', self.preset_box)
         self.preset_match.clicked.connect(self._match_current_role)
         preset_row.addWidget(self.preset_match)
         self.preset_box.hide()
@@ -116,7 +125,7 @@ class PolicyTestCard(CardWidget):
         self.preset_note.hide()
         layout.addWidget(self.preset_note)
 
-        layout.addWidget(BodyLabel('副词条（按实际档位填写；留空表示未揭示）', self))
+        layout.addWidget(QLabel('副词条（按实际档位填写；留空表示未揭示）', self))
         grid = QGridLayout()
         grid.setHorizontalSpacing(8)
         grid.setVerticalSpacing(6)
@@ -125,7 +134,7 @@ class PolicyTestCard(CardWidget):
         self._rows = []
         defaults = ('暴击', '暴击伤害', None, None, None)
         for index, name in enumerate(defaults):
-            combo = ComboBox(self)
+            combo = QComboBox(self)
             combo.addItem('不使用', userData=None)
             for stat_name in STAT_NAMES:
                 combo.addItem(stat_name, userData=stat_name)
@@ -149,9 +158,7 @@ class PolicyTestCard(CardWidget):
         self.candidate_box = QWidget(self)
         candidate_layout = QVBoxLayout(self.candidate_box)
         candidate_layout.setContentsMargins(0, 0, 0, 0)
-        candidate_layout.addWidget(
-            BodyLabel('重抽候选（仅重抽模式；留空不比较）', self.candidate_box)
-        )
+        candidate_layout.addWidget(QLabel('重抽候选（仅重抽模式；留空不比较）', self.candidate_box))
         candidate_grid = QGridLayout()
         candidate_grid.setHorizontalSpacing(8)
         candidate_grid.setVerticalSpacing(6)
@@ -159,7 +166,7 @@ class PolicyTestCard(CardWidget):
         candidate_grid.setColumnStretch(1, 2)
         self._candidate_rows = []
         for index in range(5):
-            combo = ComboBox(self.candidate_box)
+            combo = QComboBox(self.candidate_box)
             combo.addItem('不使用', userData=None)
             for stat_name in STAT_NAMES:
                 combo.addItem(stat_name, userData=stat_name)
@@ -177,7 +184,7 @@ class PolicyTestCard(CardWidget):
             candidate_grid.addWidget(spin, index, 1)
             self._candidate_rows.append((combo, spin))
         candidate_layout.addLayout(candidate_grid)
-        self.capture_button = PushButton('捕获当前游戏声骸', self.candidate_box)
+        self.capture_button = QPushButton('捕获当前游戏声骸', self.candidate_box)
         self.capture_button.setToolTip('从最近一次实时识别结果填入五条候选；不自动接受。')
         self.capture_button.clicked.connect(self.capture_candidate)
         candidate_layout.addWidget(self.capture_button)
@@ -190,9 +197,9 @@ class PolicyTestCard(CardWidget):
         self.target.setSingleStep(0.5)
         self.target.setSpecialValueText('未设置')
         self.target.setAccessibleName('策略目标分')
-        configured_target = float(task.config.get('强化策略目标分') or 0.0)
+        configured_target = float(self.preferences.get(Option.TARGET) or 0.0)
         self.target.setValue(configured_target if configured_target > 0 else 35.0)
-        self.mode = ComboBox(self)
+        self.mode = QComboBox(self)
         self.mode.setAccessibleName('策略模式')
         for label, value in (('自动', 'auto'), ('仅强化', 'upgrade'), ('仅重抽', 'reroll')):
             self.mode.addItem(label, userData=value)
@@ -205,13 +212,13 @@ class PolicyTestCard(CardWidget):
         self.main_score = QDoubleSpinBox(self)
         self.main_score.setRange(0.0, 65535.0)
         self.main_score.setDecimals(2)
-        self.main_score.setValue(float(task.config.get('策略主词条分') or 0.0))
+        self.main_score.setValue(float(self.preferences.get(Option.MAIN_SCORE) or 0.0))
         self.main_score.setAccessibleName('策略主词条分')
         form.addRow('主词条分', self.main_score)
         self.max_score = QDoubleSpinBox(self)
         self.max_score.setRange(0.01, 655.35)
         self.max_score.setDecimals(2)
-        self.max_score.setValue(float(task.config.get('策略归一满分') or 100.0))
+        self.max_score.setValue(float(self.preferences.get(Option.MAX_SCORE) or 100.0))
         self.max_score.setAccessibleName('策略归一满分')
         form.addRow('归一满分', self.max_score)
         form.addRow('策略模式', self.mode)
@@ -231,7 +238,7 @@ class PolicyTestCard(CardWidget):
         self.accept_button.clicked.connect(self.accept_candidate)
         self.accept_button.hide()
         actions.addWidget(self.accept_button)
-        self.joint_button = PushButton('转到重抽', self)
+        self.joint_button = QPushButton('转到重抽', self)
         self.joint_button.setAccessibleName('转到重抽策略')
         self.joint_button.clicked.connect(self.joint_to_reroll)
         self.joint_button.hide()
@@ -260,7 +267,7 @@ class PolicyTestCard(CardWidget):
         for label, value in (('联合（实验）', 'joint'),):
             self.mode.addItem(label, userData=value)
         self.mode.setCurrentIndex(self.mode.findData('auto'))
-        configured_scoring = task.config.get('策略评分体系', 'workshop_xwuid')
+        configured_scoring = self.preferences.get(Option.SCORING_SYSTEM, 'workshop_xwuid')
         index = self.scoring.findData(configured_scoring)
         self.scoring.setCurrentIndex(index if index >= 0 else 0)
         self.scoring.currentIndexChanged.connect(self._scoring_changed)
@@ -272,7 +279,7 @@ class PolicyTestCard(CardWidget):
         if self._loading:
             return
         system = self.scoring.currentData() or 'workshop_xwuid'
-        self.task.config['策略评分体系'] = system
+        self.preferences.set(Option.SCORING_SYSTEM, system)
         self.picker.setVisible(system == 'workshop_xwuid')
         self.preset_note.setVisible(system != 'workshop_xwuid')
         self.preset_box.setVisible(system != 'workshop_xwuid')
@@ -289,10 +296,10 @@ class PolicyTestCard(CardWidget):
             self.main_score.setValue(float(spec['main_score']))
             self.max_score.setValue(float(spec['max_score']))
         elif not initial:
-            self.target.setValue(float(self.task.config.get('强化策略目标分') or 0.0))
+            self.target.setValue(float(self.preferences.get(Option.TARGET) or 0.0))
         if system != 'workshop_xwuid':
-            self.task.config['策略主词条分'] = float(self.main_score.value())
-            self.task.config['策略归一满分'] = float(self.max_score.value())
+            self.preferences.set(Option.MAIN_SCORE, float(self.main_score.value()))
+            self.preferences.set(Option.MAX_SCORE, float(self.max_score.value()))
         fixed = system == 'fixed'
         editable = system != 'workshop_xwuid'
         self.main_score.setEnabled(editable and not fixed)
@@ -313,7 +320,7 @@ class PolicyTestCard(CardWidget):
     def refresh_presets(self):
         self._preset_catalog.load()
         system = self.scoring.currentData() or 'workshop_xwuid'
-        preset_id = self.task.config.get('策略评分预设', '')
+        preset_id = self.preferences.get(Option.PRESET_ID, '')
         preset = self._preset_catalog.get(preset_id, system) if preset_id else None
         if system == 'workshop_xwuid':
             self.preset_name.setText('')
@@ -338,15 +345,7 @@ class PolicyTestCard(CardWidget):
             self.scoring.setCurrentIndex(index)
         self._loading = False
         self._scoring_changed(initial=True)
-        self.task.config['策略评分体系'] = preset.system
-        self.task.config['策略评分权重'] = json.dumps(
-            [float(value) for value in preset.weights], separators=(',', ':')
-        )
-        self.task.config['策略主词条分'] = float(preset.main_score)
-        self.task.config['策略归一满分'] = float(preset.max_score)
-        self.task.config['强化策略目标分'] = round(float(preset.target), 1)
-        self.task.config['策略评分预设'] = preset.preset_id
-        self.task.config['策略评分预设名称'] = f'{preset.character} · {preset.variant}'
+        self.preferences.apply_preset(preset)
         self.target.setValue(float(preset.target))
         self.main_score.setValue(float(preset.main_score))
         self.max_score.setValue(float(preset.max_score))
@@ -357,14 +356,13 @@ class PolicyTestCard(CardWidget):
         system = self.scoring.currentData() or 'workshop_xwuid'
         if system == 'workshop_xwuid':
             return
-        store = getattr(self.runtime, 'live_snapshots', None)
-        snapshot = store.latest() if store is not None else None
+        snapshot = self._live_snapshot()
         ids = getattr(snapshot, 'selected_ids', ()) if snapshot is not None else ()
         if len(ids) != 2:
             self.preset_note.setText('当前没有可匹配的游戏角色。')
             return
         try:
-            name = self.runtime.weights.active.scoring_template(*ids)['name']
+            name = self._weight_snapshot().scoring_template(*ids)['name']
         except (AttributeError, KeyError, ValueError):
             self.preset_note.setText('当前角色没有可用的工坊模版。')
             return
@@ -413,7 +411,7 @@ class PolicyTestCard(CardWidget):
         return
 
     def sync_preset(self):
-        system = self.task.config.get('策略评分体系', 'workshop_xwuid')
+        system = self.preferences.get(Option.SCORING_SYSTEM, 'workshop_xwuid')
         index = self.scoring.findData(system)
         if index < 0:
             return
@@ -421,21 +419,9 @@ class PolicyTestCard(CardWidget):
         self.scoring.setCurrentIndex(index)
         self._loading = False
         self._scoring_changed(initial=True)
-        self.target.setValue(float(self.task.config.get('强化策略目标分') or self.target.value()))
-        self.main_score.setValue(float(self.task.config.get('策略主词条分') or 0.0))
-        self.max_score.setValue(float(self.task.config.get('策略归一满分') or 100.0))
-
-    def _configured_weights(self, system, *, fixed=False):
-        raw = self.task.config.get('策略评分权重', '')
-        try:
-            values = json.loads(raw) if isinstance(raw, str) and raw.strip() else []
-        except (TypeError, ValueError):
-            values = []
-        if len(values) != 13:
-            values = list(default_scoring(system)['weights'])
-        if fixed:
-            return [int(value) for value in values]
-        return [float(value) for value in values]
+        self.target.setValue(float(self.preferences.get(Option.TARGET) or self.target.value()))
+        self.main_score.setValue(float(self.preferences.get(Option.MAIN_SCORE) or 0.0))
+        self.max_score.setValue(float(self.preferences.get(Option.MAX_SCORE) or 100.0))
 
     def _candidate(self):
         selected = []
@@ -476,8 +462,7 @@ class PolicyTestCard(CardWidget):
         )
 
     def capture_candidate(self):
-        store = getattr(self.runtime, 'live_snapshots', None)
-        snapshot = store.latest() if store is not None else None
+        snapshot = self._live_snapshot()
         if snapshot is None:
             self.feedback.setText('还没有实时识别快照；请先在游戏中打开声骸详情。')
             return
@@ -545,14 +530,14 @@ class PolicyTestCard(CardWidget):
                     self.feedback.setText('请选择角色和模版。')
                     return
                 check_target(self.target.value())
-                template = self.runtime.weights.active.scoring_template(*key)
+                template = self._weight_snapshot().scoring_template(*key)
             else:
                 maximum = 65535.0 if system == 'fixed' else self.max_score.value()
                 check_target(self.target.value(), maximum)
                 template = None
             record = self._record()
             candidate = self._candidate()
-            costs = costs_from_config(self.task.config)
+            costs = self.preferences.costs()
             if system == 'workshop_xwuid':
                 payload = build_payload(
                     template,
@@ -564,9 +549,9 @@ class PolicyTestCard(CardWidget):
                 )
             else:
                 fixed = system == 'fixed'
-                weights = self._configured_weights(system, fixed=fixed)
-                self.task.config['策略主词条分'] = float(self.main_score.value())
-                self.task.config['策略归一满分'] = float(self.max_score.value())
+                weights = self.preferences.policy_weights(system, fixed=fixed)
+                self.preferences.set(Option.MAIN_SCORE, float(self.main_score.value()))
+                self.preferences.set(Option.MAX_SCORE, float(self.max_score.value()))
                 payload = build_payload(
                     None,
                     record,
@@ -592,7 +577,7 @@ class PolicyTestCard(CardWidget):
         self._last_result = None
         self._sync_action_buttons()
         self.calculate_button.setEnabled(False)
-        self._future = self._pool.submit(self.runtime.policy.solve, payload)
+        self._future = self._pool.submit(self._solve, payload)
         self._timer.start()
 
     def _poll(self):

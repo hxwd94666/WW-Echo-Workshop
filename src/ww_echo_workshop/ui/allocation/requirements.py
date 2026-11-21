@@ -7,9 +7,10 @@ the user changes them, and hidden sonata choices are not discarded by filtering.
 
 from PySide6.QtCore import QPoint, Signal
 from PySide6.QtWidgets import QHBoxLayout, QMenu, QSizePolicy, QVBoxLayout, QWidget
-from qfluentwidgets import BodyLabel, CaptionLabel, PushButton, FluentIcon
+from PySide6.QtWidgets import QLabel, QPushButton
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, standard_icon
 
-from ww_echo_workshop.ui.widgets.inputs import ComboBox
+from ww_echo_workshop.ui.widgets.inputs import QComboBox
 from ww_echo_workshop.core.filters import STAT_LABELS, canonical_stat
 from ww_echo_workshop.core.scoring import MAX_MAINSTAT_VALUES
 
@@ -67,7 +68,7 @@ def _main_label(name, cost):
     return f'{label} {value:g}%' if value is not None else '旧要求：' + label
 
 
-class _MainNamesButton(PushButton):
+class _MainNamesButton(QPushButton):
     changed = Signal()
 
     def __init__(self, parent=None):
@@ -75,7 +76,7 @@ class _MainNamesButton(PushButton):
         # use the parent-only overload to avoid recursive dispatch.
         super().__init__(parent=parent)
         self.setText('默认')
-        self.setIcon(FluentIcon.CHEVRON_DOWN_MED)
+        self.setIcon(standard_icon('SP_ArrowDown'))
         self.cost, self.names = 1, ()
         self._menu = None
         self.setMinimumWidth(0)
@@ -139,7 +140,7 @@ class MainRequirementsPicker(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(8)
         if title:
-            root.addWidget(BodyLabel(title, self))
+            root.addWidget(QLabel(title, self))
         self.labels, self.boxes = [], []
         for index in range(5):
             row = QHBoxLayout()
@@ -323,7 +324,7 @@ class SonataEffectsPicker(QWidget):
                 label.setMinimumWidth(0)
                 label.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
                 layout.addWidget(label, 1)
-                box = ComboBox(row)
+                box = QComboBox(row)
                 box.setMinimumWidth(0)
                 box.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Fixed)
                 box.addItem('不要求套装效果', userData=0)

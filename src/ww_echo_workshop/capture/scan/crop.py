@@ -58,24 +58,19 @@ def restore_boxes(boxes, regions, offsets):
     return sorted(result, key=lambda b: (b.y, b.x))
 
 
-def read_fields(frame, viewport, read, *, mode, box_factory):
+def read_fields(frame, viewport, read, *, mode):
     # read is the existing single OCR facade; no additional engine or worker.
     if mode == 'separate':
         return sorted(
             [
                 box
                 for index, region in enumerate(field_regions(frame, viewport))
-                for box in read(
-                    frame=frame, box=box_factory(*region, name='echo-bag-field-' + str(index))
-                )
+                for box in read(frame, region, 'echo-bag-field-' + str(index))
             ],
             key=lambda b: (b.y, b.x),
         )
     if mode == 'packed':
         packed, regions, offsets = pack_fields(frame, viewport)
-        boxes = read(
-            frame=packed,
-            box=box_factory(0, 0, packed.shape[1], packed.shape[0], name='echo-bag-packed'),
-        )
+        boxes = read(packed, (0, 0, packed.shape[1], packed.shape[0]), 'echo-bag-packed')
         return restore_boxes(boxes, regions, offsets)
     raise ValueError('Unknown bag crop strategy')

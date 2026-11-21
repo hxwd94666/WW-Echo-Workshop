@@ -11,7 +11,6 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 from ww_echo_workshop.ui.inventory.card_data import stat_value_text
-from qfluentwidgets import PushButton as FluentPushButton
 
 
 def stat_text(stat):
@@ -60,7 +59,7 @@ class Disclosure(QWidget):
         super().__init__(parent)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
-        self.toggle = FluentPushButton('展开：' + title)
+        self.toggle = QPushButton('展开：' + title)
         self.toggle.setCheckable(True)
         self.content = QScrollArea()
         self.content.setWidgetResizable(True)
@@ -79,65 +78,9 @@ class Disclosure(QWidget):
         self.toggle.toggled.connect(show)
 
 
-def add_home_button(window, task):
+def add_home_button(window, return_home):
     button = QPushButton('返回声骸工坊', window)
-
-    def back():
-        selector = getattr(window, 'profile_box', getattr(window, 'profile', None))
-        if selector is not None and selector.currentData():
-            task.config['InventoryProfileID'] = selector.currentData()
-        window.close()
-        task.open_assistant(window.parentWidget())
-
-    button.clicked.connect(back)
+    button.clicked.connect(return_home)
     window.layout().insertWidget(0, button)
     window._echo_home_button = button
     fit_dialog(window, window.width(), window.height())
-
-
-def open_profile_window(task, name, parent, profile):
-    """Navigate explicitly to a profile, without cancelling work or capture."""
-    if profile not in task.runtime.inventory.profiles():
-        raise ValueError('档案已不存在，请重新选择。')
-    guard = getattr(task, 'ensure_profile_switch', None)
-    if guard is not None:
-        guard(profile)
-    capture = task.runtime.capture.status
-    if capture.state != 'stopped' and capture.profile_id != profile:
-        raise ValueError('另一档案正在收录，请先明确结束，再切换。')
-    window = getattr(task, name + '_window', None)
-    field = 'profile' if name == 'allocation' else 'profile_box'
-    if window is not None and getattr(window, field).currentData() != profile:
-        selector = getattr(window, field)
-        if (
-            not selector.isEnabled()
-            or getattr(window, '_future', None) is not None
-            or getattr(window, '_io_future', None) is not None
-        ):
-            raise ValueError('目标窗口正在处理，请完成或取消作业后再切换档案。')
-        if name == 'allocation' and window._role_draft is not None and window.incoming.count():
-            raise ValueError('配装仍有待配置角色，请先处理或取消草稿，再切换档案。')
-    getattr(task, 'open_' + name)(parent)
-    window = getattr(task, name + '_window')
-    selector = getattr(window, field)
-    if selector.currentData() != profile:
-        index = selector.findData(profile)
-        if index < 0:
-            selector.blockSignals(True)
-            selector.addItem(task.runtime.inventory.profiles()[profile], userData=profile)
-            selector.blockSignals(False)
-            index = selector.findData(profile)
-        if name == 'inventory':
-            # Inventory's old profile_changed stops capture. Navigation itself
-            # must not end a same-profile session or reset the current filter.
-            selector.blockSignals(True)
-            selector.setCurrentIndex(index)
-            selector.blockSignals(False)
-            if hasattr(window, '_accepted_profile'):
-                window.profile_changed()
-            else:
-                window.refresh(force=True)
-        else:
-            selector.setCurrentIndex(index)
-    task.config['InventoryProfileID'] = profile
-    return window

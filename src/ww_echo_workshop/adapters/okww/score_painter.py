@@ -3,6 +3,7 @@ import ctypes
 import os
 import re
 
+from ww_echo_workshop.application.hud_state import HUD_COMPARISON_SEPARATOR_RGB
 from ww_echo_workshop.capture.viewport import EchoViewport
 from ww_echo_workshop.ui.widgets.rating_style import summary_colour
 
@@ -312,7 +313,9 @@ def _paint_score_summary(
                     )
                     cursor += measure(part)
                     if part_index == 0:
-                        win32_gdi.gdi32.SetTextColor(canvas.hdc, win32_gdi._rgb(*color))
+                        win32_gdi.gdi32.SetTextColor(
+                            canvas.hdc, win32_gdi._rgb(*HUD_COMPARISON_SEPARATOR_RGB)
+                        )
                         win32_gdi.gdi32.TextOutW(canvas.hdc, cursor, line_y, ' / ', 3)
                         cursor += measure(' / ')
             else:

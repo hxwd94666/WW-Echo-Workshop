@@ -36,6 +36,9 @@ class ProfileSettingsService:
         self.inventory = inventory
         self.data_dir = Path(data_dir).resolve()
 
+    def active_id(self):
+        return self.config.get('InventoryProfileID')
+
     def apply(self, settings=(), *, removed=None, active=None, cancel_event=None):
         checkpoint(cancel_event)
         profiles = self.inventory.profiles()

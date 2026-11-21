@@ -20,7 +20,9 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-from qfluentwidgets import CaptionLabel, PushButton, isDarkTheme, qconfig
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, is_dark_theme
+from PySide6.QtWidgets import QPushButton
 
 from ww_echo_workshop.ui.inventory.card_data import DAMAGE_LABELS
 from ww_echo_workshop.ui.inventory.cards import (
@@ -220,14 +222,14 @@ class MatchScoreDelegate(EchoCardDelegate):
                     painter.drawPixmap(avatar_rect, avatar)
                 else:
                     painter.setPen(Qt.NoPen)
-                    painter.setBrush(QColor('#555555' if isDarkTheme() else '#dedede'))
+                    painter.setBrush(QColor(colors_for_widget(option.widget).control))
                     painter.drawEllipse(avatar_rect)
-                    painter.setPen(QColor('#ffffff' if isDarkTheme() else '#555555'))
+                    painter.setPen(QColor(colors_for_widget(option.widget).text))
                     painter.drawText(avatar_rect, Qt.AlignCenter, row.label[:1])
                 label_area = area.adjusted(28, 0, -(width + 6), 0)
                 label = row.label
                 painter.setFont(stat_label_font(option.font, label, label_area.width()))
-                painter.setPen(QColor('#b7b7b7' if isDarkTheme() else '#656565'))
+                painter.setPen(QColor(colors_for_widget(option.widget).muted))
                 painter.drawText(
                     label_area,
                     Qt.AlignLeft | Qt.AlignVCenter,
@@ -237,15 +239,15 @@ class MatchScoreDelegate(EchoCardDelegate):
                 )
                 painter.setFont(option.font)
                 painter.setPen(
-                    QColor(rating_colour(row.rating, isDarkTheme()))
+                    QColor(rating_colour(row.rating, is_dark_theme(option.widget)))
                     if row.available
-                    else QColor('#888888')
+                    else QColor(colors_for_widget(option.widget).muted)
                 )
                 painter.drawText(area, Qt.AlignRight | Qt.AlignVCenter, right)
         else:
             for ordinal, text in enumerate((index.data(FOOTER_ROLE) or '').split('\n')):
                 rating = getattr(getattr(source.data(SCORE_ROLE), 'score', None), 'rating', None)
-                painter.setPen(QColor(rating_colour(rating, isDarkTheme())))
+                painter.setPen(QColor(rating_colour(rating, is_dark_theme(option.widget))))
                 painter.drawText(
                     QRect(inside.x(), top + ordinal * line, inside.width(), line),
                     Qt.AlignLeft | Qt.AlignVCenter,
@@ -296,7 +298,7 @@ class MatchResultCards(QWidget):
         row.addWidget(self.role_selector, 1)
         self.order_hint = CaptionLabel('当前分高 → 低', self)
         row.addWidget(self.order_hint)
-        self.pending_button = PushButton('待核对 —', self)
+        self.pending_button = QPushButton('待核对 —', self)
         self.pending_button.setToolTip('打开声骸库的待核对记录；不改变本次匹配结果')
         self.pending_button.clicked.connect(self.pending_review.emit)
         row.addWidget(self.pending_button)
@@ -324,7 +326,7 @@ class MatchResultCards(QWidget):
         self.role_selector.currentIndexChanged.connect(self._role_changed)
         self.role_selector.activated.connect(self._role_changed)
         self.cards.selectionModel().currentChanged.connect(self._card_changed)
-        qconfig.themeChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.setAutoFillBackground(True)
         self.update_theme()
         self._loading = False
@@ -347,11 +349,11 @@ class MatchResultCards(QWidget):
         self.pending_button.setText('待核对 —' if count is None else f'待核对 {count} 件')
 
     def update_theme(self, *_):
-        dark = isDarkTheme()
+        colors = colors_for_widget(self)
         palette = self.palette()
         surface, foreground = (
-            QColor('#202020' if dark else '#f9f9f9'),
-            QColor('#f4f4f4' if dark else '#202020'),
+            QColor(colors.background),
+            QColor(colors.text),
         )
         for role in (QPalette.Window, QPalette.Base, QPalette.Button):
             palette.setColor(role, surface)

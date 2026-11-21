@@ -6,7 +6,6 @@ import time
 
 from PySide6.QtCore import QTimer, QEvent
 from PySide6.QtWidgets import (
-    QCheckBox,
     QDialog,
     QHBoxLayout,
     QLabel,
@@ -19,6 +18,7 @@ from PySide6.QtWidgets import (
 
 from ww_echo_workshop.resources.weights import ALGORITHM_VERSION
 from ww_echo_workshop.ui.settings.help import add_diagnostics, job_text
+from ww_echo_workshop.ui.widgets.controls import WorkshopCheckBox
 
 
 def _time(value):
@@ -41,20 +41,20 @@ class _InfoView(QPlainTextEdit):
 
 
 class WeightContent:
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.services = services
         self.setWindowTitle('评分权重 · XWUID')
         self.resize(900, 460)
         layout = QVBoxLayout(self)
         self.resource_controls = QWidget(self)
         resources = QVBoxLayout(self.resource_controls)
         resources.setContentsMargins(0, 0, 0, 0)
-        self.auto = QCheckBox('自动检查资料更新')
+        self.auto = WorkshopCheckBox('自动检查资料更新')
         self.auto.setToolTip(
             '低频后台检查权重、角色属性、套装和头像；不开页面也可检查，不上传库存或截图。'
         )
-        self.auto.setChecked(bool(task.config.get('AutoWeightUpdates', True)))
+        self.auto.setChecked(self.services.auto())
         self.auto.toggled.connect(self.set_auto)
         self.update_options = QHBoxLayout()
         self.update_options.addWidget(self.auto)
@@ -92,7 +92,7 @@ class WeightContent:
         self.advanced_controls = QWidget(self)
         advanced = QVBoxLayout(self.advanced_controls)
         advanced.setContentsMargins(0, 0, 0, 0)
-        self.allow_removals = QCheckBox('移除失效模版')
+        self.allow_removals = WorkshopCheckBox('移除失效模版')
         self.allow_removals.setToolTip(
             '只影响下次明确检查；旧方案和自定义权重保留，失效模版需重新选择。'
         )
@@ -128,41 +128,24 @@ class WeightContent:
         if self.custom_editor is None:
             from ww_echo_workshop.ui.settings.weights import CustomWeightEditor
 
-            self.custom_editor = CustomWeightEditor(self.task, self)
+            self.custom_editor = CustomWeightEditor(self.services, self)
             self.layout().addWidget(self.custom_editor)
         return self.custom_editor
 
     def cancel_update(self):
-        service = getattr(self.runtime, 'resources', None)
-        if service is not None:
-            service.cancel()
+        if not self.services.closed():
+            self.services.cancel()
             self.feedback.setText('正在取消更新…')
             self.refresh()
 
     def set_auto(self, enabled):
-        if not self.runtime._closed:
-            self.task.config['AutoWeightUpdates'] = bool(enabled)
-            if service := getattr(self.runtime, 'resources', None):
-                service.set_auto(enabled)
-            else:
-                self.runtime.updates.set_auto(enabled)
-                if auxiliary := getattr(self.runtime, 'sonata_updates', None):
-                    auxiliary.start(auto_enabled=enabled)
-                if effects := getattr(self.runtime, 'sonata_effect_updates', None):
-                    effects.start(auto_enabled=enabled)
+        self.services.set_auto(enabled)
+        if not self.services.closed():
             self.refresh()
 
     def check(self):
-        if not self.runtime._closed:
-            service = getattr(self.runtime, 'resources', None)
-            accepted = (service or self.runtime.updates).request(
-                allow_removals=self.allow_removals.isChecked()
-            )
-            if service is None:
-                if auxiliary := getattr(self.runtime, 'sonata_updates', None):
-                    auxiliary.request()
-                if effects := getattr(self.runtime, 'sonata_effect_updates', None):
-                    effects.request()
+        if not self.services.closed():
+            accepted = self.services.check(allow_removals=self.allow_removals.isChecked())
             self._check_feedback = accepted
             self.feedback.setText(
                 '正在检查资料更新。' if accepted else '已有操作正在进行，请稍候。'
@@ -170,8 +153,8 @@ class WeightContent:
             self.refresh()
 
     def reload_local(self):
-        if not self.runtime._closed:
-            accepted = self.runtime.updates.request_reload()
+        if not self.services.closed():
+            accepted = self.services.reload_local()
             self._check_feedback = accepted
             self.feedback.setText(
                 '正在读取本机权重。' if accepted else '已有操作正在进行，请稍候。'
@@ -179,17 +162,17 @@ class WeightContent:
             self.refresh()
 
     def refresh(self):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             self.close()
             return
-        state = self.runtime.updates.status
-        snapshot = self.runtime.weights.active
+        facts = self.services.facts()
+        state, snapshot = facts.weight_status, facts.weights
         if self.custom_editor is not None:
             self.custom_editor.refresh()
         progress_text = ''
         if state.operation == 'check' and state.state == 'checking':
             elapsed = max(0, int(time.time() - state.started_at)) if state.started_at else 0
-            limit = getattr(self.runtime.updates.client, 'deadline', 300)
+            limit = facts.network_budget
             progress_text = f'\n{state.message}\n已用 {elapsed} 秒 · 网络检查预算 {int(limit)} 秒'
         if self._check_feedback and state.state not in ('checking', 'queued'):
             self.feedback.clear()
@@ -207,19 +190,18 @@ class WeightContent:
         )
         if state.operation == 'check' and '个角色属性未更新' in state.message:
             self.summary.setText(self.summary.text() + '\n' + state.message.split('；')[-1])
-        if auxiliary := getattr(self.runtime, 'sonata_updates', None):
-            auxiliary_state = auxiliary.status
-            auxiliary_text = {
-                'idle': '套装资料离线可用',
-                'queued': '套装资料待检查',
-                'checking': '正在检查套装资料',
-                'current': '套装资料已是最新',
-                'updated': '套装资料已更新',
-                'failed': '套装资料检查未完成，继续使用已有资料',
-                'stopped': '套装资料检查已停止',
-            }.get(auxiliary_state.state, '套装资料待核对')
-            if auxiliary_state.state in ('failed', 'checking', 'queued'):
-                self.summary.setText(self.summary.text() + '\n' + auxiliary_text)
+        auxiliary_state = facts.sonata_status
+        auxiliary_text = {
+            'idle': '套装资料离线可用',
+            'queued': '套装资料待检查',
+            'checking': '正在检查套装资料',
+            'current': '套装资料已是最新',
+            'updated': '套装资料已更新',
+            'failed': '套装资料检查未完成，继续使用已有资料',
+            'stopped': '套装资料检查已停止',
+        }.get(auxiliary_state.state, '套装资料待核对')
+        if auxiliary_state.state in ('failed', 'checking', 'queued'):
+            self.summary.setText(self.summary.text() + '\n' + auxiliary_text)
         checked_source = (
             state.source
             if state.last_success
@@ -235,56 +217,55 @@ class WeightContent:
             f'最近检查：{_time(state.last_checked)}；最近成功检查：{_time(state.last_success)}\n'
             f'下次自动检查不早于：{_time(state.next_check)}（自动检查关闭时不执行）\n'
             f'状态：{state.state}；{state.message}\n本次文件 {state.files} / 请求 {state.requests}\n来源尝试：\n{attempts or "尚无"}'
-            f'\n自定义角色：{len(self.runtime.weights.customized_characters)}；角色属性：{len(snapshot.character_elements)}'
+            f'\n自定义角色：{facts.custom_count}；角色属性：{len(snapshot.character_elements)}'
             + progress_text
         )
-        if auxiliary := getattr(self.runtime, 'sonata_updates', None):
-            details += (
-                f'\n套装资料：{auxiliary.status.state}；{auxiliary.status.message}'
-                f'\n套装快照：{self.runtime.sonata.active.version}；数量：{len(self.runtime.sonata.active.icons)}'
+        sonata, effects = facts.sonata_status, facts.effects_status
+        details += (
+            f'\n套装资料：{sonata.state}；{sonata.message}'
+            f'\n套装快照：{facts.sonata.version}；数量：{len(facts.sonata.icons)}'
+        )
+        if effects.state in ('failed', 'checking', 'queued'):
+            self.summary.setText(self.summary.text() + '\n' + effects.message)
+        details += (
+            f'\n套装效果：{effects.state}；{effects.message}\n效果快照：{facts.effects.version}'
+        )
+        resource_state = facts.resources
+        busy = state.state in ('checking', 'queued') or resource_state.state in (
+            'checking',
+            'queued',
+        )
+        terminal = {
+            'idle': '已有资料离线可用',
+            'queued': '等待检查',
+            'checking': '正在检查资料',
+            'current': '资料已是最新',
+            'updated': '资料更新完成',
+            'partial': '部分资料未更新，已有资料保留',
+            'failed': '检查未完成，已有资料保留',
+            'cancelled': '资料检查已取消',
+        }
+        label = terminal.get(resource_state.state, '资料状态待确认')
+        message = resource_state.message.strip()
+        status_text = label if not message or message == label else label + ' · ' + message
+        self.summary.setText(label + '\n最近检查：' + _time(resource_state.last_checked))
+        if resource_state.state in ('partial', 'failed'):
+            self.summary.setText(self.summary.text() + '\n可稍后重试，或查看诊断信息。')
+        details += '\n资料摘要：' + status_text
+        details += '\n统一资料作业：' + resource_state.operation_id + '；' + resource_state.state
+        for part in resource_state.parts:
+            details += f'\n{part.channel}：{part.state}；{part.message}；版本 {part.version}'
+        avatar_part = resource_state.part('avatars')
+        if avatar_part.state in ('checking', 'queued', 'deferred'):
+            self.summary.setText(
+                self.summary.text() + f'\n头像：后台更新中（已检查 {avatar_part.files} 张）'
             )
-        if effects := getattr(self.runtime, 'sonata_effect_updates', None):
-            if effects.status.state in ('failed', 'checking', 'queued'):
-                self.summary.setText(self.summary.text() + '\n' + effects.status.message)
-            details += f'\n套装效果：{effects.status.state}；{effects.status.message}\n效果快照：{self.runtime.sonata_effects.active.version}'
-        service = getattr(self.runtime, 'resources', None)
-        resource_state = service.status if service is not None else None
-        busy = state.state in ('checking', 'queued')
-        if resource_state is not None:
-            busy = busy or resource_state.state in ('checking', 'queued')
-            terminal = {
-                'idle': '已有资料离线可用',
-                'queued': '等待检查',
-                'checking': '正在检查资料',
-                'current': '资料已是最新',
-                'updated': '资料更新完成',
-                'partial': '部分资料未更新，已有资料保留',
-                'failed': '检查未完成，已有资料保留',
-                'cancelled': '资料检查已取消',
-            }
-            label = terminal.get(resource_state.state, '资料状态待确认')
-            message = resource_state.message.strip()
-            status_text = label if not message or message == label else label + ' · ' + message
-            self.summary.setText(label + '\n最近检查：' + _time(resource_state.last_checked))
-            if resource_state.state in ('partial', 'failed'):
-                self.summary.setText(self.summary.text() + '\n可稍后重试，或查看诊断信息。')
-            details += '\n资料摘要：' + status_text
-            details += (
-                '\n统一资料作业：' + resource_state.operation_id + '；' + resource_state.state
-            )
-            for part in resource_state.parts:
-                details += f'\n{part.channel}：{part.state}；{part.message}；版本 {part.version}'
-            avatar_part = resource_state.part('avatars')
-            if avatar_part.state in ('checking', 'queued', 'deferred'):
-                self.summary.setText(
-                    self.summary.text() + f'\n头像：后台更新中（已检查 {avatar_part.files} 张）'
-                )
         if state.operation == 'reload':
             self.advanced_feedback.setText(
                 '本机权重 · ' + job_text(state.state) + ' · ' + state.message
             )
         self.summary.setToolTip('')
-        updating = resource_state is not None and resource_state.state in ('checking', 'queued')
+        updating = resource_state.state in ('checking', 'queued')
         self.progress_bar.setVisible(updating)
         if not updating and self.feedback.text() == '正在取消更新…':
             self.feedback.clear()
@@ -312,9 +293,7 @@ class WeightContent:
         self.check_button.setEnabled(not busy)
         self.allow_removals.setEnabled(not busy)
         self.reload_button.setEnabled(not busy)
-        self.cancel_update_button.setVisible(
-            resource_state is not None and resource_state.state in ('checking', 'queued')
-        )
+        self.cancel_update_button.setVisible(resource_state.state in ('checking', 'queued'))
 
     def showEvent(self, event):
         super().showEvent(event)

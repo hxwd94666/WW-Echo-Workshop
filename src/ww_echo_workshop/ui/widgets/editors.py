@@ -1,5 +1,5 @@
 # 复用内嵌核对和角色要求编辑器。
-"""Page-local editors; validation shared with legacy dialogs, no exec loop."""
+"""Page-local editors without an independent dialog event loop."""
 
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QDialogButtonBox, QWidget
@@ -8,7 +8,6 @@ from ww_echo_workshop.ui.allocation.editor import RoleEditorContent
 
 
 class InlineRecordEditor(RecordEditorContent, QWidget):
-    _structured_cards = True
     saveRequested = Signal()
     cancelled = Signal()
 

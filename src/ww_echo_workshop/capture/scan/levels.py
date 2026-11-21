@@ -5,13 +5,6 @@ from dataclasses import dataclass
 from ww_echo_workshop.capture.scan.pipeline import observed_level
 
 
-def wheel_count(batch):
-    """One-based scroll number: five 24s, one 25; no inferred displacement."""
-    if type(batch) is not int or batch < 1:
-        raise ValueError('Positive scroll batch required')
-    return 25 if batch % 6 == 0 else 24
-
-
 @dataclass(frozen=True)
 class GradeJob:
     generation: int
@@ -22,11 +15,11 @@ class GradeJob:
 
 
 def crop_levels(frame, tiles, generation, page, token):
-    """Exactly eighteen bottom-right +N patches, not a full-page OCR image."""
+    """Read only measured cards, including partial rows at the bag bottom."""
     import numpy as np
 
-    if len(tiles) != 18:
-        raise ValueError('Expected eighteen grade positions')
+    if not 1 <= len(tiles) <= 30:
+        raise ValueError('Invalid number of grade positions')
     crops = []
     for tile in tiles:
         x, y, w, h = tile.bounds
@@ -50,7 +43,7 @@ def read_levels(job, read):
     from copy import copy
 
     count = len(job.crops)
-    columns = 6 if count == 18 else 1
+    columns = min(6, count)
     gap = 16
     w = max(c.shape[1] for c in job.crops)
     h = max(c.shape[0] for c in job.crops)
@@ -87,6 +80,25 @@ def read_levels(job, read):
     return tuple(values)
 
 
+def freeze_selected_grade(frame, viewport, detail):
+    """Copy the observed panel before trusting its selected-grade crop."""
+    import numpy as np
+    from ww_echo_workshop.capture.scan.pipeline import (
+        _detail_observation,
+        _same_detail_observation,
+        bag_region,
+    )
+
+    owned = np.array(frame, copy=True)
+    if not _same_detail_observation(detail, _detail_observation(owned, viewport)):
+        return None
+    x, y, w, h = bag_region(owned, viewport, (0.665, 0.15, 0.795, 0.235))
+    # Keep only the header once verified; no full image waits in the grade queue.
+    crop = owned[y : y + h, x : x + w, :3].copy()
+    crop.flags.writeable = False
+    return crop
+
+
 class FixedFrameGate:
     """Two fresh stable detail observations; grade is bound to this batch."""
 
@@ -94,26 +106,46 @@ class FixedFrameGate:
         self.reset()
 
     def reset(self):
+        self.selection = None
+        self.clear_samples()
+
+    def clear_samples(self):
         self.key = None
         self.sample = None
         self.detail = None
 
-    def observe(self, frame, viewport, token, at, position, generation, level, grade_token):
+    def arm(self, position, generation, before_token, at):
+        self.selection = (position, generation, before_token, at)
+        self.clear_samples()
+
+    def armed_for(self, position, generation):
+        return self.selection is not None and self.selection[:2] == (position, generation)
+
+    def stable_pair(self, frame, viewport, token, at, position, generation, *, scope):
+        """Verify two frames after the click, even before the grade is known."""
         import math
         from ww_echo_workshop.capture.scan.pipeline import (
             _detail_observation,
             _same_detail_observation,
-            detail_signature,
-            ScanProof,
         )
 
-        if token is None or not isinstance(at, (int, float)) or not math.isfinite(at):
+        if (
+            not self.armed_for(position, generation)
+            or token is None
+            or token == self.selection[2]
+            or not isinstance(at, (int, float))
+            or not math.isfinite(at)
+            or at <= self.selection[3]
+        ):
             return None
-        key = (tuple(viewport), position, generation, level, grade_token)
+        key = (tuple(viewport), position, generation, scope)
         if key != self.key:
-            self.reset()
+            self.clear_samples()
             self.key = key
         detail = _detail_observation(frame, viewport)
+        if not any(part.any() for part in detail):
+            self.clear_samples()
+            return None
         previous = self.sample
         old_detail = self.detail
         if previous is not None and previous[0] == token:
@@ -121,11 +153,28 @@ class FixedFrameGate:
         self.sample = (token, at)
         self.detail = detail
         if (
-            type(level) is not int
-            or previous is None
+            previous is None
             or not 0 < at - previous[1] <= 5
             or not _same_detail_observation(old_detail, detail)
         ):
+            return None
+        return previous
+
+    def observe(
+        self, frame, viewport, token, at, position, generation, level, grade_token, *, page_offset
+    ):
+        from ww_echo_workshop.capture.scan.pipeline import ScanProof, detail_signature
+
+        previous = self.stable_pair(
+            frame,
+            viewport,
+            token,
+            at,
+            position,
+            generation,
+            scope=('proof', level, grade_token, page_offset),
+        )
+        if previous is None or type(level) is not int:
             return None
         proof = ScanProof(
             position,
@@ -134,14 +183,37 @@ class FixedFrameGate:
             (previous[0], token),
             (previous[1], at),
             detail_signature(frame, viewport),
-            (grade_token,),
-            (previous[0], token),
-            (generation, position[0] // 3, grade_token),
+            (generation, page_offset, grade_token),
         )
         return proof if proof.valid() else None
 
 
-def selected_slot(frame, tiles, target, viewport):
+def page_content(frame, tiles):
+    """Tiny owned samples of card centers, away from the selection border."""
+    import cv2
+
+    samples = []
+    for tile in tiles:
+        x, y, w, h = tile.bounds
+        crop = frame[y + h // 4 : y + h * 3 // 4, x + w // 4 : x + w * 3 // 4, :3]
+        if not crop.size:
+            return ()
+        samples.append(cv2.resize(crop, (8, 8), interpolation=cv2.INTER_AREA))
+    return tuple(samples)
+
+
+def page_moved(before, after):
+    import numpy as np
+
+    return bool(
+        before
+        and len(before) == len(after)
+        and sum(float(np.mean(np.abs(a.astype(np.int16) - b))) > 15 for a, b in zip(before, after))
+        >= 3
+    )
+
+
+def selected_slot(frame, target, viewport):
     """Only check requested selection response at fixed points; never refit coordinates."""
     if target is None:
         return None
@@ -160,15 +232,3 @@ def selected_slot(frame, tiles, target, viewport):
         if float(np.mean(mask.max(axis=1) > 0)) < 0.45:
             return None
     return target.row, target.column
-
-
-def list_bottom(frame, viewport):
-    """End-of-list marker only. No movement/geometry/overlap rejection."""
-    from ww_echo_workshop.capture.viewport import EchoViewport
-    import numpy as np
-
-    area = EchoViewport.checked(viewport, frame.shape[1], frame.shape[0])
-    x = area.x + round(area.reference_width * 0.642)
-    y = area.y + round(area.height * 0.834)
-    patch = frame[y : area.y + round(area.height * 0.85), x - 4 : x + 5, :3]
-    return bool(patch.size and np.any((patch.min(axis=2) > 170).sum(axis=1) >= 2))

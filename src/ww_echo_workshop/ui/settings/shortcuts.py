@@ -3,6 +3,8 @@
 
 from PySide6.QtCore import QEvent, QTimer, Qt, Signal
 from PySide6.QtWidgets import QDialog, QFormLayout, QLabel, QLineEdit, QPushButton, QVBoxLayout
+from collections.abc import Callable
+from dataclasses import dataclass
 from ww_echo_workshop.application.hotkeys import (
     ACTIONS,
     KEY_CODES,
@@ -10,6 +12,22 @@ from ww_echo_workshop.application.hotkeys import (
     parse_bindings,
     parse_chord,
 )
+
+
+@dataclass(frozen=True)
+class ShortcutStatus:
+    profile_label: str
+    capture_state: str
+    listener_message: str
+    configuration_message: str
+
+
+@dataclass(frozen=True)
+class ShortcutControls:
+    saved_bindings: Callable[[], str]
+    save_bindings: Callable[[str], None]
+    status: Callable[[], ShortcutStatus]
+    closed: Callable[[], bool]
 
 
 class ShortcutRecorder(QLineEdit):
@@ -84,9 +102,9 @@ class ShortcutRecorder(QLineEdit):
 
 
 class ShortcutContent:
-    def __init__(self, task, parent=None):
+    def __init__(self, controls: ShortcutControls, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.controls = controls
         self.setWindowTitle('收录快捷键')
         self.resize(800, 390)
         layout = QVBoxLayout(self)
@@ -116,7 +134,7 @@ class ShortcutContent:
         self.feedback.setWordWrap(True)
         layout.addWidget(self.feedback)
         try:
-            saved = parse_bindings(task.config.get('CaptureHotkeysJSON', ''))
+            saved = parse_bindings(controls.saved_bindings())
             for action, chord in saved.items():
                 self.fields[action].setText(chord.text)
         except ValueError as error:
@@ -134,11 +152,11 @@ class ShortcutContent:
         self.refresh()
 
     def apply(self):
-        if self.runtime._closed:
+        if self.controls.closed():
             return
         try:
             raw = encode_bindings({action: field.text() for action, field in self.fields.items()})
-            self.task.apply_shortcuts(raw)
+            self.controls.save_bindings(raw)
             for action, chord in parse_bindings(raw).items():
                 self.fields[action].setText(chord.text)
             self.feedback.setText('快捷键已保存。')
@@ -147,31 +165,23 @@ class ShortcutContent:
         self.refresh()
 
     def refresh(self):
-        if self.runtime._closed or self.task._destroyed:
+        if self.controls.closed():
             self.close()
             return
-        label = self.runtime.inventory.profiles().get(
-            self.task.config.get('InventoryProfileID', ''), '未选择有效档案'
-        )
-        try:
-            enabled = bool(parse_bindings(self.task.config.get('CaptureHotkeysJSON', '')))
-        except ValueError:
-            enabled = False
-        state = self.runtime.capture.status.state
+        status = self.controls.status()
         shown = {
             'stopped': '未开始',
             'active': '收录中',
             'paused': '已暂停',
             'single': '正在收录当前声骸',
             'armed': '等待收录快捷键',
-        }.get(state, '未开始')
-        service = self.runtime.shortcuts
+        }.get(status.capture_state, '未开始')
         lines = [
-            f'当前档案：{label} · 收录：{shown}',
-            service.message if service else ('快捷键尚未启动' if enabled else '未设置快捷键'),
+            f'当前档案：{status.profile_label} · 收录：{shown}',
+            status.listener_message,
         ]
-        if self.task.shortcut_message:
-            lines.append(self.task.shortcut_message)
+        if status.configuration_message:
+            lines.append(status.configuration_message)
         self.info.setText('\n'.join(lines))
         self.info.setToolTip('')
 

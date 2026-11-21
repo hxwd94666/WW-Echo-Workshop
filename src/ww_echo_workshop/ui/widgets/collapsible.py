@@ -1,6 +1,6 @@
 # 提供工作台使用的轻量折叠区，默认收起高级内容。
 from PySide6.QtWidgets import QVBoxLayout, QWidget
-from qfluentwidgets import PushButton
+from PySide6.QtWidgets import QPushButton
 
 
 class CollapsibleSection(QWidget):
@@ -10,7 +10,7 @@ class CollapsibleSection(QWidget):
         outer = QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(4)
-        self.toggle = PushButton(self)
+        self.toggle = QPushButton(self)
         self.toggle.setCheckable(True)
         self.toggle.setChecked(expanded)
         self.toggle.clicked.connect(self._toggle)

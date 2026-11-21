@@ -52,8 +52,8 @@ class ResultReplacementMixin:
         dialog = ReplacementDialog(
             options,
             self.window(),
-            avatar_cache=self.runtime.avatars,
-            queries=self.runtime.inventory_queries,
+            avatar_cache=self.services.avatars,
+            queries=self.services.queries,
         )
         self._result_replacement_dialog = dialog
         dialog.preview_requested.connect(

@@ -1,8 +1,11 @@
 # 选择参与匹配的角色与模版。
 """Inline checkable inventory scope, UUID-based and virtualized for large pools."""
 
-from PySide6.QtCore import QEvent, QSize, Qt, Signal
-from PySide6.QtGui import QIcon, QPixmap
+from functools import lru_cache
+from math import cos, radians, sin
+
+from PySide6.QtCore import QEvent, QPointF, QSize, Qt, Signal
+from PySide6.QtGui import QColor, QIcon, QPainter, QPainterPath, QPixmap
 from PySide6.QtWidgets import (
     QWidget,
     QHBoxLayout,
@@ -12,7 +15,32 @@ from PySide6.QtWidgets import (
     QGraphicsOpacityEffect,
 )
 from shiboken6 import isValid
-from qfluentwidgets import PushButton, TogglePushButton, ToolButton, FluentIcon, isDarkTheme
+from PySide6.QtWidgets import QPushButton, QToolButton
+from ww_echo_workshop.ui.widgets.controls import TogglePushButton, standard_icon, is_dark_theme
+from ww_echo_workshop.ui.widgets.workshop_palette import colors_for_widget, watch_theme
+
+
+@lru_cache(maxsize=2)
+def _settings_gear(color):
+    pixmap = QPixmap(32, 32)
+    pixmap.setDevicePixelRatio(2)
+    pixmap.fill(Qt.transparent)
+    gear = QPainterPath()
+    for tooth in range(8):
+        for index, (angle_offset, radius) in enumerate(((0, 5.5), (10, 7.5), (35, 7.5), (45, 5.5))):
+            angle = radians(tooth * 45 + angle_offset)
+            point = QPointF(8 + radius * cos(angle), 8 + radius * sin(angle))
+            if tooth == 0 and index == 0:
+                gear.moveTo(point)
+            else:
+                gear.lineTo(point)
+    gear.closeSubpath()
+    gear.addEllipse(QPointF(8, 8), 2.5, 2.5)
+    painter = QPainter(pixmap)
+    painter.setRenderHint(QPainter.Antialiasing)
+    painter.fillPath(gear, QColor(color))
+    painter.end()
+    return QIcon(pixmap)
 
 
 class MatchRoleStrip(QScrollArea):
@@ -34,6 +62,7 @@ class MatchRoleStrip(QScrollArea):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.body = QWidget()
+        self.body.installEventFilter(self)
         self.row = QHBoxLayout(self.body)
         self.row.setContentsMargins(0, 0, 0, 0)
         self.row.setSpacing(6)
@@ -64,6 +93,28 @@ class MatchRoleStrip(QScrollArea):
             'background: #63c8e2; border: 1px solid #276071; border-radius: 2px;'
         )
         self._drop_marker.hide()
+        watch_theme(self, self._refresh_manage_icons)
+
+    def _refresh_manage_icons(self):
+        icon = _settings_gear(colors_for_widget(self).text)
+        for button in self.manage_buttons.values():
+            button.setIcon(icon)
+
+    def wheelEvent(self, event):
+        event.setAccepted(self._scroll_wheel(event))
+
+    def _scroll_wheel(self, event):
+        bar = self.horizontalScrollBar()
+        pixel_delta = event.pixelDelta()
+        delta = pixel_delta.x() or pixel_delta.y()
+        if not delta:
+            angle_delta = event.angleDelta()
+            steps = angle_delta.x() or angle_delta.y()
+            if steps:
+                delta = (1 if steps > 0 else -1) * max(1, round(abs(steps) * 64 / 120))
+        previous = bar.value()
+        bar.setValue(previous - delta)
+        return bar.value() != previous
 
     def set_roles(self, entries, current=None, priorities=None, avatar_cache=None):
         entries = tuple((tuple(key), label) for key, label in entries)
@@ -84,7 +135,8 @@ class MatchRoleStrip(QScrollArea):
             self._avatar_sources.clear()
             for ordinal, (key, label) in enumerate(entries):
                 if ordinal and self._priority_controls:
-                    relation = PushButton('=', self.body)
+                    relation = QPushButton('=', self.body)
+                    relation.installEventFilter(self)
                     relation.setFixedSize(36, 32)
                     relation.setToolTip(
                         '点击切换：= 同级共同配装；> 前组优先配装。关系不改变单件评分。'
@@ -96,6 +148,7 @@ class MatchRoleStrip(QScrollArea):
                     self.priority_buttons[key] = relation
                 chip = QWidget(self.body)
                 chip.setObjectName('echoRoleStripChip')
+                chip.installEventFilter(self)
                 row = QHBoxLayout(chip)
                 row.setContentsMargins(0, 0, 0, 0)
                 row.setSpacing(0)
@@ -109,15 +162,21 @@ class MatchRoleStrip(QScrollArea):
                 button.clicked.connect(
                     lambda _checked=False, identity=key: self.focused.emit(identity)
                 )
-                remove = ToolButton(FluentIcon.CLOSE, chip)
+                remove = QToolButton(chip)
+                remove.installEventFilter(self)
+                remove.setText('×')
+                remove.setAccessibleName('移除 ' + label)
                 remove.setFixedSize(28, 32)
                 remove.setToolTip('移除 ' + label + '；不删除声骸')
                 remove.clicked.connect(
                     lambda _checked=False, identity=key: self.removed.emit(identity)
                 )
-                manage = ToolButton(FluentIcon.SETTING, chip)
+                manage = QToolButton(chip)
+                manage.installEventFilter(self)
+                manage.setIconSize(QSize(16, 16))
+                manage.setAccessibleName('设置 ' + label)
                 manage.setFixedSize(28, 32)
-                manage.setToolTip('管理 ' + label + '：适配要求与计算选项')
+                manage.setToolTip('设置 ' + label + '：适配要求与计算选项')
                 manage.clicked.connect(
                     lambda _checked=False, identity=key: self.managed.emit(identity)
                 )
@@ -135,11 +194,12 @@ class MatchRoleStrip(QScrollArea):
                 self.buttons[key] = button
             self.row.addStretch()
             self._entries = entries
+            self._refresh_manage_icons()
         self._priorities = {key: priorities.get(key, '=') for key in self.priority_buttons}
         for key, button in self.priority_buttons.items():
             button.setText(self._priorities[key])
         revision = getattr(avatar_cache, 'revision', None)
-        avatar_revision = avatar_cache, revision, isDarkTheme()
+        avatar_revision = avatar_cache, revision, is_dark_theme(self)
         theme_changed = (
             self._avatar_revision is None or self._avatar_revision[-1] != avatar_revision[-1]
         )
@@ -160,7 +220,7 @@ class MatchRoleStrip(QScrollArea):
                 if isinstance(source, (bytes, bytearray)) and pixmap.loadFromData(source, 'PNG'):
                     button.setIcon(QIcon(pixmap))
                 else:
-                    button.setIcon(FluentIcon.PEOPLE.icon())
+                    button.setIcon(standard_icon('SP_FileDialogInfoView'))
                 self._avatar_sources[key] = source
         self._avatar_revision = avatar_revision
         self.setVisible(bool(entries))
@@ -304,7 +364,14 @@ class MatchRoleStrip(QScrollArea):
         super().resizeEvent(event)
 
     def eventFilter(self, watched, event):
-        if watched is getattr(self, '_drag_window', None) and event.type() in (
+        kind = event.type()
+        if kind == QEvent.Wheel:
+            body = getattr(self, 'body', None)
+            if body is not None and (watched is body or body.isAncestorOf(watched)):
+                if self._scroll_wheel(event):
+                    event.accept()
+                    return True
+        if watched is getattr(self, '_drag_window', None) and kind in (
             QEvent.Hide,
             QEvent.Close,
             QEvent.WindowDeactivate,
@@ -317,7 +384,6 @@ class MatchRoleStrip(QScrollArea):
             or self.buttons[key] is not watched
         ):
             return super().eventFilter(watched, event)
-        kind = event.type()
         if not self._reordering_enabled:
             return super().eventFilter(watched, event)
         if kind == QEvent.MouseButtonPress and event.button() == Qt.LeftButton:

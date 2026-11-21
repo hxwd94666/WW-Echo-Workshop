@@ -21,9 +21,9 @@ class _WeightSpin(QDoubleSpinBox):
 
 
 class CustomWeightEditor(QWidget):
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.services = services
         self.version = ''
         self.selection = None
         self.dirty = False
@@ -90,7 +90,7 @@ class CustomWeightEditor(QWidget):
     def _character_changed(self):
         self._remember()
         char_id = self.characters.currentData()
-        snapshot = self.runtime.weights.active
+        snapshot = self.services.weight_snapshot
         self.variants.blockSignals(True)
         self.variants.clear()
         if char_id in snapshot.templates:
@@ -112,7 +112,7 @@ class CustomWeightEditor(QWidget):
                 item.widget().deleteLater()
         self.main_controls, self.sub_controls = {}, {}
         char_id, variant = self.characters.currentData(), self.variants.currentData()
-        snapshot = self.runtime.weights.active
+        snapshot = self.services.weight_snapshot
         self.selection = (
             (char_id, variant)
             if char_id in snapshot.templates and variant in snapshot.templates[char_id]
@@ -132,7 +132,7 @@ class CustomWeightEditor(QWidget):
             return
         event = threading.Event()
         try:
-            future = self.runtime.custom_weights.project_async(
+            future = self.services.custom.project_async(
                 self.original,
                 identity=self.selection,
                 weight_version=self.version,
@@ -161,11 +161,11 @@ class CustomWeightEditor(QWidget):
             event.is_set()
             or selection != self.selection
             or version != self.version
-            or self.runtime.weights.active.version != version
+            or self.services.weight_snapshot.version != version
         ):
             return
         try:
-            main, sub = self.runtime.custom_weights.projected_values(
+            main, sub = self.services.custom.projected_values(
                 future.result(),
                 identity=selection,
                 weight_version=version,
@@ -228,13 +228,13 @@ class CustomWeightEditor(QWidget):
         return main, {name: spin.value() for name, spin in self.sub_controls.items()}
 
     def _status(self):
-        custom = self.selection and self.selection[0] in self.runtime.weights.customized_characters
+        custom = self.selection and self.selection[0] in self.services.customized_characters
         self.state.setText(
             ('自定义权重（更新时保留）' if custom else '默认权重')
             + (' · 未保存' if self.dirty else '')
         )
         element = (
-            self.runtime.weights.active.character_elements.get(
+            self.services.weight_snapshot.character_elements.get(
                 self.selection[0], '待更新（请检查更新）'
             )
             if self.selection and self.selection[0] != 'default'
@@ -270,7 +270,7 @@ class CustomWeightEditor(QWidget):
         for spin in (*self.main_controls.values(), *self.sub_controls.values()):
             spin.interpretText()
         main, sub = self.values()
-        self.pending = self.runtime.updates.request_custom(
+        self.pending = self.services.request_custom(
             *self.selection,
             main=main,
             sub=sub,
@@ -289,8 +289,8 @@ class CustomWeightEditor(QWidget):
             self.reset_button.setText('再次点击，改用默认权重')
             self.feedback.setText('将清除此角色所有模版的自定义设置，改用最近一次更新的默认权重。')
             return
-        self.pending = self.runtime.updates.request_custom(
-            self.selection[0], expected_version=self.runtime.weights.active.version
+        self.pending = self.services.request_custom(
+            self.selection[0], expected_version=self.services.weight_snapshot.version
         )
         self.feedback.setText(
             '正在切回默认权重…' if self.pending else '已有权重操作正在进行，请稍候。'
@@ -299,8 +299,8 @@ class CustomWeightEditor(QWidget):
 
     def refresh(self):
         self._poll_projection()
-        snapshot = self.runtime.weights.active
-        status = self.runtime.updates.status
+        snapshot = self.services.weight_snapshot
+        status = self.services.weight_status
         if (
             self.pending
             and status.operation == 'custom'
@@ -320,17 +320,14 @@ class CustomWeightEditor(QWidget):
                 self._load()
         if getattr(self, '_catalog_version', None) != snapshot.version:
             self._remember()
-            char_id = self.characters.currentData() or str(
-                self.task.config.get('TemplateCharacterID', 'default')
-            )
+            char_id = self.characters.currentData() or str(self.services.selected_character())
             variant = self.variants.currentData()
             self.characters.blockSignals(True)
             self.characters.clear()
             for cid, variants in snapshot.templates.items():
                 name = next(iter(variants.values()))['name'].split('-', 1)[0]
                 self.characters.addItem(
-                    name
-                    + ('（自定义）' if cid in self.runtime.weights.customized_characters else ''),
+                    name + ('（自定义）' if cid in self.services.customized_characters else ''),
                     cid,
                 )
             self.characters.setCurrentIndex(max(0, self.characters.findData(char_id)))
@@ -350,7 +347,7 @@ class CustomWeightEditor(QWidget):
         self.save_button.setEnabled(bool(self.selection) and self._ready and not busy)
         self.reset_button.setEnabled(
             bool(self.selection)
-            and self.selection[0] in self.runtime.weights.customized_characters
+            and self.selection[0] in self.services.customized_characters
             and not busy
         )
         self._status()

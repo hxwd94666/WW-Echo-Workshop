@@ -1,18 +1,29 @@
 # 提供独立五件配装流程和结果页面。
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
-from qfluentwidgets import (
-    CaptionLabel,
-    TableView,
-    PushButton,
-    PrimaryPushButton,
-)
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, PrimaryPushButton
+from PySide6.QtWidgets import QTableView, QPushButton
 from ww_echo_workshop.ui.allocation.controller import AllocationContent
-from ww_echo_workshop.ui.widgets.layout import open_profile_window
 from ww_echo_workshop.ui.allocation.notices import AllocationNotice
 from ww_echo_workshop.ui.allocation.grouped_results import GroupedLoadoutResults
 from ww_echo_workshop.ui.allocation.roles import AllocationRoleController
 from ww_echo_workshop.ui.allocation.actions import LoadoutActionController
+
+if TYPE_CHECKING:
+    from ww_echo_workshop.application.allocation_jobs import AllocationJobs
+    from ww_echo_workshop.application.allocation_preferences import AllocationPreferences
+    from ww_echo_workshop.application.evidence_jobs import EvidenceViewJobs
+    from ww_echo_workshop.application.inventory_query import InventoryQueryService
+    from ww_echo_workshop.application.panel import PanelService
+    from ww_echo_workshop.core.search_budget import SearchBudget
+    from ww_echo_workshop.resources.avatars import AvatarCache
+    from ww_echo_workshop.resources.effects import SonataEffectsSnapshot
+    from ww_echo_workshop.resources.sonata import SonataSnapshot
+    from ww_echo_workshop.resources.weights import WeightSnapshot
 
 
 def put(layout, widget, stretch=0):
@@ -20,23 +31,50 @@ def put(layout, widget, stretch=0):
     return widget
 
 
-class AllocationPage(LoadoutActionController, AllocationRoleController, AllocationContent, QWidget):
-    _table_type = TableView
-    _button_type = PushButton
+@dataclass(frozen=True)
+class AllocationPageServices:
+    jobs: 'AllocationJobs'
+    preferences: 'AllocationPreferences'
+    queries: 'InventoryQueryService'
+    avatars: 'AvatarCache'
+    panel: 'PanelService'
+    evidence: 'EvidenceViewJobs'
+    closed: Callable[[], bool]
+    backup_busy: Callable[[], bool]
+    profile_id: Callable[[], str | None]
+    profiles: Callable[[], dict[str, str]]
+    try_revision: Callable[[], int | None]
+    revision: Callable[[], int]
+    weight_snapshot: Callable[[], 'WeightSnapshot']
+    sonata_snapshot: Callable[[], 'SonataSnapshot']
+    effects_snapshot: Callable[[], 'SonataEffectsSnapshot']
+    budget: Callable[[str | None], 'SearchBudget']
 
-    def __init__(self, task, parent=None):
+
+@dataclass(frozen=True)
+class AllocationNavigation:
+    choose_inventory: Callable[['AllocationPage'], None]
+    inventory_remedy: Callable[[str, str | None], None]
+    edit_weights: Callable[[tuple[str, str]], None]
+
+
+class AllocationPage(LoadoutActionController, AllocationRoleController, AllocationContent, QWidget):
+    _table_type = QTableView
+    _button_type = QPushButton
+
+    def __init__(
+        self, services: AllocationPageServices, parent=None, *, navigation: AllocationNavigation
+    ):
+        self.navigation = navigation
         self._saved_view = False
         self._saved_plan_summaries = {}
         self._saved_summaries_profile = None
         self._viewing_history = False
         self._history_workspace_roles = None
-        super().__init__(task, parent)
+        super().__init__(services, parent)
         self._reload_allocation_picker()
         self.render_roles()
         self.refresh()
-        panel = getattr(task, '_panel', None)
-        if panel is not None:
-            self.apply_surface_palette(panel.palette())
 
     def build_allocation_ui(self):
         from types import SimpleNamespace
@@ -60,7 +98,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self._workspace_key = None
         self._working_role_order = ()
         self.profile = ChoiceState(self)
-        for key, label in self.runtime.inventory.profiles().items():
+        for key, label in self.services.profiles().items():
             self.profile.addItem(label, key)
         self.steps = ChoiceState(self)
         self.steps.addItems(['', '装备要求', '方案结果'])
@@ -107,7 +145,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         )
         self.solve_button = PrimaryPushButton('直接配装', self)
         self.solve_button.clicked.connect(lambda: self.action(self.generate_from_precheck))
-        self.cancel_button = PushButton('取消配装', self)
+        self.cancel_button = QPushButton('取消配装', self)
         self.cancel_button.clicked.connect(self.cancel_job)
         add.addWidget(self.allocation_role_picker, 1)
         add.addWidget(self.solve_button)
@@ -136,7 +174,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.flow_header.setContentsMargins(0, 0, 0, 0)
         self.flow_header.setSpacing(8)
         self.result_cards = GroupedLoadoutResults(
-            self, avatar_cache=self.runtime.avatars, panel_service=self.runtime.panel
+            self, avatar_cache=self.services.avatars, panel_service=self.services.panel
         )
         self.result_cards.role_selected.connect(self._result_role_changed)
         self.result_cards.selected.connect(self._select_visible_result_card)
@@ -153,12 +191,12 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
             lambda key: self.action(lambda: self.save_loadout(key))
         )
         self.flow_header.addStretch(1)
-        self.whole_inventory_button = PushButton('选择声骸', self)
+        self.whole_inventory_button = QPushButton('选择声骸', self)
         self.whole_inventory_button.clicked.connect(
-            lambda: self.action(lambda: self.task._panel.begin_inventory_selection(self))
+            lambda: self.action(lambda: self.navigation.choose_inventory(self))
         )
         add.insertWidget(add.indexOf(self.solve_button), self.whole_inventory_button)
-        self.history_button = PushButton('已保存配装', self)
+        self.history_button = QPushButton('已保存配装', self)
         self.history_button.clicked.connect(self._show_history)
         add.insertWidget(add.indexOf(self.solve_button), self.history_button)
         self.scope_toolbar.hide()
@@ -169,11 +207,11 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.confirmation_text.setWordWrap(True)
         confirmation.addWidget(self.confirmation_text)
         row = QHBoxLayout()
-        self.confirm_current_button = PushButton('确认', self)
+        self.confirm_current_button = QPushButton('确认', self)
         self.confirm_current_button.clicked.connect(
             lambda: self.action(self.confirm_current_action)
         )
-        self.cancel_current_button = PushButton('取消', self)
+        self.cancel_current_button = QPushButton('取消', self)
         self.cancel_current_button.clicked.connect(self.cancel_current_action)
         row.addWidget(self.confirm_current_button)
         row.addWidget(self.cancel_current_button)
@@ -198,7 +236,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.empty_result_note.setAlignment(Qt.AlignCenter)
         results.addWidget(self.empty_result_note)
         results.addWidget(self.result_cards, 1)
-        self.review_button = PushButton('核对0件', self)
+        self.review_button = QPushButton('核对0件', self)
         self.review_button.clicked.connect(lambda: self.action(lambda: self.open_remedy('review')))
         self.outcome_label = CaptionLabel('', self)
         self.outcome_label.setWordWrap(False)
@@ -222,7 +260,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         self.mark_button = ActionState()
         from ww_echo_workshop.ui.allocation.action_labels import explain, APPLY_TIP, BACKUP_TIP
 
-        self.save_button = PushButton('备份全部方案', self)
+        self.save_button = QPushButton('备份全部方案', self)
         explain(self.save_button, BACKUP_TIP)
         self.save_button.clicked.connect(lambda: self.action(self.backup_loadout))
         self.protect_button = PrimaryPushButton('全部设为配装', self)
@@ -297,7 +335,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
             self._changes_dialog.close()
             self._changes_dialog.deleteLater()
         self._changes_dialog = LoadoutChangesDialog(
-            changes, self.window(), avatar_cache=self.runtime.avatars
+            changes, self.window(), avatar_cache=self.services.avatars
         )
         self._changes_dialog.setWindowTitle(changes[0].label + ' · 配装变动')
         self._changes_dialog.open()
@@ -552,8 +590,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
             and self._io_profile == self.profile.currentData()
             and not self._viewing_history
             and not self._closing
-            and not self.runtime._closed
-            and not self.task._destroyed
+            and not self.services.closed()
         ):
             self._history_workspace_roles = dict(
                 roles=tuple(self.roles),
@@ -584,8 +621,7 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
             and not self._io_cancel.is_set()
             and self._io_profile == self.profile.currentData()
             and not self._closing
-            and not self.runtime._closed
-            and not self.task._destroyed
+            and not self.services.closed()
         ):
             self._saved_plan_summaries = {row['plan_id']: row for row in output[0].summaries}
             self._saved_summaries_profile = self._io_profile
@@ -610,9 +646,9 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         super().refresh()
         if not hasattr(self, 'role_navigation'):
             return
-        if getattr(self, '_workspace_avatar_revision', None) != self.runtime.avatars.revision:
+        if getattr(self, '_workspace_avatar_revision', None) != self.services.avatars.revision:
             self._sync_workspace_roles()
-            self.result_cards.avatar_cache = self.runtime.avatars
+            self.result_cards.avatar_cache = self.services.avatars
         if self._result is None and self._payload is None:
             self.result_cards.set_result(None)
             self._loadout_changes = ()
@@ -625,7 +661,10 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
         editing = self._editor is not None
         self.whole_inventory_button.setEnabled(not busy and not editing)
         self.allocation_role_picker.setEnabled(not busy and not editing)
-        if getattr(self, '_allocation_picker_version', None) != self.runtime.weights.active.version:
+        if (
+            getattr(self, '_allocation_picker_version', None)
+            != self.services.weight_snapshot().version
+        ):
             self._reload_allocation_picker()
         self.history_button.setEnabled(not busy and not editing)
         self.role_navigation.setEnabled(not editing)
@@ -658,13 +697,4 @@ class AllocationPage(LoadoutActionController, AllocationRoleController, Allocati
             self._apply_saved_visibility()
 
     def open_remedy(self, kind):
-        window = open_profile_window(
-            self.task, 'inventory', self.parentWidget(), self.profile.currentData()
-        )
-        if kind == 'review':
-            if hasattr(window, 'show_pending_review'):
-                window.show_pending_review()
-            else:
-                window.filter_box.setCurrentIndex(1)
-        else:
-            window.compact_status.setText('打开游戏中的声骸详情，再开始收录。')
+        self.navigation.inventory_remedy(kind, self.profile.currentData())

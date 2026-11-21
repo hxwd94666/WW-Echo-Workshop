@@ -11,7 +11,9 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock, patch
 
-from ww_echo_workshop.adapters.okww.stat_overlay import analyze_echo_stats
+from ww_echo_workshop.capture.stat_observation import analyze_echo_stats
+from ww_echo_workshop.capture.panel_reader import PanelReader
+from ww_echo_workshop.ui.widgets.rating_style import dark_rating_rgb
 from ww_echo_workshop.application.observations import ObservationService
 from ww_echo_workshop.application.compute_jobs import ComputeJobs
 from ww_echo_workshop.application.compute_protocol import ComputeFailure
@@ -46,8 +48,9 @@ def numeric_value(service, case, snapshot):
     )
 
 
-def ocr_value(service, case, snapshot):
+def ocr_value(service, case, snapshot, **overrides):
     options = dict(case['options'])
+    options.update(overrides)
     invalid = options.pop('invalid_template', False)
     actual = options.pop('actual_resolver', False)
 
@@ -73,6 +76,7 @@ def ocr_value(service, case, snapshot):
             template_resolver=resolver,
             observation_service=service,
             weight_version=snapshot.version,
+            rating_rgb=dark_rating_rgb,
             **options,
         )
     )
@@ -109,6 +113,16 @@ class NativeObservations(unittest.TestCase):
                             canonical_json(case['expected']),
                             canonical_json(project(service, case, self.snapshot)),
                         )
+
+    def test_cached_cost_is_not_observed_and_does_not_grant_an_explicit_grade(self):
+        case = next(case for case in self.data['ocr_cases'] if case['name'] == 'inferred_cost')
+        analysis = ocr_value(
+            ObservationService(compute=_jobs), case, self.snapshot, cost_lookup=lambda rows: 4
+        )
+        self.assertIsNotNone(analysis['current_score'])
+        self.assertIsNone(analysis['observed_cost'])
+        self.assertIsNone(analysis['rating_color'])
+        self.assertNotIn(' · ', analysis['score_text'])
 
     def test_reference_templates_are_one_batch_and_no_ocr_geometry_crosses_process(self):
         case = self.data['numeric_cases'][-1]
@@ -251,7 +265,7 @@ class NativeObservations(unittest.TestCase):
 
     def test_retired_template_adapters_and_python_observation_math_are_deleted(self):
         from ww_echo_workshop.application import templates
-        from ww_echo_workshop.adapters.okww import stat_overlay
+        from ww_echo_workshop.capture import stat_observation
 
         for name in (
             'calculate_echo_score',
@@ -267,7 +281,7 @@ class NativeObservations(unittest.TestCase):
             'calculate_echo_score',
             'substat_tier',
         ):
-            self.assertFalse(hasattr(stat_overlay, name), name)
+            self.assertFalse(hasattr(stat_observation, name), name)
 
     def test_scan_pipeline_cancel_reaches_live_child_without_error_diagnostics_or_partial_result(
         self,
@@ -333,30 +347,16 @@ class NativeObservations(unittest.TestCase):
         self.assertIsNotNone(child.poll())
 
     def test_actual_metadata_method_uses_shared_service_and_reuses_only_numeric_evidence(self):
-        from ww_echo_workshop.capture.viewport import EchoViewport
-        from ww_echo_workshop.capture.metadata import MetadataPass, refine_echo_metadata
-        from ww_echo_workshop.application.live_selection import resolve_live_selection
-        from ww_echo_workshop.application.templates import DEFAULT_TEMPLATE
-
-        namespace = dict(
-            EchoViewport=EchoViewport,
-            MetadataPass=MetadataPass,
-            refine_echo_metadata=refine_echo_metadata,
-            resolve_live_selection=resolve_live_selection,
-            analyze_echo_stats=analyze_echo_stats,
-            DEFAULT_TEMPLATE=DEFAULT_TEMPLATE,
-            Box=lambda x, y, w, h, **kw: SimpleNamespace(x=x, y=y, width=w, height=h, **kw),
-        )
-        method = self._overlay_method('read_metadata', namespace)
         case = next(c for c in self.data['ocr_cases'] if c['name'] == 'actual_metadata_resolver')
         boxes = tuple(SimpleNamespace(**b) for b in case['boxes'])
-        task = SimpleNamespace(
-            ocr=lambda **kw: tuple(
+        reader = PanelReader(
+            lambda frame, region, name: tuple(
                 b
                 for b in boxes
-                if kw['box'].x <= b.x < kw['box'].x + kw['box'].width
-                and kw['box'].y <= b.y < kw['box'].y + kw['box'].height
-            )
+                if region[0] <= b.x < region[0] + region[2]
+                and region[1] <= b.y < region[1] + region[3]
+            ),
+            rating_rgb=dark_rating_rgb,
         )
         frame = SimpleNamespace(shape=(900, 1600, 3))
         settings = dict(TemplateCharacterID='1304', TemplateModalID='default')
@@ -364,8 +364,7 @@ class NativeObservations(unittest.TestCase):
         service = ObservationService(compute=_jobs)
         event = threading.Event()
         with patch.object(_jobs, 'submit', wraps=_jobs.submit) as submit:
-            result = method(
-                task,
+            result = reader.read_metadata(
                 frame,
                 settings,
                 self.snapshot,
@@ -378,8 +377,7 @@ class NativeObservations(unittest.TestCase):
         self.assertEqual(canonical_json(case['expected']), canonical_json(asdict(result.analysis)))
         event.set()
         with self.assertRaises(OperationCancelled), patch.object(_jobs, 'submit') as submit:
-            method(
-                task,
+            reader.read_metadata(
                 frame,
                 settings,
                 self.snapshot,
@@ -393,6 +391,8 @@ class NativeObservations(unittest.TestCase):
             'adapters/okww/overlay_task.py',
             'adapters/okww/manual_capture.py',
             'adapters/okww/scan_observation.py',
+            'capture/snapshot_parse.py',
+            'capture/scan/snapshot.py',
         ]:
             source = ROOT / 'src/ww_echo_workshop' / relative
             for node in ast.walk(ast.parse(source.read_text(encoding='utf-8'))):

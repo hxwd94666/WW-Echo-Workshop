@@ -1,7 +1,6 @@
 # 校验 HUD 窗口的锁定穿透与编辑模式切换。
 import time
 import unittest
-from types import SimpleNamespace
 
 try:
     from PySide6.QtCore import Qt
@@ -14,6 +13,7 @@ except ImportError:
     HudWindow = None
 
 from ww_echo_workshop.application.hud_state import HudState
+from ww_echo_workshop.application.live_preferences import LivePreferences
 
 
 @unittest.skipIf(HudWindow is None, '当前解释器没有 PySide6')
@@ -22,17 +22,19 @@ class HudWindowContract(unittest.TestCase):
     def setUpClass(cls):
         cls.app = QApplication.instance() or QApplication([])
 
-    def test_lock_and_edit_modes(self):
-        task = SimpleNamespace(
-            config={
-                '启用声骸评分': True,
-                '强化策略目标分': 35.0,
-                '策略浮层模式': 'qt',
-                '策略悬浮窗位置': '',
-            }
+    def _controller(self, config, state):
+        return HudController(
+            LivePreferences(config), weight_snapshot=lambda: None, state=state, closed=lambda: False
         )
-        runtime = SimpleNamespace(hud_state=HudState(), _closed=False)
-        window = HudWindow(task, runtime)
+
+    def test_lock_and_edit_modes(self):
+        config = {
+            '启用声骸评分': True,
+            '强化策略目标分': 35.0,
+            '策略浮层模式': 'qt',
+            '策略悬浮窗位置': '',
+        }
+        window = HudWindow(LivePreferences(config), lambda: None)
         self.assertTrue(window.isWindow())
         self.assertTrue(window.testAttribute(Qt.WA_TranslucentBackground))
         self.assertFalse(window.windowFlags() & Qt.WindowTransparentForInput)
@@ -60,9 +62,9 @@ class HudWindowContract(unittest.TestCase):
         self.assertIn('background-color: transparent', window.unlock_button.styleSheet())
         self.assertTrue(window.hud_follow_check.isVisible())
         window.hud_follow_check.setChecked(True)
-        self.assertTrue(task.config['策略悬浮窗自动定位'])
+        self.assertTrue(config['策略悬浮窗自动定位'])
         window.hud_follow_check.setChecked(False)
-        self.assertFalse(task.config['策略悬浮窗自动定位'])
+        self.assertFalse(config['策略悬浮窗自动定位'])
         edit_height = window.height()
         window.lock()
         self.assertLess(window.height(), edit_height)
@@ -73,17 +75,14 @@ class HudWindowContract(unittest.TestCase):
         window.close()
 
     def test_controller_unlock_rebuilds_window(self):
-        task = SimpleNamespace(
-            config={
-                '启用声骸评分': True,
-                '强化策略目标分': 35.0,
-                '策略浮层模式': 'qt',
-                '策略悬浮窗位置': '',
-            }
-        )
+        config = {
+            '启用声骸评分': True,
+            '强化策略目标分': 35.0,
+            '策略浮层模式': 'qt',
+            '策略悬浮窗位置': '',
+        }
         state = HudState()
-        runtime = SimpleNamespace(hud_state=state, _closed=False)
-        controller = HudController(task, runtime)
+        controller = self._controller(config, state)
         state.update('策略：继续强化', ((125, 211, 252),))
         controller.refresh()
         old = controller.window
@@ -97,9 +96,8 @@ class HudWindowContract(unittest.TestCase):
         controller.close()
 
     def test_comparison_rows_use_paired_colors(self):
-        task = SimpleNamespace(config={'启用声骸评分': True, '策略浮层模式': 'qt'})
-        runtime = SimpleNamespace(hud_state=HudState(), _closed=False)
-        window = HudWindow(task, runtime)
+        config = {'启用声骸评分': True, '策略浮层模式': 'qt'}
+        window = HudWindow(LivePreferences(config), lambda: None)
         rows = (
             ('丹瑾-通用', ((255, 110, 220),)),
             ('当前评分：', ()),
@@ -115,16 +113,13 @@ class HudWindowContract(unittest.TestCase):
         window.close()
 
     def test_controller_hides_without_visible_state(self):
-        task = SimpleNamespace(
-            config={
-                '启用声骸评分': True,
-                '策略浮层模式': 'qt',
-                '强化策略目标分': 35.0,
-            }
-        )
+        config = {
+            '启用声骸评分': True,
+            '策略浮层模式': 'qt',
+            '强化策略目标分': 35.0,
+        }
         state = HudState()
-        runtime = SimpleNamespace(hud_state=state, _closed=False)
-        controller = HudController(task, runtime)
+        controller = self._controller(config, state)
         self.assertFalse(controller.window.isVisible())
         state.update('策略：继续强化', ((125, 211, 252),))
         controller._tick()
@@ -135,6 +130,44 @@ class HudWindowContract(unittest.TestCase):
         controller._tick()
         self.assertFalse(controller.window.isVisible())
         controller.close()
+
+    def test_expiry_keeps_hud_interaction_without_showing_old_score(self):
+        from PySide6.QtCore import QPoint
+
+        config = {'启用声骸评分': True, '策略浮层模式': 'qt'}
+        for interaction in ('details', 'dragging', 'unlock'):
+            with self.subTest(interaction=interaction):
+                state = HudState()
+                controller = self._controller(config, state)
+                try:
+                    state.update('实时评分 17.02')
+                    controller._tick()
+                    window = controller.window
+                    if interaction == 'details':
+                        window.edit()
+                    elif interaction == 'dragging':
+                        window._drag = QPoint(3, 5)
+                    else:
+                        window.lock()
+                    state._updated_at = time.monotonic() - 7
+                    if interaction == 'unlock':
+                        controller._rebuild_window()
+                    else:
+                        controller._tick()
+                    window = controller.window
+                    self.assertTrue(window.isVisible())
+                    self.assertEqual('等待新的评分画面…', window._line_labels[0].text())
+                    if interaction == 'details':
+                        self.assertTrue(window.edit_panel.isVisible())
+                    elif interaction == 'dragging':
+                        self.assertEqual(QPoint(3, 5), window._drag)
+                    else:
+                        self.assertFalse(window._locked)
+                    state.update('实时评分 17.73')
+                    controller._tick()
+                    self.assertEqual('实时评分 17.73', window._line_labels[0].text())
+                finally:
+                    controller.close()
 
 
 if __name__ == '__main__':

@@ -7,6 +7,8 @@
 
 ## 维护
 
+- [项目重构与 OKWW 3.x 适配方案](maintainer/refactor-okww-3-plan.md)：宿主变化、目标结构、实施顺序与验收条件。
+- [工坊前端重构与新版 OKWW 适配](maintainer/frontend-okww-3-plan.md)：主题、顶部导航、真实窗口验收与旧宿主去留。
 - [架构与模块边界](maintainer/architecture.md)：目录、依赖、计算与宿主入口。
 - [实时评分与收录链路](maintainer/capture.md)：四种实时评分场景、手动/自动收录区域和回退。
 - [声骸强化策略与工作台](maintainer/policy-workbench.md)：工作台、实时策略、评分适配与分阶段计划。

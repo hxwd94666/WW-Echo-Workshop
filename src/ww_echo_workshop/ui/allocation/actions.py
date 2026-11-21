@@ -1,16 +1,14 @@
 # 衔接明确范围的配装备份保存与独立历史预览。
 class LoadoutActionController:
     def show_loadout_receipt(self, text, *, warning=False):
-        from qfluentwidgets import InfoBar, InfoBarPosition
+        from ww_echo_workshop.ui.widgets.controls import show_notice
 
         self._last_receipt_text = str(text)
         self._last_receipt_warning = warning
-        show = InfoBar.warning if warning else InfoBar.success
-        show(
-            title='',
-            content=str(text),
-            parent=self.window(),
-            position=InfoBarPosition.TOP,
+        show_notice(
+            self.window(),
+            str(text),
+            warning=warning,
             duration=8000 if warning else 3500,
         )
 
@@ -49,7 +47,7 @@ class LoadoutActionController:
             and receipt[0] == plan_id
             and receipt[1] == self.profile.currentData()
             and (revision is None or receipt[2] == revision)
-            and receipt[3] == self.runtime.weights.active.version
+            and receipt[3] == self.services.weight_snapshot().version
         )
 
     def refresh_loadout_actions(self):
@@ -106,8 +104,8 @@ class LoadoutActionController:
         arguments.update(
             profile_id=self.profile.currentData(),
             characters=None if key is None else (key[0],),
-            _guard_revision=self.runtime.inventory.try_revision(),
-            _guard_weight=self.runtime.weights.active.version,
+            _guard_revision=self.services.try_revision(),
+            _guard_weight=self.services.weight_snapshot().version,
         )
         if arguments['_guard_revision'] is None:
             raise ValueError('库存正在读取，请稍后重试。')
@@ -180,7 +178,7 @@ class LoadoutActionController:
 
             if context['mode'] != 'history':
                 raise ValueError('请在备份配装中移除所选快照')
-            revision = self.runtime.inventory.try_revision()
+            revision = self.services.try_revision()
             if revision is None:
                 raise ValueError('声骸库正在读取，请稍后重试')
             arguments = dict(
@@ -194,7 +192,7 @@ class LoadoutActionController:
                     canonical_json(context['payload']).encode('utf-8')
                 ).hexdigest(),
                 _guard_revision=revision,
-                _guard_weight=self.runtime.weights.active.version,
+                _guard_weight=self.services.weight_snapshot().version,
             )
             self.queue_current_action(
                 kind,
@@ -214,7 +212,7 @@ class LoadoutActionController:
             view_token=context['view_token'],
             saved_role_view=True,
             _guard_revision=snapshot.inventory_revision,
-            _guard_weight=self.runtime.weights.active.version,
+            _guard_weight=self.services.weight_snapshot().version,
         )
         if kind == 'release-items':
             if context['mode'] != 'current' or not item_ids:

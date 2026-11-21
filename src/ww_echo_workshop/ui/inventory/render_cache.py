@@ -4,7 +4,6 @@ from math import ceil
 
 from PySide6.QtCore import QRect, Qt
 from PySide6.QtGui import QFont, QPainter, QPixmap
-from qfluentwidgets import isDarkTheme, themeColor
 from ww_echo_workshop.ui.inventory.card_data import CardData
 
 _CARDS = OrderedDict()
@@ -14,7 +13,9 @@ _LIMIT = 24 * 1024 * 1024
 _STATS = {'hits': 0, 'renders': 0}
 
 
-def draw_cached_card(painter, rect, data, font, selected, footer, avatar, show_owner, render):
+def draw_cached_card(
+    painter, rect, data, font, selected, footer, avatar, show_owner, colors, render
+):
     """Only pixels are cached: evidence, selection and scores stay immutable."""
     global _BYTES
     ratio = painter.device().devicePixelRatioF()
@@ -34,8 +35,7 @@ def draw_cached_card(painter, rect, data, font, selected, footer, avatar, show_o
         footer,
         avatar.cacheKey() if show_owner and avatar is not None else None,
         show_owner,
-        isDarkTheme(),
-        themeColor().rgba(),
+        colors,
         ratio,
     )
     cached = _CARDS.get(key)

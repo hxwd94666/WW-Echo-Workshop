@@ -6,7 +6,7 @@ import json
 import math
 import re
 
-from ww_echo_workshop.capture.viewport import EchoViewport
+from ww_echo_workshop.capture.viewport import COMPARISON_SPLIT, EchoViewport
 
 
 @dataclass(frozen=True)
@@ -71,6 +71,8 @@ def metadata_regions(analysis, width, height):
     )
     regions = []
     for i, (x1, y1, x2, y2) in enumerate(ratios):
+        if getattr(analysis, 'comparison', False):
+            x1 = max(x1, COMPARISON_SPLIT)
         left, top = round(dx + ref * x1), round(dy + h * y1)
         right, bottom = round(dx + ref * x2), round(dy + h * y2)
         if i == 0:

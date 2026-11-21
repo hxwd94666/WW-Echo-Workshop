@@ -1,4 +1,9 @@
 {
   "file_name": "ww-echo-workshop",
-  "script_name": "声骸工坊"
+  "script_name": "声骸工坊",
+  "tasks": [
+    ["ww_echo_workshop_settings", "WWEchoWorkshopSettingsTask"],
+    ["ww_echo_workshop_overlay", "WWEchoWorkshopOverlayTask"],
+    ["ww_echo_workshop_scan", "WWEchoWorkshopScanTask"]
+  ]
 }

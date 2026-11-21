@@ -1,19 +1,28 @@
 # 提供独立多角色声骸匹配页面。
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QHBoxLayout, QLabel, QSplitter, QVBoxLayout, QWidget
 from ww_echo_workshop.ui.widgets.inputs import QComboBox, combo_search_draft, restore_combo_search
-from qfluentwidgets import (
-    BodyLabel,
-    CaptionLabel,
-    TableView,
-    PushButton,
-    PrimaryPushButton,
-    isDarkTheme,
-)
+from ww_echo_workshop.ui.widgets.workshop_palette import watch_theme
+from ww_echo_workshop.ui.widgets.controls import CaptionLabel, PrimaryPushButton, is_dark_theme
+from PySide6.QtWidgets import QPushButton
 from ww_echo_workshop.ui.matching.controller import ComparisonContent
 from ww_echo_workshop.ui.widgets.workspace import BriefStatus
 from ww_echo_workshop.ui.matching.settings import MatchingRoleSettingsController
 from ww_echo_workshop.application.matching.feedback import MatchFeedback
+
+if TYPE_CHECKING:
+    from ww_echo_workshop.application.matching.jobs import MatchingService
+    from ww_echo_workshop.application.matching.preferences import MatchingPreferences
+    from ww_echo_workshop.application.pins import PinCheckService
+    from ww_echo_workshop.core.search_budget import SearchBudget
+    from ww_echo_workshop.resources.avatars import AvatarCache
+    from ww_echo_workshop.resources.role_defaults import RoleDefaultsSnapshot
+    from ww_echo_workshop.resources.sonata import SonataSnapshot
+    from ww_echo_workshop.resources.weights import WeightSnapshot
 
 
 def put(layout, widget, stretch=0):
@@ -21,13 +30,41 @@ def put(layout, widget, stretch=0):
     return widget
 
 
-class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget):
-    _table_type = TableView
-    _button_type = PushButton
+@dataclass(frozen=True)
+class MatchingPageServices:
+    matching: 'MatchingService'
+    preferences: 'MatchingPreferences'
+    pin_checks: 'PinCheckService'
+    avatars: 'AvatarCache'
+    inventory_profiles: Callable[[], dict[str, str]]
+    try_revision: Callable[[], int | None]
+    weight_snapshot: Callable[[], 'WeightSnapshot']
+    defaults_snapshot: Callable[[], 'RoleDefaultsSnapshot | None']
+    sonata_snapshot: Callable[[], 'SonataSnapshot']
+    closed: Callable[[], bool]
+    profile_id: Callable[[], str]
+    fallback_role: Callable[[], tuple[str | None, str | None]]
+    read_budget: Callable[[str | None], 'SearchBudget']
+    write_budget: Callable[[str | None, 'SearchBudget'], None]
 
-    def __init__(self, task, parent=None):
+
+@dataclass(frozen=True)
+class MatchingNavigation:
+    choose_inventory: Callable[['ComparisonPage'], None]
+    open_pending_review: Callable[[], None]
+    pending_count: Callable[[str | None], int | None]
+    edit_weights: Callable[[tuple[str, str]], None]
+    refresh_profile_guard: Callable[[], None]
+    budget_saved: Callable[[], None]
+
+
+class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget):
+    def __init__(
+        self, services: MatchingPageServices, parent=None, *, navigation: MatchingNavigation
+    ):
         from ww_echo_workshop.application.matching.calculation import MatchCalculationOptions
 
+        self.navigation = navigation
         self._rule_dirty = False
         self._saving_rule = self._autosave_scheduled = False
         self._rule_save_request = self._pending_rule_draft = self._active_rule_draft = None
@@ -49,7 +86,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
             None
         )
         self._empty_feedback = None
-        super().__init__(task, parent)
+        super().__init__(services, parent)
         self._sync_role_strip()
         self._refresh_controls()
         self.edit_controls.update_theme()
@@ -64,13 +101,12 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         from ww_echo_workshop.ui.matching.picker import MatchRoleStrip
         from ww_echo_workshop.ui.matching.cards import MatchResultCards
         from ww_echo_workshop.core.scoring import ELEMENT_NAMES
-        from qfluentwidgets import qconfig
 
         self.setWindowTitle('匹配')
         self.setMinimumSize(0, 0)
         self.state = MatchingState()
         self.profile_box = ChoiceState(self)
-        for key, label in self.runtime.inventory.profiles().items():
+        for key, label in self.services.inventory_profiles().items():
             self.profile_box.addItem(label, key)
         self.item_picker = CandidateScope(self)
         self.matrix_model = MatrixModel(self)
@@ -103,7 +139,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         self.compare_button = PrimaryPushButton('开始计算', self)
         self.compare_button.clicked.connect(lambda: self.action(self.start_comparison))
         row.addWidget(self.compare_button)
-        self.cancel_button = PushButton('取消计算', self)
+        self.cancel_button = QPushButton('取消计算', self)
         self.cancel_button.clicked.connect(self.cancel_comparison)
         row.addWidget(self.cancel_button)
         outer.addLayout(row)
@@ -118,12 +154,12 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         self.scope_toolbar = QWidget(self)
         self.scope_actions_layout = QHBoxLayout(self.scope_toolbar)
         self.scope_actions_layout.setContentsMargins(0, 0, 0, 0)
-        self.library_select_button = PushButton('选择声骸', self)
+        self.library_select_button = QPushButton('选择声骸', self)
         self.library_select_button.clicked.connect(
-            lambda: self.action(lambda: self.task._panel.begin_inventory_selection(self))
+            lambda: self.action(lambda: self.navigation.choose_inventory(self))
         )
         self.result_cards = MatchResultCards(self)
-        self.result_cards.avatar_cache = self.runtime.avatars
+        self.result_cards.avatar_cache = self.services.avatars
         self.result_cards.mount_selector(self.scope_actions_layout)
         self.scope_actions_layout.addStretch(1)
         row.insertWidget(row.indexOf(self.compare_button), self.library_select_button)
@@ -152,13 +188,13 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         heading = QWidget(self.edit_controls)
         heading_layout = QVBoxLayout(heading)
         heading_layout.setContentsMargins(0, 0, 0, 0)
-        self.managed_role_header = BodyLabel('角色设置', self)
+        self.managed_role_header = QLabel('角色设置', self)
         self.managed_role_header.setWordWrap(True)
         heading_layout.addWidget(self.managed_role_header)
         self.role_facts = CaptionLabel(self)
         heading_layout.addWidget(self.role_facts)
         self.edit_controls.header_layout.addWidget(heading, 1)
-        self.managed_close_button = PushButton('返回匹配', self)
+        self.managed_close_button = QPushButton('返回匹配', self)
         self.managed_close_button.clicked.connect(
             lambda: self.edit_controls.toggle.setChecked(False)
         )
@@ -167,7 +203,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         self.role_settings_status.hide()
         self.role_settings_status.setWordWrap(True)
         self.edit_controls.footer_layout.addWidget(self.role_settings_status, 1)
-        self.weight_options = PushButton('编辑模版权重', self)
+        self.weight_options = QPushButton('编辑模版权重', self)
         self.weight_options.clicked.connect(lambda: self.action(self._configure_managed_weights))
         self._build_managed_rules()
         self._build_calculation_controls()
@@ -182,8 +218,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         self.sonata_rule.textChanged.connect(self._rule_edited)
         self.edit_controls.toggle.toggled.connect(self._update_editor_layout)
         self.edit_controls.toggle.hide()
-        qconfig.themeChanged.connect(self._sync_managed_header)
-        qconfig.themeChangedFinished.connect(self._sync_managed_header)
+        watch_theme(self, self._sync_managed_header)
 
     def selections(self):
         from ww_echo_workshop.application.matching.calculation import ordered_keys
@@ -212,11 +247,11 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         from ww_echo_workshop.core.costs import cost_layouts_to_rows
         from ww_echo_workshop.core.requirements import requirements_to_rows
 
-        data = self._preference_data()
+        row = self._preference_row()
         groups = self.priority_groups()
         keys = tuple(key for group in groups for key in group)
         starts = {group[0] for group in groups[1:]}
-        data['profiles'][self.profile_box.currentData()]['calculation'] = dict(
+        row['calculation'] = dict(
             role_order=keys,
             links=['>' if key in starts else '=' for key in keys[1:]],
             display_order=self.selections(),
@@ -225,11 +260,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
             role_requirements=requirements_to_rows(self._role_requirements),
             candidate_item_ids=normalize_candidate_ids(self.item_picker.selected_ids()),
         )
-        import json
-
-        self.task.config['ComparisonSettingsJSON'] = json.dumps(
-            data, ensure_ascii=False, allow_nan=False
-        )
+        self.services.preferences.save_profile(self.profile_box.currentData(), row)
 
     def load_profile(self, *_):
         from ww_echo_workshop.application.matching.calculation import (
@@ -251,7 +282,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         self._calculation_options = MatchCalculationOptions()
         self._calculation_error = ''
         try:
-            saved = self.preferences()['profiles'].get(self.profile_box.currentData(), {})
+            saved = self.services.preferences.for_profile(self.profile_box.currentData())
             calculation = saved.get('calculation', {})
             if not isinstance(calculation, dict):
                 raise ValueError('计算配置格式无效；原配置保留')
@@ -323,11 +354,11 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
         entries = []
         for key in self.selections():
             try:
-                label = self.runtime.weights.active.template(*key)['name']
+                label = self.services.weight_snapshot().template(*key)['name']
             except (ValueError, KeyError):
                 label = '失效选择：' + '/'.join(key)
             entries.append((key, label))
-        avatars = getattr(self.runtime, 'avatars', None)
+        avatars = self.services.avatars
         avatar_revision = getattr(avatars, 'revision', None)
         strip_state = (
             tuple(entries),
@@ -335,7 +366,7 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
             tuple(self._priority_links.items()),
             avatars,
             avatar_revision,
-            isDarkTheme(),
+            is_dark_theme(self),
         )
         if strip_state != getattr(self, '_strip_state', None) or avatar_revision is None:
             self._strip_state = strip_state
@@ -463,24 +494,16 @@ class ComparisonPage(MatchingRoleSettingsController, ComparisonContent, QWidget)
 
     def _sync_pending_count(self):
         """Reuse the inventory reader's count; matching never reads the DB here."""
-        inventory = getattr(self.task, 'inventory_window', None)
-        status = getattr(getattr(inventory, '_reader', None), 'status', None)
-        result = getattr(status, 'result', None)
-        count = (
-            result.pending_count
-            if getattr(status, 'state', '') == 'ready'
-            and result is not None
-            and result.profile_id == self.profile_box.currentData()
-            else None
+        self.result_cards.set_pending_count(
+            self.navigation.pending_count(self.profile_box.currentData())
         )
-        self.result_cards.set_pending_count(count)
 
     def _open_pending_review(self):
         if self._rule_dirty:
             raise ValueError('请先修正当前角色要求的错误，再查看待核对。')
         if self._future is not None or self._publication is not None:
             raise ValueError('正在计算，请完成或取消后再查看待核对。')
-        self.task._panel.show_intake_review()
+        self.navigation.open_pending_review()
 
     def apply_role_choice(self):
         if self._rule_dirty:

@@ -2,14 +2,11 @@
 """Main-thread collection/review UI. Closing it does not stop active collection."""
 
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QDialog, QFileDialog, QInputDialog, QMessageBox, QPushButton
+from PySide6.QtWidgets import QInputDialog, QMessageBox
 
-from ww_echo_workshop.application.inventory import InventoryReader
+from ww_echo_workshop.application.inventory_intake import IntakeStart
 from ww_echo_workshop.application.view_state import capture_hint
 from ww_echo_workshop.ui.inventory.evidence import open_evidence
-from ww_echo_workshop.ui.inventory.editor import RecordEditor
-from ww_echo_workshop.ui.inventory.review_fields import ReviewChoices
 
 
 class InventoryContent:
@@ -23,17 +20,15 @@ class InventoryContent:
     def request_stop(self):
         self.stop_worker()
 
-    def __init__(self, task, parent=None):
+    def __init__(self, services, parent=None):
         super().__init__(parent)
-        self.task, self.runtime = task, task.runtime
+        self.services = services
         self._rows = []
         self._seen_revision = None
         self._seen_backup = 0
         self._action_buttons = []
         self._mutation_buttons = []
-        self._reader = InventoryReader(
-            self.runtime.inventory, self.runtime.stop_event, queries=self.runtime.inventory_queries
-        )
+        self._reader = self.services.new_reader()
         self._requested_key = None
         self._processed_generation = -1
         self.build_inventory_ui()
@@ -50,17 +45,10 @@ class InventoryContent:
         self.reload_profiles()
         self.refresh(force=True)
 
-    def _button(self, layout, text, callback):
-        button = getattr(self, '_button_type', QPushButton)(text)
-        button.clicked.connect(lambda: self.action(callback))
-        layout.addWidget(button)
-        self._action_buttons.append(button)
-        return button
-
     def action(self, callback):
-        if self.task._destroyed or self.runtime._closed:
+        if self.services.closed():
             return
-        if self.runtime.backups.status.busy:
+        if self.services.backups.status.busy:
             self.backup_label.setText('已有后台备份作业；请等待完成或取消，再进行编辑')
             return
         try:
@@ -72,17 +60,12 @@ class InventoryContent:
     def reload_profiles(self):
         self.profile_box.blockSignals(True)
         self.profile_box.clear()
-        for key, name in self.runtime.inventory.profiles().items():
+        for key, name in self.services.inventory.profiles().items():
             self.profile_box.addItem(name, userData=key)
-        saved = self.task.config.get('InventoryProfileID', '')
+        saved = self.services.profile_id()
         index = self.profile_box.findData(saved)
         self.profile_box.setCurrentIndex(index)
         self.profile_box.blockSignals(False)
-
-    def profile_changed(self):
-        self.runtime.capture.stop()
-        self.task.config['InventoryProfileID'] = self.profile_box.currentData() or ''
-        self.refresh(force=True)
 
     def new_profile(self, *, name=None):
         if name is None:
@@ -92,148 +75,98 @@ class InventoryContent:
         else:
             accepted = True
         if accepted and name.strip():
-            key = self.runtime.inventory.create_profile(name)
-            self.task.config['InventoryProfileID'] = key
-            self.runtime.capture.stop()
+            key = self.services.inventory.create_profile(name)
+            self.services.set_profile(key)
+            self.services.intake.reset_for_profile()
             self.reload_profiles()
 
     def start_capture(self):
-        if (
-            not getattr(self, '_intake_ui', False)
-            or self.task.config.get('IntakeMode', 'manual') == 'manual'
-        ):
-            from ww_echo_workshop.application.hotkeys import parse_bindings
-
-            if 'capture' not in parse_bindings(self.task.config.get('CaptureHotkeysJSON', '')):
-                prompt = QMessageBox(self)
-                prompt.setWindowTitle('先设置收录快捷键')
-                prompt.setText(
-                    '手动收录仅由快捷键触发。请先设置“收录当前声骸”快捷键，再点击开始收录。'
-                )
-                settings = prompt.addButton('前往设置', QMessageBox.AcceptRole)
-                prompt.addButton('返回', QMessageBox.RejectRole)
-                prompt.exec()
-                if prompt.clickedButton() is settings:
-                    self.task.open_shortcuts(self)
-                return
-        if not self.task._capture_ready():
-            self.capture_help.setText(
-                '先在 OKWW 连接鸣潮画面，再开始收录。'
-                if getattr(self, '_intake_ui', False)
-                else '先在 OKWW 选择鸣潮窗口并启动捕获、取消宿主暂停。保持游戏画面可见，再打开一件声骸详情。已有库存保留。'
-            )
+        result = self.services.intake.start(self.profile_box.currentData())
+        if result is IntakeStart.NEED_SHORTCUT:
+            prompt = QMessageBox(self)
+            prompt.setWindowTitle('先设置收录快捷键')
+            prompt.setText('手动收录仅由快捷键触发。请先设置“收录当前声骸”快捷键，再点击开始收录。')
+            settings = prompt.addButton('前往设置', QMessageBox.AcceptRole)
+            prompt.addButton('返回', QMessageBox.RejectRole)
+            prompt.exec()
+            if prompt.clickedButton() is settings:
+                self.navigation.open_shortcuts()
             return
-        if getattr(self, '_intake_ui', False):
-            if self.task.config.get('IntakeMode', 'manual') == 'automatic':
-                self.task.start_scan(self.profile_box.currentData())
-            else:
-                self.task.arm_capture(self.profile_box.currentData())
-        else:
-            self.task.arm_capture(self.profile_box.currentData())
+        if result is IntakeStart.DISCONNECTED:
+            self.capture_help.setText('先在 OKWW 连接鸣潮画面，再开始收录。')
+            return
         self.refresh()
 
     def pause_capture(self):
-        if self.runtime.capture.status.mode == 'automatic':
-            self.task.pause_scan()
-            self.refresh()
+        if not self.services.intake.pause_or_resume():
+            self.capture_help.setText('画面尚未连接，请先在 OKWW 恢复捕获，再继续收录。')
             return
-        if self.runtime.capture.status.state == 'paused':
-            if not self.task._capture_ready():
-                self.capture_help.setText('画面尚未连接，请先在 OKWW 恢复捕获，再继续收录。')
-                return
-            self.runtime.capture.resume()
-        else:
-            self.runtime.capture.pause()
         self.refresh()
 
     def finish_capture(self):
-        if self.runtime.capture.status.mode == 'automatic':
-            self.task.stop_scan()
-        else:
-            self.runtime.capture.stop()
-        status = self.runtime.capture.status
+        self.services.intake.stop()
         self.filter_box.setCurrentIndex(1)
-        self._finished_capture_hint = (
-            status,
-            f'收录已结束：本次新增 {status.added} 件、'
-            f'本次需核对 {status.needs_review} 件。已收录记录保留。',
-        )
         self.refresh(force=True)
 
     def _intake_mode_changed(self):
-        if self.runtime.capture.status.state == 'stopped':
-            self.task.config['IntakeMode'] = self.intake_mode.currentData()
+        self.services.intake.set_mode(self.intake_mode.currentData())
         self.refresh_capture_controls()
 
     def _scan_level_changed(self):
-        if self.runtime.capture.status.state == 'stopped':
-            self.task.config['ScanMinimumLevel'] = self.scan_level.currentData()
+        self.services.intake.set_minimum_level(self.scan_level.currentData())
         self.refresh_capture_controls()
 
     def refresh_capture_controls(self):
         """Single owner for shared header state, including queued/finished scans."""
-        status = self.runtime.capture.status
+        intake = self.services.intake
+        status = intake.status
         busy = status.state != 'stopped'
-        hint, _ = capture_hint(status, self.task._capture_ready())
-        finished = getattr(self, '_finished_capture_hint', None)
-        if (
-            not getattr(self, '_intake_ui', False)
-            and finished is not None
-            and status == finished[0]
-            and status.profile_id == (self.profile_box.currentData() or '')
-        ):
-            # The shared refresh must not erase the legacy stop result with an
-            # idle preflight hint (including an empty collection).
-            hint = finished[1]
+        hint, _ = capture_hint(status, intake.ready)
         self.start_button.setVisible(not busy)
         self.pause_button.setVisible(status.state in ('active', 'paused'))
         self.pause_button.setText('继续收录' if status.state == 'paused' else '暂停收录')
         self.stop_button.setVisible(busy)
-        self.profile_box.setEnabled(not busy and not self.runtime.backups.status.busy)
-        if getattr(self, '_intake_ui', False):
-            mode = self.task.config.get('IntakeMode', 'manual')
-            mode = mode if mode in ('manual', 'automatic') else 'manual'
-            level = str(self.task.config.get('ScanMinimumLevel', '25'))
-            if self.scan_level.findData(level) < 0:
-                level = '25'
-            for control, value in ((self.intake_mode, mode), (self.scan_level, level)):
-                if control.currentData() != value:
-                    control.blockSignals(True)
-                    control.setCurrentIndex(control.findData(value))
-                    control.blockSignals(False)
-                control.setEnabled(not busy and not self.runtime.backups.status.busy)
-            self.scan_level.setVisible(mode == 'automatic')
-            self.start_button.setText('开始扫描' if mode == 'automatic' else '开始收录')
-            same_scan_profile = self.runtime.scan.profile_id == (
-                self.profile_box.currentData() or ''
+        self.profile_box.setEnabled(not busy and not self.services.backups.status.busy)
+        mode = intake.mode
+        mode = mode if mode in ('manual', 'automatic') else 'manual'
+        level = intake.minimum_level
+        if self.scan_level.findData(level) < 0:
+            level = '25'
+        for control, value in ((self.intake_mode, mode), (self.scan_level, level)):
+            if control.currentData() != value:
+                control.blockSignals(True)
+                control.setCurrentIndex(control.findData(value))
+                control.blockSignals(False)
+            control.setEnabled(not busy and not self.services.backups.status.busy)
+        self.scan_level.setVisible(mode == 'automatic')
+        self.start_button.setText('开始扫描' if mode == 'automatic' else '开始收录')
+        same_scan_profile = intake.scan_profile == (self.profile_box.currentData() or '')
+        if status.mode == 'automatic' and (busy or (mode == 'automatic' and same_scan_profile)):
+            scan = intake.scan_status
+            self.pause_button.setVisible(busy and scan.state in ('running', 'paused'))
+            self.pause_button.setText('继续扫描' if scan.state == 'paused' else '暂停扫描')
+            self.stop_button.setText('停止扫描')
+            hint = (
+                f'{scan.message} · 已扫描 {scan.captured} · 待解析 {scan.backlog} · 新增 {scan.added} · 疑似关联 {scan.pending}'
+                + (f' · 失败 {scan.failed}' if scan.failed else '')
             )
-            if status.mode == 'automatic' and (busy or (mode == 'automatic' and same_scan_profile)):
-                scan = self.runtime.scan.status
-                self.pause_button.setVisible(busy and scan.state in ('running', 'paused'))
-                self.pause_button.setText('继续扫描' if scan.state == 'paused' else '暂停扫描')
-                self.stop_button.setText('停止扫描')
-                hint = (
-                    f'{scan.message} · 已扫描 {scan.captured} · 待解析 {scan.backlog} · 新增 {scan.added} · 疑似关联 {scan.pending}'
-                    + (f' · 失败 {scan.failed}' if scan.failed else '')
+            if intake.failed_positions:
+                positions = '、'.join(
+                    f'第{row + 1}行第{column + 1}列' for row, column in intake.failed_positions
                 )
-                if self.runtime.scan.failed_positions:
-                    positions = '、'.join(
-                        f'第{row + 1}行第{column + 1}列'
-                        for row, column in self.runtime.scan.failed_positions
-                    )
-                    hint += ' · 读取失败位置：' + positions
-            else:
-                self.stop_button.setText('停止收录')
-            if not busy and (
-                status.mode != 'automatic' or mode != 'automatic' or not same_scan_profile
-            ):
-                hint = (
-                    '打开声骸背包并回到顶部，点击开始后切回游戏。扫描期间请勿操作鼠标；切出游戏会暂停。'
-                    if mode == 'automatic'
-                    else '点击开始收录，再回到游戏按收录快捷键；每次按键只收录当前一件。'
-                )
-                if mode == 'manual' and status.mode == 'manual':
-                    hint = status.message
+                hint += ' · 读取失败位置：' + positions
+        else:
+            self.stop_button.setText('停止收录')
+        if not busy and (
+            status.mode != 'automatic' or mode != 'automatic' or not same_scan_profile
+        ):
+            hint = (
+                '打开声骸背包并回到顶部，点击开始后切回游戏。扫描期间请勿操作鼠标；切出游戏会暂停。'
+                if mode == 'automatic'
+                else '点击开始收录，再回到游戏按收录快捷键；每次按键只收录当前一件。'
+            )
+            if mode == 'manual' and status.mode == 'manual':
+                hint = status.message
         self.capture_help.setText(hint)
         self.status_label.setText(hint)
         return hint
@@ -260,7 +193,7 @@ class InventoryContent:
         self._reader.close()
 
     def _mutation_revision(self):
-        revision = self.runtime.inventory.try_revision()
+        revision = self.services.inventory.try_revision()
         expected = self._seen_revision
         if (
             revision is None
@@ -273,18 +206,14 @@ class InventoryContent:
         return revision
 
     def _clear_ready(self):
-        return (
-            not self.runtime.backups.status.busy
-            and self.runtime.capture.status.state == 'stopped'
-            and self.runtime.scan.status.state not in ('preparing', 'running', 'paused', 'draining')
-        )
+        return not self.services.backups.status.busy and self.services.intake.idle
 
     def clear_library(self):
         if not self._clear_ready():
             raise ValueError('请先停止收录或扫描，并等待备份完成，再清空声骸库。')
         profile = self.profile_box.currentData() or ''
         revision = self._mutation_revision()
-        counts = self.runtime.inventory.profile_counts(profile, expected_revision=revision)
+        counts = self.services.inventory.profile_counts(profile, expected_revision=revision)
         if not any(counts.values()):
             return
         name = self.profile_box.currentText()
@@ -301,16 +230,15 @@ class InventoryContent:
         if (
             not self._clear_ready()
             or profile != self.profile_box.currentData()
-            or profile != self.task.config.get('InventoryProfileID', '')
+            or profile != self.services.profile_id()
         ):
             raise ValueError('档案或收录状态已变化，请重试。')
         import sqlite3
 
         try:
-            self.runtime.inventory.clear_profile(profile, expected_revision=revision)
+            self.services.inventory.clear_profile(profile, expected_revision=revision)
         except sqlite3.Error as error:
             raise ValueError('清空未完成，原记录保留；请稍后重试。') from error
-        self._finished_capture_hint = None
         self.refresh(force=True)
 
     def _refresh_pending_summary(self):
@@ -338,18 +266,18 @@ class InventoryContent:
         try:
             self._refresh(force=force)
         except ValueError:
-            if not self.runtime._closed:
+            if not self.services.closed():
                 raise
             self.timer.stop()
             self.status_label.setText('插件已卸载；库存与截图仍保留在用户数据目录')
 
     def _refresh(self, *, force=False):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             self.timer.stop()
             self.read_timer.stop()
             self.status_label.setText('插件已卸载；库存与截图仍保留在用户数据目录')
             return
-        backup = self.runtime.backups.status
+        backup = self.services.backups.status
         count = f' · 当前阶段 {backup.done}/{backup.total}' if backup.total else ''
         from ww_echo_workshop.ui.settings.help import job_text
 
@@ -380,7 +308,7 @@ class InventoryContent:
                 force = True
         self.refresh_capture_controls()
         profile = self.profile_box.currentData() or ''
-        revision = self.runtime.inventory.try_revision()
+        revision = self.services.inventory.try_revision()
         if revision is None:
             self.reading_label.setText('库存事务忙；后台读取等待，旧视图不作为最新')
             for button in self._mutation_buttons:
@@ -433,7 +361,7 @@ class InventoryContent:
         self.clear_library_button.setEnabled(fresh and self._clear_ready())
 
     def show_details(self):
-        if self.runtime._closed or self.task._destroyed:
+        if self.services.closed():
             return
         selected = self.selected()
         kind = selected[1] if selected else 'item'
@@ -470,29 +398,16 @@ class InventoryContent:
             f'候选关联：{", ".join(candidates) or "无"}\n备注：{record.note}\n\n原 OCR：\n{record.raw_text}'
         )
         self.image.clear()
-        if hasattr(self.image, 'set_record'):
-            from ww_echo_workshop.ui.inventory.card_data import checked_protection_text
+        from ww_echo_workshop.ui.inventory.card_data import checked_protection_text
 
-            reservation = self.inventory_model.claims.get(record.item_id, '')
-            self.image.set_record(
-                record,
-                kind,
-                score_text=checked_protection_text(record, quality, reservation),
-                reservation=reservation,
-                quality=quality,
-            )
-            return
-        if record.screenshot_ref:
-            try:
-                pixmap = QPixmap()
-                pixmap.loadFromData(self.runtime.evidence.read(record.screenshot_ref), 'PNG')
-                self.image.setPixmap(
-                    pixmap.scaled(370, 245, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                )
-            except (OSError, ValueError):
-                self.image.setText('截图缺失或校验失败，请重新核对')
-        else:
-            self.image.setText('没有截图证据')
+        reservation = self.inventory_model.claims.get(record.item_id, '')
+        self.image.set_record(
+            record,
+            kind,
+            score_text=checked_protection_text(record, quality, reservation),
+            reservation=reservation,
+            quality=quality,
+        )
 
     def quick_score_selected(self):
         selected_ids = getattr(self.table, 'selected_ids', None)
@@ -506,14 +421,7 @@ class InventoryContent:
         if not quality.usable:
             raise ValueError('请选择一件已核对的声骸进行快速评分。')
         revision = self._mutation_revision()
-        # Resolve the stable identity again, but never mutate a record or pretend
-        # an observed owner is a saved loadout. One local dialog per inventory.
-        try:
-            current = self.runtime.inventory.get(record.item_id)
-        except KeyError:
-            raise ValueError('声骸已删除，请刷新后重新选择。') from None
-        if current != record:
-            raise ValueError('声骸记录已变化，请刷新后重新选择。')
+        self.services.quick_score.verify_selection(record)
         from ww_echo_workshop.ui.inventory.quick_score import QuickScoreDialog
 
         previous = getattr(self, '_quick_score_dialog', None)
@@ -521,41 +429,17 @@ class InventoryContent:
             previous.close()
             previous.deleteLater()
         dialog = QuickScoreDialog(
-            self.task, record, self, quality=quality, inventory_revision=revision
+            self.services.quick_score,
+            record,
+            self,
+            quality=quality,
+            inventory_revision=revision,
+            preferences=self.services.comparison_preferences,
+            avatars=self.services.avatars,
         )
         self._quick_score_dialog = dialog
         dialog.show()
         dialog.raise_()
-
-    def confirm_selected(self):
-        selected = self.selected()
-        if not selected:
-            return
-        record, kind, _ = selected
-        revision = self._mutation_revision()
-        if kind == 'item':
-            self.runtime.inventory.confirm(
-                record.item_id,
-                expected_revision=revision,
-                quality=self.inventory_model.quality(record),
-            )
-        else:
-            editor = RecordEditor(
-                record,
-                self,
-                evidence=self.runtime.evidence,
-                choices=ReviewChoices.from_runtime(self.runtime, record),
-                quality_check=self.runtime.quality_checks.start,
-                quality=self.inventory_model.quality(record),
-            )
-            editor.setWindowTitle('确认这是独立的另一件声骸（不是合并）')
-            if editor.exec() == QDialog.Accepted:
-                self.runtime.inventory.resolve_capture(
-                    record.item_id,
-                    'new',
-                    corrected=editor.result_record,
-                    expected_revision=revision,
-                )
 
     def discard_selected(self):
         selected = self.selected()
@@ -565,45 +449,20 @@ class InventoryContent:
         if kind == 'item':
             # 库存没有归档状态：已确认声骸只能显式删除，不能隐藏保留。
             raise ValueError('此声骸已入库；如需移除请使用删除。')
-        self.runtime.inventory.resolve_capture(
+        self.services.inventory.resolve_capture(
             record.item_id, 'discard', expected_revision=self._mutation_revision()
         )
 
     def open_selected_evidence(self):
         selected = self.selected()
         if selected:
-            open_evidence(selected[0], self.runtime.evidence, self)
-
-    def export_backup(self):
-        if self.runtime.backups.status.busy:
-            raise ValueError('请等待或取消当前备份作业')
-        path, _ = QFileDialog.getSaveFileName(
-            self, '导出声骸数据（不含图片，可跨设备恢复）', '', 'ZIP backup (*.zip)'
-        )
-        if path:
-            self.runtime.backups.start('export', path)
-            self.refresh()
-
-    def restore_backup(self):
-        if self.runtime.backups.status.busy:
-            raise ValueError('请等待或取消当前备份作业')
-        path, _ = QFileDialog.getOpenFileName(
-            self, '恢复本插件备份（不是导入游戏背包）', '', 'ZIP backup (*.zip)'
-        )
-        if path:
-            self.runtime.capture.stop()
-            self.runtime.backups.start('import', path)
-            self.refresh()
+            open_evidence(selected[0], self.services.evidence, self)
 
     def showEvent(self, event):
         super().showEvent(event)
         self.table.proxy.resume()
         if self._reader.status.state == 'closed':
-            self._reader = InventoryReader(
-                self.runtime.inventory,
-                self.runtime.stop_event,
-                queries=self.runtime.inventory_queries,
-            )
+            self._reader = self.services.new_reader()
             self._requested_key = None
             self._processed_generation = -1
         self.read_timer.start()
@@ -614,5 +473,5 @@ class InventoryContent:
         self.timer.stop()
         self.read_timer.stop()
         self.stop_worker()
-        self.runtime.backups.cancel_and_wait()
+        self.services.backups.cancel_and_wait()
         super().closeEvent(event)

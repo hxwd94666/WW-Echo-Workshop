@@ -1,10 +1,9 @@
 # 校验声骸核对表单并保留原始观察证据。
 from dataclasses import replace
+from threading import Event
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QCheckBox,
-    QDialog,
     QDialogButtonBox,
     QFormLayout,
     QFrame,
@@ -30,7 +29,9 @@ from ww_echo_workshop.application.view_state import (
     review_reason,
 )
 from ww_echo_workshop.ui.inventory.evidence import open_evidence
-from ww_echo_workshop.ui.inventory.review_fields import ChoiceBox, ReviewChoices
+from ww_echo_workshop.application.inventory_review import ReviewChoices
+from ww_echo_workshop.ui.inventory.review_fields import ChoiceBox
+from ww_echo_workshop.ui.inventory.cards import EchoCardWidget
 
 
 class StatEditorDelegate(QStyledItemDelegate):
@@ -63,6 +64,7 @@ class RecordEditorContent:
         self._quality_check = quality_check
         self._quality_request = None
         self._quality_pending_record = None
+        self._quality_cancel = Event()
         self._quality_timer = QTimer(self)
         self._quality_timer.setInterval(20)
         self._quality_timer.timeout.connect(self._poll_quality)
@@ -75,23 +77,8 @@ class RecordEditorContent:
         left = QWidget()
         self.preview_panel = left
         left_layout = QVBoxLayout(left)
-        cards = getattr(self, '_structured_cards', False)
-        if cards:
-            from ww_echo_workshop.ui.inventory.cards import EchoCardWidget
-
-            self.preview = EchoCardWidget()
-            self.preview.set_record(record)
-        else:
-            self.preview = QLabel('此记录没有可读取的截图，请返回游戏核对。')
-            self.preview.setAlignment(Qt.AlignCenter)
-            self.preview.setWordWrap(True)
-            self.preview.setMinimumSize(160, 100)
-        self._preview_pixmap = QPixmap()
-        if not cards and record.screenshot_ref and evidence is not None:
-            try:
-                self._preview_pixmap.loadFromData(evidence.read(record.screenshot_ref), 'PNG')
-            except (OSError, ValueError):
-                self.preview.setText('原截图读取失败，已有证据引用保留。')
+        self.preview = EchoCardWidget()
+        self.preview.set_record(record)
         left_layout.addWidget(self.preview)
         self.reason_label = QLabel('')
         self.reason_label.setWordWrap(True)
@@ -130,35 +117,12 @@ class RecordEditorContent:
         left_layout.addWidget(screenshot)
         if previous is not None:
             old = Disclosure('对照旧件：升级关联前请核对', self)
-            old_label = QLabel(
-                f'旧件 {previous.name}　COST {previous.cost}　+{previous.level}\n新观察 {record.name}　COST {record.cost}　+{record.level}\n'
-                f'旧副词条：{", ".join(s.stat_name + " " + str(s.value) for s in previous.sub_stats)}\n'
-                f'新副词条：{", ".join(s.stat_name + " " + str(s.value) for s in record.sub_stats)}'
-            )
-            old_label.setWordWrap(True)
-            if not cards:
-                old.content_layout.addWidget(old_label)
-            if cards:
-                old_image = EchoCardWidget()
-                old_image.set_record(previous)
-                old_button = QPushButton('查看旧件原图')
-                old_button.setEnabled(bool(previous.screenshot_ref and evidence is not None))
-                old_button.clicked.connect(lambda: open_evidence(previous, evidence, self))
-                old.content_layout.addWidget(old_button)
-            else:
-                old_image = QLabel()
-            if not cards and previous.screenshot_ref and evidence is not None:
-                try:
-                    old_pixmap = QPixmap()
-                    old_pixmap.loadFromData(evidence.read(previous.screenshot_ref), 'PNG')
-                    old_image.setPixmap(
-                        old_pixmap.scaled(300, 180, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-                    )
-                    old_button = QPushButton('放大旧件原图')
-                    old_button.clicked.connect(lambda: open_evidence(previous, evidence, self))
-                    old.content_layout.addWidget(old_button)
-                except (ValueError, OSError):
-                    old_image.setText('旧件截图未读取，请返回游戏核对。')
+            old_image = EchoCardWidget()
+            old_image.set_record(previous)
+            old_button = QPushButton('查看旧件原图')
+            old_button.setEnabled(bool(previous.screenshot_ref and evidence is not None))
+            old_button.clicked.connect(lambda: open_evidence(previous, evidence, self))
+            old.content_layout.addWidget(old_button)
             old.content_layout.addWidget(old_image)
             old.toggle.setChecked(True)
             left_layout.addWidget(old)
@@ -325,19 +289,8 @@ class RecordEditorContent:
     def resizeEvent(self, event):
         if hasattr(self, 'splitter'):
             narrow = self.width() < 800
-            cards = getattr(self, '_structured_cards', False)
-            self.preview_panel.setMaximumHeight(16777215 if cards else 190 if narrow else 16777215)
             self.splitter.setOrientation(Qt.Vertical if narrow else Qt.Horizontal)
             self.splitter.setSizes([180, max(240, self.height() - 340)] if narrow else [420, 580])
-            if not self._preview_pixmap.isNull():
-                self.preview.setPixmap(
-                    self._preview_pixmap.scaled(
-                        max(160, self.preview.width()),
-                        max(100, self.preview.height()),
-                        Qt.KeepAspectRatio,
-                        Qt.SmoothTransformation,
-                    )
-                )
         if event is not None:
             super().resizeEvent(event)
 
@@ -386,13 +339,24 @@ class RecordEditorContent:
         if self._quality_request is not None:
             return
         try:
-            self._quality_request = self._quality_check((record,))
+            self._quality_cancel = Event()
+            self._quality_request = self._quality_check(
+                (record,), cancel_event=self._quality_cancel
+            )
         except Exception as error:
             self.feedback.setText(f'质量校验未启动：{error}')
             return
         self._quality_pending_record = record
         self._quality_timer.start()
         self.feedback.setText('正在校验原生质量结论…')
+
+    def cancel_quality(self):
+        self._quality_cancel.set()
+        self._quality_timer.stop()
+        request, self._quality_request = self._quality_request, None
+        self._quality_pending_record = None
+        if request is not None:
+            request.future.cancel()
 
     def _poll_quality(self):
         request = self._quality_request
@@ -417,9 +381,3 @@ class RecordEditorContent:
         self._quality_pending_record = None
         self.result_record = replace(record, review='confirmed')
         self.accept()
-
-
-class RecordEditor(RecordEditorContent, QDialog):
-    """Compatibility editor; embedded editing uses QWidget content."""
-
-    pass

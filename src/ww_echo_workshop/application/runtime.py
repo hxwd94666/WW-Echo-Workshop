@@ -26,6 +26,7 @@ from ww_echo_workshop.resources.http import MirrorWeightHttpClient
 from ww_echo_workshop.capture.intake import CaptureSession
 from ww_echo_workshop.resources.weight_updates import WeightUpdateService
 from ww_echo_workshop.application.allocation import AllocationService
+from ww_echo_workshop.application.allocation_jobs import AllocationJobs
 from ww_echo_workshop.storage.plans import AllocationStore
 from ww_echo_workshop.application.backup_jobs import BackupService
 from ww_echo_workshop.storage.workspaces import WorkspaceManager
@@ -38,11 +39,14 @@ from ww_echo_workshop.resources.role_defaults import RoleDefaultsProvider
 from ww_echo_workshop.resources.role_default_updates import RoleDefaultsUpdateService
 from ww_echo_workshop.resources.paths import package_manifest
 from ww_echo_workshop.storage.paths import data_dir_for_config
-from ww_echo_workshop.application.inventory import InventoryService
+from ww_echo_workshop.application.inventory import InventoryReader, InventoryService
+from ww_echo_workshop.application.inventory_review import ReviewChoices
+from ww_echo_workshop.application.quick_score import QuickScoreService
 from ww_echo_workshop.application.plan_jobs import PlanCommands
 from ww_echo_workshop.application.hud_state import HudState
 from ww_echo_workshop.application.live_snapshot import LiveSnapshotStore
 from ww_echo_workshop.application.policy import PolicyService
+from ww_echo_workshop.application.matching.jobs import MatchingService
 
 
 class PluginRuntime:
@@ -59,7 +63,6 @@ class PluginRuntime:
         self.policy = PolicyService(self.compute)
         self.live_snapshots = LiveSnapshotStore()
         self.hud_state = HudState()
-        self.hud_controller = None
         try:
             self._initialize(config_file)
         except BaseException:
@@ -123,6 +126,21 @@ class PluginRuntime:
                 self.role_defaults, stop_event=self.stop_event
             )
             self.scores = ScoreService(self.weights, compute=self.compute)
+            self.matching = MatchingService(
+                self.inventory,
+                self.inventory_queries,
+                self.scores,
+                self.match_projections,
+                self.pin_checks,
+                self.stop_event,
+            )
+            self.quick_score = QuickScoreService(
+                self.inventory,
+                self.inventory_queries,
+                self.scores,
+                weight_snapshot=lambda: self.weights.active,
+                closed=lambda: self._closed or self.stop_event.is_set(),
+            )
             self.allocation.scores = self.scores
             self.plans = AllocationStore(self.data_dir, plan_evaluator=self.allocation)
             self.plan_commands = PlanCommands(
@@ -130,6 +148,15 @@ class PluginRuntime:
                 self.repository,
                 allocation=self.allocation,
                 queries=self.inventory_queries,
+            )
+            self.allocation_jobs = AllocationJobs(
+                self.inventory,
+                self.inventory_queries,
+                self.allocation,
+                self.scores,
+                self.plan_commands,
+                weight_snapshot=lambda: self.weights.active,
+                stop_event=self.stop_event,
             )
             self.capture = CaptureSession(
                 self.repository,
@@ -195,6 +222,17 @@ class PluginRuntime:
         )
         self.inventory.after_mutation = self.screenshot_cleanup.notify
         self.screenshot_cleanup.start()
+
+    def new_inventory_reader(self):
+        return InventoryReader(self.inventory, self.stop_event, queries=self.inventory_queries)
+
+    def inventory_review_choices(self, record):
+        return ReviewChoices.from_inventory(
+            self.inventory.list(record.profile_id),
+            record,
+            catalog=self.game_catalog.active,
+            sonata=self.sonata.active,
+        )
 
     def close(self):
         if not self._closed:

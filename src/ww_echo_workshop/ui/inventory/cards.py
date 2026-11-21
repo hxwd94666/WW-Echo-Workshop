@@ -11,6 +11,8 @@ from PySide6.QtCore import (
     QItemSelectionModel,
     QItemSelection,
     QModelIndex,
+    QObject,
+    QPropertyAnimation,
     QRect,
     QRectF,
     QSize,
@@ -27,7 +29,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QSizePolicy,
 )
-from qfluentwidgets import isDarkTheme, themeColor, qconfig, SmoothScrollDelegate
+from ww_echo_workshop.ui.widgets.workshop_palette import DARK, colors_for_widget, watch_theme
 from ww_echo_workshop.ui.inventory.card_data import project_card, project_checked_card
 
 RECORD_ROLE = int(Qt.UserRole) + 1
@@ -50,9 +52,9 @@ def stat_label_font(font, value, width):
     """Fit full damage labels into the same five-column, equal-height cards."""
     result = QFont(font)
     while QFontMetrics(result).horizontalAdvance(value) > width:
-        if result.pointSizeF() > 8:
-            result.setPointSizeF(max(8, result.pointSizeF() - 0.5))
-        elif result.pointSizeF() < 0 and result.pixelSize() > 10:
+        if result.pointSizeF() > 11:
+            result.setPointSizeF(max(11, result.pointSizeF() - 0.5))
+        elif result.pointSizeF() < 0 and result.pixelSize() > 15:
             result.setPixelSize(result.pixelSize() - 1)
         else:
             break
@@ -83,19 +85,16 @@ def card_lock_rect(rect, font):
     return QRect(inside.right() - 17, inside.y() + line + (line - 18) // 2, 18, 18)
 
 
-def card_lock_color(locked):
-    return themeColor() if locked else QColor('#888888')
-
-
-def paint_plan_lock(painter, area, locked):
+def paint_plan_lock(painter, area, locked, colors):
     """Read-only local-plan status, never the discarded game lock observation."""
     painter.save()
-    painter.setPen(QPen(card_lock_color(locked), 1.6))
+    ink = QColor(colors.accent if locked else colors.muted)
+    painter.setPen(QPen(ink, 1.6))
     painter.setBrush(Qt.NoBrush)
     painter.drawRoundedRect(QRectF(area.x() + 5, area.y() + 1, 8, 10), 4, 4)
-    painter.setBrush(card_lock_color(locked))
+    painter.setBrush(ink)
     painter.drawRoundedRect(QRectF(area.x() + 2, area.y() + 8, 14, 9), 2, 2)
-    painter.setPen(QPen(QColor('#232323' if isDarkTheme() else '#ffffff'), 1.5))
+    painter.setPen(QPen(QColor(colors.panel), 1.5))
     painter.drawLine(area.x() + 9, area.y() + 11, area.x() + 9, area.y() + 14)
     painter.restore()
 
@@ -105,6 +104,8 @@ def paint_card(
 ):
     from ww_echo_workshop.ui.inventory.render_cache import draw_cached_card
 
+    device = painter.device()
+    colors = colors_for_widget(device if isinstance(device, QWidget) else None)
     draw_cached_card(
         painter,
         rect,
@@ -114,6 +115,7 @@ def paint_card(
         score_text,
         avatar,
         show_owner_avatar,
+        colors,
         lambda target, area: _paint_card(
             target,
             area,
@@ -122,22 +124,22 @@ def paint_card(
             selected,
             score_text,
             avatar,
+            colors=colors,
             show_owner_avatar=show_owner_avatar,
         ),
     )
 
 
 def _paint_card(
-    painter, rect, data, font, selected=False, score_text='', avatar=None, *, show_owner_avatar=True
+    painter, rect, data, font, selected, score_text, avatar, *, colors, show_owner_avatar
 ):
     painter.save()
     painter.setRenderHint(QPainter.Antialiasing)
-    dark = isDarkTheme()
-    accent = themeColor()
-    surface = QColor('#232323' if dark else '#ffffff')
-    foreground = QColor('#f4f4f4' if dark else '#202020')
-    secondary = QColor('#b7b7b7' if dark else '#656565')
-    border = accent if selected else QColor('#464646' if dark else '#dedede')
+    accent = QColor(colors.accent)
+    surface = QColor(colors.panel)
+    foreground = QColor(colors.text)
+    secondary = QColor(colors.muted)
+    border = accent if selected else QColor(colors.border)
     painter.setPen(QPen(border, 2 if selected else 1))
     painter.setBrush(surface)
     painter.drawRoundedRect(rect.adjusted(1, 1, -1, -1), 8, 8)
@@ -162,7 +164,7 @@ def _paint_card(
         rect, data, font, show_owner_avatar=show_owner_avatar
     )
     text(title_rect, data.title, heavy=True)
-    paint_plan_lock(painter, card_lock_rect(rect, font), data.locked)
+    paint_plan_lock(painter, card_lock_rect(rect, font), data.locked, colors)
     if data.owner:
         if show_owner_avatar and avatar is not None and not avatar.isNull():
             painter.drawPixmap(avatar_rect, avatar)
@@ -177,7 +179,7 @@ def _paint_card(
         area = QRect(inside.x(), y, inside.width(), line)
         if row.main:
             tint = QColor(accent)
-            tint.setAlpha(24 if dark else 15)
+            tint.setAlpha(24 if colors is DARK else 15)
             painter.fillRect(area.adjusted(-3, 0, 3, 0), tint)
             painter.fillRect(QRect(area.x() - 3, y + 3, 2, line - 6), accent)
         # Right value is never elided. Delegate minimum width reserves its span.
@@ -240,8 +242,7 @@ class EchoCardWidget(QWidget):
         self.hint = '选择声骸查看词条'
         self.setMinimumWidth(180)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeColorChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
 
     def update_theme(self, *_):
         self.update()
@@ -294,7 +295,7 @@ class EchoCardWidget(QWidget):
                 show_owner_avatar=self.show_owner_avatar,
             )
         else:
-            painter.setPen(QColor('#b7b7b7' if isDarkTheme() else '#656565'))
+            painter.setPen(QColor(colors_for_widget(self).muted))
             painter.drawText(self.rect().adjusted(8, 8, -8, -8), Qt.TextWordWrap, self.hint)
 
 
@@ -368,12 +369,15 @@ class EchoCardDelegate(QStyledItemDelegate):
         return True  # Cards deliberately have no hover information popup.
 
 
-class CardScrollDelegate(SmoothScrollDelegate):
+class CardScrollDelegate(QObject):
     """One wheel notch moves half a card, without Qt line-count acceleration."""
 
     def __init__(self, parent):
-        super().__init__(parent, useAni=True)
-        self.vScrollBar.setScrollAnimation(200)
+        super().__init__(parent)
+        self.scroll_bar = parent.verticalScrollBar()
+        self.animation = QPropertyAnimation(self.scroll_bar, b'value', self)
+        self.animation.setDuration(200)
+        parent.viewport().installEventFilter(self)
 
     def eventFilter(self, obj, event):
         if event.type() != QEvent.Wheel:
@@ -382,14 +386,21 @@ class CardScrollDelegate(SmoothScrollDelegate):
         angle = event.angleDelta().y()
         if not pixels and not angle:
             return super().eventFilter(obj, event)
-        # Keep the target in sync after selection, filtering or dragging the bar.
-        if self.vScrollBar.ani.state() == QAbstractAnimation.Stopped:
-            self.vScrollBar.resetValue(self.parent().verticalScrollBar().value())
+        current = self.scroll_bar.value()
+        target = current
+        if self.animation.state() != QAbstractAnimation.Stopped:
+            target = self.animation.endValue()
+            self.animation.stop()
         if pixels:
-            self.vScrollBar.scrollValue(-pixels, useAni=False)
+            self.scroll_bar.setValue(current - pixels)
         else:
             half_card = max(1, round((self.parent().gridSize().height() - 10) / 2))
-            self.vScrollBar.scrollValue(round(-angle / 120 * half_card))
+            target -= round(angle / 120 * half_card)
+            self.animation.setStartValue(current)
+            self.animation.setEndValue(
+                max(self.scroll_bar.minimum(), min(self.scroll_bar.maximum(), target))
+            )
+            self.animation.start()
         event.accept()
         return True
 
@@ -436,14 +447,14 @@ class EchoCardGrid(QListView):
         self.columns = 1
         self._resize_grid()
         self.setFrameShape(QListView.NoFrame)
-        qconfig.themeChanged.connect(self.update_theme)
-        qconfig.themeColorChanged.connect(self.update_theme)
+        watch_theme(self, self.update_theme)
         self.update_theme()
 
     def update_theme(self, *_):
         palette = self.palette()
-        palette.setColor(QPalette.Base, QColor('#202020' if isDarkTheme() else '#f9f9f9'))
-        palette.setColor(QPalette.Text, QColor('#f4f4f4' if isDarkTheme() else '#202020'))
+        colors = colors_for_widget(self)
+        palette.setColor(QPalette.Base, QColor(colors.background))
+        palette.setColor(QPalette.Text, QColor(colors.text))
         self.setPalette(palette)
         self.viewport().update()
 

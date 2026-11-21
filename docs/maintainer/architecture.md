@@ -65,10 +65,10 @@ v1 求值和兼容读取已删除；不支持的政策、缺失当前计件标�
 
 ## 宿主合同
 
-当前验收依赖：Python3.12、ok-script2.0.8、PySide6 6.11.1、Fluent Widgets1.11.3。源码要求Python3.11+；未运行的组合不冒称已验证。
+宿主目标覆盖 ok-script 2.x 和 3.x 的 Windows Qt 桌面版，工作台共用 Qt Widgets 实现。新版精简 Qt 与旧版完整 PySide6 分别安装在独立环境。实测范围见[适配方案](refactor-okww-3-plan.md#6-验证记录)。
 
-宿主仅扫描安装根的Python真实class：`ww_echo_workshop_settings.py`、`ww_echo_workshop_overlay.py`、`ww_echo_workshop_scan.py`。任务类名为 `WWEchoWorkshop*Task`；改名后旧Config文件名不再读取，旧数据目录不迁移。所有业务通过canonical `ww_echo_workshop.*` 导入，不再fresh-exec112个helper或创建源路径hash类型注册。
+manifest 显式声明三个根目录任务，支持声明的宿主按模块和类名加载，旧宿主仍扫描同三个根目录文件。任务类名 `WWEchoWorkshop*Task` 对应已有配置文件。业务统一通过 `ww_echo_workshop.*` 导入。
 
-内嵌页面由宿主调用 `create_import_page`；不支持该桥接的宿主可从任务卡打开同一助手窗口。安装新版本需完全重启，不承诺跨版本无重启热替换。
+支持插件页面的宿主调用 `create_import_page`，并在卸载时调用 `on_destroy`。早期 2.x 宿主用任务卡打开同一工作台，适配层补齐缺失的卸载通知。安装新版本后完全重启宿主。
 
 运行时退出先取消/停止扫描和后台作业，再关闭资料与数据库。正常取消使用统一标记，不记录为ERROR失败栈；真实错误保留阶段及堆栈。

@@ -124,7 +124,14 @@ class EvidenceStore:
             raise ValueError('Screenshot path left the data directory')
         return path, match[2]
 
-    def put(self, item_id, data):
+    def put(self, item_id, data, *, publish_guard=None):
+        """When guarded, the caller holds operation() through its record commit."""
+        with self.staged_put(item_id, data, publish_guard=publish_guard) as reference:
+            return reference
+
+    @contextmanager
+    def staged_put(self, item_id, data, *, publish_guard=None):
+        """Hold operation() across publication and the caller's inventory write."""
         validate_id(item_id)
         validate_png(data)
         content_hash = hashlib.sha256(data).hexdigest()
@@ -133,19 +140,39 @@ class EvidenceStore:
         if path.exists():
             if self.read(reference) != data:
                 raise ValueError('Existing screenshot content conflict')
-            return reference
+            yield reference if publish_guard is None or publish_guard() else None
+            return
         fd, temporary = tempfile.mkstemp(prefix='.evidence-', dir=self.folder)
+        created = False
         try:
             with os.fdopen(fd, 'wb') as stream:
                 stream.write(data)
                 stream.flush()
                 os.fsync(stream.fileno())
+            if publish_guard is not None and not publish_guard():
+                yield None
+                return
             os.replace(temporary, path)
+            created = True
             self.read(reference)
+            if publish_guard is not None and not publish_guard():
+                # Only undo the file created by this call. A previously
+                # referenced file took the path.exists() branch above.
+                path.unlink(missing_ok=True)
+                created = False
+                yield None
+                return
+            yield reference
+        except Exception as error:
+            if created:
+                try:
+                    path.unlink(missing_ok=True)
+                except OSError as cleanup_error:
+                    error.add_note(f'收录截图回退失败：{type(cleanup_error).__name__}')
+            raise
         finally:
             if os.path.exists(temporary):
                 os.unlink(temporary)
-        return reference
 
     def read(self, reference):
         path, expected = self._path(reference)
